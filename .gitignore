@@ -1,0 +1,35 @@
+# Local-only workspace folders
+/skills/
+/silver/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.yaml
+
+# Java and Gradle build outputs
+.gradle/
+build/
+out/
+target/
+*.class
+
+# IDE and editor files
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Runtime artifacts
+/outputs/*
+!/outputs/.gitkeep
