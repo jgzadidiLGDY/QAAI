@@ -29,22 +29,25 @@ public class ArtifactWriter {
 			String callId,
 			Path scenarioPath,
 			RunMetadata metadata,
-			String transcriptText
+			String transcriptText,
+			String observationsMarkdown
 	) {
 		Path runDirectory = outputBaseDir.resolve(callId);
 		Path scenarioSnapshot = runDirectory.resolve("scenario.yaml");
 		Path metadataPath = runDirectory.resolve("metadata.json");
 		Path transcriptPath = runDirectory.resolve("transcript.txt");
+		Path observationsPath = runDirectory.resolve("observations.md");
 
 		try {
 			Files.createDirectories(runDirectory);
 			Files.copy(scenarioPath, scenarioSnapshot, StandardCopyOption.REPLACE_EXISTING);
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
 			Files.writeString(transcriptPath, transcriptText);
+			Files.writeString(observationsPath, observationsMarkdown);
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to write dry-run artifacts for call_id: " + callId, exception);
 		}
 
-		return new ArtifactBundle(callId, runDirectory, scenarioSnapshot, metadataPath, transcriptPath);
+		return new ArtifactBundle(callId, runDirectory, scenarioSnapshot, metadataPath, transcriptPath, observationsPath);
 	}
 }

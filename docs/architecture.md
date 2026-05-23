@@ -122,6 +122,9 @@ OpenAI is not used for core workflow control.
 
 Phase 0 created the runnable Java/Spring Boot foundation.
 
-Phase 1 should add deterministic scenario loading and dry-run artifacts.
+Phase 1 added deterministic scenario loading and dry-run artifacts.
+
+Phase 2 adds scenario-owned conversation-quality guidance and a deterministic
+observations artifact.
 
 Retell integration, real outbound calls, artifact capture, and AI analysis belong to later phases.

@@ -108,7 +108,34 @@ This creates a local dry-run artifact bundle. The run metadata explicitly marks:
 }
 ```
 
-### Phase 2: Retell Outbound Call Integration
+### Phase 2: Conversation Quality Iteration
+
+Improve local conversation realism and stability before making real calls.
+
+Deliverables:
+
+- scenario-owned conversation-quality guidance
+- welcome behavior expectations
+- patient initiative and pacing guidance
+- clarification behavior
+- before/after observations artifact
+
+Expected result:
+
+```text
+Given a scenario, the deterministic dry run produces a richer transcript and observations artifact that make conversation quality reviewable.
+```
+
+Expected artifacts:
+
+```text
+outputs/{call_id}/scenario.yaml
+outputs/{call_id}/metadata.json
+outputs/{call_id}/transcript.txt
+outputs/{call_id}/observations.md
+```
+
+### Phase 3: Retell Outbound Call Integration
 
 Place a real outbound call through Retell AI.
 
@@ -126,7 +153,7 @@ Expected result:
 Given a scenario, the system starts a real outbound call and records enough metadata to inspect what happened.
 ```
 
-### Phase 3: Artifact Capture
+### Phase 4: Artifact Capture
 
 Collect and normalize call artifacts.
 
@@ -148,7 +175,7 @@ outputs/{call_id}/metadata.json
 outputs/{call_id}/manifest.json
 ```
 
-### Phase 4: Scenario-Driven Patient Simulation
+### Phase 5: Scenario-Driven Patient Simulation
 
 Use scenarios to drive realistic patient behavior.
 
@@ -169,7 +196,7 @@ Initial workflows:
 - billing question
 - insurance verification
 
-### Phase 5: AI-Assisted Bug Analysis
+### Phase 6: AI-Assisted Bug Analysis
 
 Analyze transcripts and produce structured findings.
 
@@ -192,7 +219,7 @@ Important rule:
 
 Every bug finding must cite transcript evidence. The system must not fabricate evidence or make unsupported pass/fail decisions.
 
-### Phase 6: Reproducible QA Runs
+### Phase 7: Reproducible QA Runs
 
 Make runs easy to repeat and compare.
 
@@ -211,7 +238,7 @@ outputs/index.jsonl
 outputs/{call_id}/observations.md
 ```
 
-### Phase 7: Conversation Quality Iteration
+### Phase 8: Expanded Conversation Quality Iteration
 
 Improve realism and conversational stability.
 
@@ -340,11 +367,10 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 0 establishes the runnable project foundation. The next implementation
-milestone is Phase 1:
+Phase 2 improves local conversation quality before real outbound calls:
 
 ```text
-Load a scenario, run a deterministic dry run, and write inspectable artifacts under outputs/{call_id}/.
+Add scenario-owned conversation guidance and write observations.md beside each dry-run transcript.
 ```
 
-This gives the project a deterministic scenario runner before adding real Retell calls.
+This keeps the workflow deterministic and reviewable before adding real Retell calls.

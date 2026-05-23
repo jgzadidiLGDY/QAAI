@@ -37,5 +37,5 @@ outputs/{call_id}/transcript.txt
 
 ## Next Phase
 
-Phase 2 should add Retell outbound call integration while preserving the same
-local `call_id` artifact model.
+Phase 2 should improve conversation-quality guidance while preserving the same
+deterministic dry-run execution and local `call_id` artifact model.

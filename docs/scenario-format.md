@@ -28,6 +28,15 @@ constraints:
     - Do not invent insurance details.
     - Do not provide real patient data.
 
+conversation_quality:
+  welcome_behavior: Wait briefly for the agent greeting, then clearly state the rescheduling need.
+  initiative: Volunteer only the next useful detail after the agent asks or pauses.
+  pacing: Keep turns short and natural, with one patient fact per turn.
+  clarification: If the agent asks an unclear question, ask for a simple rephrase before answering.
+  expected_risks:
+    - Patient may overshare before identity verification.
+    - Agent may skip confirmation of the new appointment time.
+
 steps:
   - intent: greeting
     patient_says: Hi, I need to reschedule my appointment.
@@ -43,12 +52,13 @@ Each scenario run should eventually produce artifacts under:
 outputs/{call_id}/
 ```
 
-Phase 1 will define the first dry-run artifacts:
+Phase 2 dry runs produce:
 
 ```text
 outputs/{call_id}/scenario.yaml
 outputs/{call_id}/metadata.json
 outputs/{call_id}/transcript.txt
+outputs/{call_id}/observations.md
 ```
 
 ## Current Example
@@ -65,5 +75,15 @@ Run it locally with:
 .\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml"
 ```
 
-The generated transcript is deterministic and uses only the ordered `steps` in
-the scenario file.
+The generated transcript is deterministic and uses the ordered `steps` plus the
+explicit `conversation_quality` guidance in the scenario file.
+
+## Conversation Quality Fields
+
+`conversation_quality` keeps realism guidance reviewable and scenario-owned.
+
+- `welcome_behavior`: how the patient starts after the agent greeting
+- `initiative`: how much information the patient volunteers
+- `pacing`: expected turn length and rhythm
+- `clarification`: how the patient handles unclear questions
+- `expected_risks`: known conversation-quality issues to watch for later

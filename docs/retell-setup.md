@@ -27,6 +27,6 @@ Do not commit real credentials.
 
 ## Later Phase Notes
 
-Phase 2 will add the Retell outbound call client.
+Phase 3 will add the Retell outbound call client.
 
 Phase 3 will add transcript, recording, and call metadata capture. If webhook delivery is used, local development may need a public tunnel such as ngrok, Cloudflare Tunnel, or a deployed test endpoint.

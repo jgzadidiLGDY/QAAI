@@ -51,6 +51,21 @@ The metadata must clearly mark the local-only execution mode:
 }
 ```
 
+## Phase 2 Artifact Bundle
+
+Phase 2 dry runs add conversation-quality observations while preserving the
+Phase 1 artifact model:
+
+```text
+outputs/{call_id}/
+|-- scenario.yaml
+|-- metadata.json
+|-- transcript.txt
+`-- observations.md
+```
+
+`metadata.json` includes an `artifact_paths.observations_markdown` entry.
+
 ## Artifact Purposes
 
 ### `scenario.yaml`
@@ -99,7 +114,9 @@ Artifact inventory for the run. This should make completeness checks straightfor
 
 ### `observations.md`
 
-Human notes from reviewing a run, especially before/after conversation quality observations.
+Before/after conversation-quality observations for a run. In Phase 2 this file
+starts as a deterministic template grounded in the scenario guidance. Later
+phases can add human notes after real call artifacts exist.
 
 ## Run Index
 

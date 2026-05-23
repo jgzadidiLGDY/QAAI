@@ -68,7 +68,8 @@ public class DryRunRunner {
 		ArtifactPaths artifactPaths = new ArtifactPaths(
 				runDirectory.resolve("scenario.yaml").toString(),
 				runDirectory.resolve("metadata.json").toString(),
-				runDirectory.resolve("transcript.txt").toString()
+				runDirectory.resolve("transcript.txt").toString(),
+				runDirectory.resolve("observations.md").toString()
 		);
 		RunMetadata metadata = new RunMetadata(
 				callId,
@@ -86,7 +87,8 @@ public class DryRunRunner {
 				callId,
 				scenarioPath,
 				metadata,
-				buildTranscript(callId, scenario)
+				buildTranscript(callId, scenario),
+				buildObservations(callId, scenario)
 		);
 
 		return new DryRunResult(metadata, artifacts);
@@ -104,6 +106,26 @@ public class DryRunRunner {
 		transcript.append("workflow: ").append(scenario.workflow()).append(System.lineSeparator());
 		transcript.append("source: dry_run").append(System.lineSeparator());
 		transcript.append(System.lineSeparator());
+		transcript.append("Conversation Quality Guidance").append(System.lineSeparator());
+		transcript.append("welcome_behavior: ")
+				.append(scenario.conversationQuality().welcomeBehavior())
+				.append(System.lineSeparator());
+		transcript.append("initiative: ")
+				.append(scenario.conversationQuality().initiative())
+				.append(System.lineSeparator());
+		transcript.append("pacing: ")
+				.append(scenario.conversationQuality().pacing())
+				.append(System.lineSeparator());
+		transcript.append("clarification: ")
+				.append(scenario.conversationQuality().clarification())
+				.append(System.lineSeparator());
+		transcript.append(System.lineSeparator());
+		transcript.append("Expected Conversation Risks").append(System.lineSeparator());
+		for (String risk : scenario.conversationQuality().expectedRisks()) {
+			transcript.append("- ").append(risk).append(System.lineSeparator());
+		}
+		transcript.append(System.lineSeparator());
+		transcript.append("Patient Turns").append(System.lineSeparator());
 
 		for (int index = 0; index < scenario.steps().size(); index++) {
 			Scenario.Step step = scenario.steps().get(index);
@@ -117,5 +139,32 @@ public class DryRunRunner {
 		}
 
 		return transcript.toString();
+	}
+
+	private String buildObservations(String callId, Scenario scenario) {
+		StringBuilder observations = new StringBuilder();
+		observations.append("# Conversation Quality Observations").append(System.lineSeparator());
+		observations.append(System.lineSeparator());
+		observations.append("call_id: ").append(callId).append(System.lineSeparator());
+		observations.append("scenario_id: ").append(scenario.id()).append(System.lineSeparator());
+		observations.append("run_mode: dry_run").append(System.lineSeparator());
+		observations.append(System.lineSeparator());
+		observations.append("## Before").append(System.lineSeparator());
+		observations.append("- Scenario includes deterministic patient turns from Phase 1.").append(System.lineSeparator());
+		observations.append("- Conversation-quality guidance is now explicit in the scenario snapshot.").append(System.lineSeparator());
+		observations.append(System.lineSeparator());
+		observations.append("## After").append(System.lineSeparator());
+		observations.append("- Dry-run transcript includes welcome, initiative, pacing, and clarification guidance.")
+				.append(System.lineSeparator());
+		observations.append("- Human reviewer should compare real future calls against these expected risks:")
+				.append(System.lineSeparator());
+		for (String risk : scenario.conversationQuality().expectedRisks()) {
+			observations.append("  - ").append(risk).append(System.lineSeparator());
+		}
+		observations.append(System.lineSeparator());
+		observations.append("## Reviewer Notes").append(System.lineSeparator());
+		observations.append("- Pending human review after a real call artifact exists.").append(System.lineSeparator());
+
+		return observations.toString();
 	}
 }

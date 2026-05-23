@@ -10,6 +10,8 @@ public record Scenario(
 		Persona persona,
 		Goal goal,
 		Constraints constraints,
+		@JsonProperty("conversation_quality")
+		ConversationQuality conversationQuality,
 		List<Step> steps
 ) {
 
@@ -34,6 +36,20 @@ public record Scenario(
 			List<String> allowedFacts,
 			@JsonProperty("disallowed_behavior")
 			List<String> disallowedBehavior
+	) {
+	}
+
+	public record ConversationQuality(
+			@JsonProperty("welcome_behavior")
+			String welcomeBehavior,
+			@JsonProperty("initiative")
+			String initiative,
+			@JsonProperty("pacing")
+			String pacing,
+			@JsonProperty("clarification")
+			String clarification,
+			@JsonProperty("expected_risks")
+			List<String> expectedRisks
 	) {
 	}
 

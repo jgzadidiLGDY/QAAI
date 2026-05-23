@@ -19,6 +19,10 @@ class ScenarioLoaderTest {
 		assertThat(scenario.persona().name()).isEqualTo("Maria Lopez");
 		assertThat(scenario.persona().dateOfBirth()).isEqualTo("1982-04-19");
 		assertThat(scenario.goal().summary()).isEqualTo("Reschedule an existing appointment to next week.");
+		assertThat(scenario.conversationQuality().welcomeBehavior())
+				.isEqualTo("Wait briefly for the agent greeting, then clearly state the rescheduling need.");
+		assertThat(scenario.conversationQuality().expectedRisks())
+				.contains("Agent may skip confirmation of the new appointment time.");
 		assertThat(scenario.steps()).hasSize(3);
 		assertThat(scenario.steps().getFirst().patientSays()).isEqualTo("Hi, I need to reschedule my appointment.");
 	}

@@ -29,7 +29,8 @@ Planned shape:
   "artifact_paths": {
     "scenario": "outputs/call_20260523_001/scenario.yaml",
     "metadata": "outputs/call_20260523_001/metadata.json",
-    "transcript_text": "outputs/call_20260523_001/transcript.txt"
+    "transcript_text": "outputs/call_20260523_001/transcript.txt",
+    "observations_markdown": "outputs/call_20260523_001/observations.md"
   }
 }
 ```
@@ -119,3 +120,12 @@ Phase 1 should implement the first concrete subset:
 - transcript text
 
 Later phases should extend these contracts rather than replacing them silently.
+
+## Phase 2 Contract Extension
+
+Phase 2 adds:
+
+- scenario-owned `conversation_quality` guidance
+- transcript text that includes conversation-quality guidance
+- `observations.md`
+- `artifact_paths.observations_markdown`

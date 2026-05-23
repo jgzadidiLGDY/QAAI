@@ -6,6 +6,8 @@ public record ArtifactPaths(
 		String scenario,
 		String metadata,
 		@JsonProperty("transcript_text")
-		String transcriptText
+		String transcriptText,
+		@JsonProperty("observations_markdown")
+		String observationsMarkdown
 ) {
 }

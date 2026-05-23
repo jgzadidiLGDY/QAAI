@@ -47,19 +47,33 @@ class DryRunRunnerTest {
 		assertThat(result.artifacts().scenarioSnapshot()).exists();
 		assertThat(result.artifacts().metadata()).exists();
 		assertThat(result.artifacts().transcriptText()).exists();
+		assertThat(result.artifacts().observationsMarkdown()).exists();
 
 		String transcript = Files.readString(result.artifacts().transcriptText());
 		assertThat(transcript).contains(
 				"source: dry_run",
+				"Conversation Quality Guidance",
+				"welcome_behavior: Wait briefly for the agent greeting, then clearly state the rescheduling need.",
+				"Patient Turns",
 				"1. [patient] Hi, I need to reschedule my appointment. (intent: greeting)",
 				"3. [patient] Next Tuesday or Wednesday morning would work for me. (intent: availability)"
+		);
+
+		String observations = Files.readString(result.artifacts().observationsMarkdown());
+		assertThat(observations).contains(
+				"# Conversation Quality Observations",
+				"call_id: call_20260523_130000_test1234",
+				"## Before",
+				"## After",
+				"Agent may skip confirmation of the new appointment time."
 		);
 
 		String metadata = Files.readString(result.artifacts().metadata());
 		assertThat(metadata).contains(
 				"\"run_mode\" : \"dry_run\"",
 				"\"retell_call_id\" : null",
-				"\"transcript_text\""
+				"\"transcript_text\"",
+				"\"observations_markdown\""
 		);
 	}
 }

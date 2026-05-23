@@ -30,6 +30,19 @@ public class ScenarioValidator {
 			requireText(errors, "goal.summary", scenario.goal().summary());
 		}
 
+		if (scenario.conversationQuality() == null) {
+			errors.add("conversation_quality is required");
+		} else {
+			requireText(errors, "conversation_quality.welcome_behavior",
+					scenario.conversationQuality().welcomeBehavior());
+			requireText(errors, "conversation_quality.initiative", scenario.conversationQuality().initiative());
+			requireText(errors, "conversation_quality.pacing", scenario.conversationQuality().pacing());
+			requireText(errors, "conversation_quality.clarification",
+					scenario.conversationQuality().clarification());
+			requireNonEmpty(errors, "conversation_quality.expected_risks",
+					scenario.conversationQuality().expectedRisks());
+		}
+
 		if (scenario.steps() == null || scenario.steps().isEmpty()) {
 			errors.add("steps must include at least one step");
 		} else {
@@ -52,6 +65,12 @@ public class ScenarioValidator {
 	private static void requireText(List<String> errors, String field, String value) {
 		if (value == null || value.isBlank()) {
 			errors.add(field + " is required");
+		}
+	}
+
+	private static void requireNonEmpty(List<String> errors, String field, List<String> values) {
+		if (values == null || values.isEmpty()) {
+			errors.add(field + " must include at least one item");
 		}
 	}
 }

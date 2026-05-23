@@ -7,6 +7,7 @@ public record ArtifactBundle(
 		Path runDirectory,
 		Path scenarioSnapshot,
 		Path metadata,
-		Path transcriptText
+		Path transcriptText,
+		Path observationsMarkdown
 ) {
 }

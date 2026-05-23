@@ -26,6 +26,7 @@ class ScenarioValidatorTest {
 				new Scenario.Persona("", null, null),
 				new Scenario.Goal(null, null),
 				null,
+				new Scenario.ConversationQuality("", null, " ", null, List.of()),
 				List.of(new Scenario.Step("", null))
 		);
 
@@ -38,6 +39,11 @@ class ScenarioValidatorTest {
 								"workflow is required",
 								"persona.name is required",
 								"goal.summary is required",
+								"conversation_quality.welcome_behavior is required",
+								"conversation_quality.initiative is required",
+								"conversation_quality.pacing is required",
+								"conversation_quality.clarification is required",
+								"conversation_quality.expected_risks must include at least one item",
 								"steps[0].intent is required",
 								"steps[0].patient_says is required"
 						));
@@ -52,6 +58,13 @@ class ScenarioValidatorTest {
 				new Scenario.Persona("Maria Lopez", null, null),
 				new Scenario.Goal("Reschedule appointment.", null),
 				null,
+				new Scenario.ConversationQuality(
+						"Wait for greeting.",
+						"Answer one prompt at a time.",
+						"Keep turns short.",
+						"Ask for a rephrase.",
+						List.of("Agent may skip confirmation.")
+				),
 				List.of()
 		);
 
@@ -68,6 +81,13 @@ class ScenarioValidatorTest {
 				new Scenario.Persona("Maria Lopez", "1982-04-19", "+15555550123"),
 				new Scenario.Goal("Reschedule an existing appointment.", "Agent confirms a new appointment."),
 				null,
+				new Scenario.ConversationQuality(
+						"Wait for greeting.",
+						"Answer one prompt at a time.",
+						"Keep turns short.",
+						"Ask for a rephrase.",
+						List.of("Agent may skip confirmation.")
+				),
 				List.of(new Scenario.Step("greeting", "Hi, I need to reschedule my appointment."))
 		);
 	}
