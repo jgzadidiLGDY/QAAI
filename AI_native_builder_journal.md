@@ -54,12 +54,12 @@ Additional notes will be made available for future implementation or extensions.
 
 For a quick product view, start with [README.md](README.md).
 
-For architecture and contracts, these planned docs will be added as the project
-reaches the relevant phases:
+For project scope, architecture, artifacts, and result contracts, read:
 
+- [Project Specs](docs/project_specs.md)
 - [Architecture](docs/architecture.md)
-- [Result Contracts](docs/result-contracts.md)
-- [Artifact Model](docs/artifact-model.md)
+- [Artifacts Model](docs/artifacts_model.md)
+- [Result Contracts](docs/result_contracts.md)
 
 For the AI-native build history, read the phase closeouts in order. They show
 what changed, what stayed out of scope, what tests were added, and what follow-up

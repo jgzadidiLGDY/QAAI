@@ -19,6 +19,13 @@ The initial target healthcare voice agent is:
 For notes on the AI-native build workflow and phase closeout trail, see
 [AI_native_builder_journal.md](AI_native_builder_journal.md).
 
+Additional project docs:
+
+- [Project Specs](docs/project_specs.md)
+- [Architecture](docs/architecture.md)
+- [Artifacts Model](docs/artifacts_model.md)
+- [Result Contracts](docs/result_contracts.md)
+
 ## Working Principles
 
 - Build in small, reviewable phases.
@@ -246,6 +253,10 @@ docs/conversation-quality-notes.md
 |   |-- billing-question.yaml
 |   `-- insurance-verification.yaml
 |-- docs
+|   |-- project_specs.md
+|   |-- architecture.md
+|   |-- artifacts_model.md
+|   |-- result_contracts.md
 |   |-- retell-setup.md
 |   |-- scenario-format.md
 |   `-- conversation-quality-notes.md
