@@ -37,7 +37,7 @@ class DryRunRunnerTest {
 				() -> "test1234"
 		);
 
-		DryRunResult result = runner.run(Path.of("scenarios/appointment-reschedule.yaml"));
+		ScenarioRunResult result = runner.run(Path.of("scenarios/appointment-reschedule.yaml"));
 
 		assertThat(result.metadata().callId()).isEqualTo("call_20260523_130000_test1234");
 		assertThat(result.metadata().runMode()).isEqualTo("dry_run");

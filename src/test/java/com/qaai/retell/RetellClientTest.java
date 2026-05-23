@@ -1,0 +1,116 @@
+package com.qaai.retell;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withCreatedEntity;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
+
+import java.net.URI;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestClient;
+
+class RetellClientTest {
+
+	@Test
+	void createsPhoneCallWithBearerTokenAndScenarioMetadata() {
+		RestClient.Builder builder = RestClient.builder().baseUrl("https://api.example.test");
+		MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+		RetellClient client = new RetellClient(builder.build(), "test-api-key");
+
+		server.expect(requestTo("https://api.example.test/v2/create-phone-call"))
+				.andExpect(method(POST))
+				.andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer test-api-key"))
+				.andExpect(content().json("""
+						{
+						  "from_number": "+15555550100",
+						  "to_number": "+18054398008",
+						  "override_agent_id": "agent_123",
+						  "metadata": {
+						    "qaai_call_id": "call_20260523_130000_test1234",
+						    "scenario_id": "appointment_reschedule_001"
+						  },
+						  "retell_llm_dynamic_variables": {
+						    "workflow": "appointment_rescheduling"
+						  }
+						}
+						"""))
+				.andRespond(withCreatedEntity(URI.create("https://api.example.test/v2/create-phone-call"))
+						.contentType(MediaType.APPLICATION_JSON)
+						.body("""
+								{
+								  "call_id": "retell_call_123",
+								  "call_status": "registered",
+								  "agent_id": "agent_123",
+								  "from_number": "+15555550100",
+								  "to_number": "+18054398008",
+								  "direction": "outbound",
+								  "metadata": {
+								    "qaai_call_id": "call_20260523_130000_test1234"
+								  }
+								}
+								"""));
+
+		RetellOutboundCallResponse response = client.createPhoneCall(new RetellOutboundCallRequest(
+				"+15555550100",
+				"+18054398008",
+				"agent_123",
+				Map.of(
+						"qaai_call_id", "call_20260523_130000_test1234",
+						"scenario_id", "appointment_reschedule_001"
+				),
+				Map.of("workflow", "appointment_rescheduling")
+		));
+
+		assertThat(response.callId()).isEqualTo("retell_call_123");
+		assertThat(response.callStatus()).isEqualTo("registered");
+		assertThat(response.direction()).isEqualTo("outbound");
+		server.verify();
+	}
+
+	@Test
+	void throwsClearExceptionForFailedResponse() {
+		RestClient.Builder builder = RestClient.builder().baseUrl("https://api.example.test");
+		MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+		RetellClient client = new RetellClient(builder.build(), "test-api-key");
+
+		server.expect(requestTo("https://api.example.test/v2/create-phone-call"))
+				.andRespond(withUnauthorizedRequest().body("invalid api key"));
+
+		assertThatThrownBy(() -> client.createPhoneCall(new RetellOutboundCallRequest(
+				"+15555550100",
+				"+18054398008",
+				"agent_123",
+				Map.of(),
+				Map.of()
+		)))
+				.isInstanceOf(RetellApiException.class)
+				.hasMessageContaining("HTTP 401")
+				.hasMessageContaining("invalid api key");
+
+		server.verify();
+	}
+
+	@Test
+	void requiresApiKey() {
+		RetellClient client = new RetellClient(RestClient.builder().build(), "");
+
+		assertThatThrownBy(() -> client.createPhoneCall(new RetellOutboundCallRequest(
+				"+15555550100",
+				"+18054398008",
+				"agent_123",
+				Map.of(),
+				Map.of()
+		)))
+				.isInstanceOf(RetellApiException.class)
+				.hasMessageContaining("RETELL_API_KEY is required");
+	}
+}

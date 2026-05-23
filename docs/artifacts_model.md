@@ -66,6 +66,31 @@ outputs/{call_id}/
 
 `metadata.json` includes an `artifact_paths.observations_markdown` entry.
 
+## Phase 3 Artifact Bundle
+
+Phase 3 Retell runs start a real outbound call and persist the local-to-Retell
+identifier mapping:
+
+```text
+outputs/{call_id}/
+|-- scenario.yaml
+|-- metadata.json
+`-- observations.md
+```
+
+The metadata must mark the real-call execution mode:
+
+```json
+{
+  "run_mode": "retell",
+  "retell_call_id": "retell-call-id-from-api",
+  "status": "retell_registered"
+}
+```
+
+`artifact_paths.transcript_text` is `null` in Phase 3 because transcript capture
+belongs to Phase 4.
+
 ## Artifact Purposes
 
 ### `scenario.yaml`

@@ -56,7 +56,7 @@ public class DryRunRunner {
 		this.uuidSupplier = uuidSupplier;
 	}
 
-	public DryRunResult run(Path scenarioPath) {
+	public ScenarioRunResult run(Path scenarioPath) {
 		Scenario scenario = scenarioLoader.load(scenarioPath);
 		scenarioValidator.validate(scenario);
 
@@ -91,7 +91,7 @@ public class DryRunRunner {
 				buildObservations(callId, scenario)
 		);
 
-		return new DryRunResult(metadata, artifacts);
+		return new ScenarioRunResult(metadata, artifacts);
 	}
 
 	private String generateCallId(OffsetDateTime startedAt) {

@@ -40,12 +40,14 @@ The phase closeout files will become the primary evidence of the build process:
 
 - [Phase 0 Closeout](docs/phase-0-closeout.md)
 - [Phase 1 Closeout](docs/phase-1-closeout.md)
+- [Phase 2 Closeout](docs/phase-2-closeout.md)
+- [Phase 3 Closeout](docs/phase-3-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 1 added the deterministic scenario runner. A local scenario YAML file now
-loads, validates, produces a generated `call_id`, and writes dry-run artifacts
-under `outputs/{call_id}/` with metadata explicitly marked as `dry_run`.
+Phase 3 added Retell outbound call-start execution. A scenario can now run in
+explicit `retell` mode, start a real outbound call, and persist the mapping
+between the local `call_id` and Retell's `call_id` under `outputs/{call_id}/`.
 
 ## Additional Implementation Notes
 

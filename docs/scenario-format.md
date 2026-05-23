@@ -61,6 +61,17 @@ outputs/{call_id}/transcript.txt
 outputs/{call_id}/observations.md
 ```
 
+Phase 3 Retell runs produce:
+
+```text
+outputs/{call_id}/scenario.yaml
+outputs/{call_id}/metadata.json
+outputs/{call_id}/observations.md
+```
+
+`metadata.json` links the local `call_id` to the Retell call id returned by the
+outbound call API.
+
 ## Current Example
 
 The repository includes:
@@ -77,6 +88,15 @@ Run it locally with:
 
 The generated transcript is deterministic and uses the ordered `steps` plus the
 explicit `conversation_quality` guidance in the scenario file.
+
+Start a real Retell outbound call with:
+
+```powershell
+.\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml --run-mode=retell"
+```
+
+The Retell call-start path sends scenario and conversation-quality fields as
+dynamic variables so the configured Retell agent can use them during the call.
 
 ## Conversation Quality Fields
 

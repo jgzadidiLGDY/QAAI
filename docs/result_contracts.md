@@ -129,3 +129,16 @@ Phase 2 adds:
 - transcript text that includes conversation-quality guidance
 - `observations.md`
 - `artifact_paths.observations_markdown`
+
+## Phase 3 Contract Extension
+
+Phase 3 adds Retell call-start metadata:
+
+- `run_mode = retell`
+- `retell_call_id` populated from the Retell create-phone-call response
+- `status` prefixed with `retell_` when Retell returns a call status
+- `artifact_paths.transcript_text = null` until transcript capture exists
+- scenario metadata sent to Retell as stored call metadata and dynamic variables
+
+Phase 3 does not claim the call completed successfully. It only records that
+Retell accepted the outbound call creation request and returned a call id.

@@ -3,6 +3,7 @@ qaai:
     api-key: ${RETELL_API_KEY:}
     agent-id: ${RETELL_AGENT_ID:}
     from-number: ${RETELL_FROM_NUMBER:}
+    base-url: ${RETELL_BASE_URL:https://api.retellai.com}
   openai:
     api-key: ${OPENAI_API_KEY:}
     analysis-model: ${OPENAI_ANALYSIS_MODEL:gpt-4.1-mini}

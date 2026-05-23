@@ -124,7 +124,12 @@ Phase 0 created the runnable Java/Spring Boot foundation.
 
 Phase 1 added deterministic scenario loading and dry-run artifacts.
 
-Phase 2 adds scenario-owned conversation-quality guidance and a deterministic
+Phase 2 added scenario-owned conversation-quality guidance and a deterministic
 observations artifact.
 
-Retell integration, real outbound calls, artifact capture, and AI analysis belong to later phases.
+Phase 3 adds explicit Retell call-start execution. The runner can now choose
+between `dry-run` and `retell` modes, and Retell mode persists the mapping
+between the local `call_id` and Retell's `call_id`.
+
+Transcript capture, recording capture, webhook handling, and AI analysis belong
+to later phases.

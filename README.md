@@ -153,6 +153,26 @@ Expected result:
 Given a scenario, the system starts a real outbound call and records enough metadata to inspect what happened.
 ```
 
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml --run-mode=retell"
+```
+
+The default remains a dry run. A real outbound call is only placed when
+`--run-mode=retell` is provided.
+
+Expected artifacts:
+
+```text
+outputs/{call_id}/scenario.yaml
+outputs/{call_id}/metadata.json
+outputs/{call_id}/observations.md
+```
+
+The metadata records both the local `call_id` and the external
+`retell_call_id`. Transcript and recording capture remain Phase 4 work.
+
 ### Phase 4: Artifact Capture
 
 Collect and normalize call artifacts.
@@ -329,6 +349,7 @@ Likely environment variables:
 RETELL_API_KEY=
 RETELL_AGENT_ID=
 RETELL_FROM_NUMBER=
+RETELL_BASE_URL=https://api.retellai.com
 TARGET_AGENT_PHONE_NUMBER=+18054398008
 ```
 
@@ -367,10 +388,11 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 2 improves local conversation quality before real outbound calls:
+Phase 4 should collect Retell artifacts after a real call exists:
 
 ```text
-Add scenario-owned conversation guidance and write observations.md beside each dry-run transcript.
+Fetch or import transcript and recording metadata, then normalize them under outputs/{call_id}/.
 ```
 
-This keeps the workflow deterministic and reviewable before adding real Retell calls.
+This should build on Phase 3's local-to-Retell call id mapping without changing
+the human-owned pass/fail boundary.

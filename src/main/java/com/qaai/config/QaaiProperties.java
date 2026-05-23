@@ -12,7 +12,7 @@ public record QaaiProperties(
 
 	public QaaiProperties {
 		if (retell == null) {
-			retell = new Retell(null, null, null);
+			retell = new Retell(null, null, null, "https://api.retellai.com");
 		}
 		if (openai == null) {
 			openai = new OpenAi(null, "gpt-4.1-mini");
@@ -25,7 +25,7 @@ public record QaaiProperties(
 		}
 	}
 
-	public record Retell(String apiKey, String agentId, String fromNumber) {
+	public record Retell(String apiKey, String agentId, String fromNumber, String baseUrl) {
 	}
 
 	public record OpenAi(String apiKey, String analysisModel) {
