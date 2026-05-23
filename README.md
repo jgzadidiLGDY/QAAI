@@ -93,6 +93,21 @@ outputs/{call_id}/metadata.json
 outputs/{call_id}/transcript.txt
 ```
 
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml"
+```
+
+This creates a local dry-run artifact bundle. The run metadata explicitly marks:
+
+```json
+{
+  "run_mode": "dry_run",
+  "retell_call_id": null
+}
+```
+
 ### Phase 2: Retell Outbound Call Integration
 
 Place a real outbound call through Retell AI.

@@ -1,0 +1,74 @@
+package com.qaai.scenario;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
+class ScenarioValidatorTest {
+
+	private final ScenarioValidator validator = new ScenarioValidator();
+
+	@Test
+	void acceptsValidScenario() {
+		Scenario scenario = validScenario();
+
+		validator.validate(scenario);
+	}
+
+	@Test
+	void rejectsMissingRequiredFields() {
+		Scenario scenario = new Scenario(
+				"",
+				null,
+				" ",
+				new Scenario.Persona("", null, null),
+				new Scenario.Goal(null, null),
+				null,
+				List.of(new Scenario.Step("", null))
+		);
+
+		assertThatThrownBy(() -> validator.validate(scenario))
+				.isInstanceOf(ScenarioValidationException.class)
+				.satisfies(exception -> assertThat(((ScenarioValidationException) exception).errors())
+						.contains(
+								"id is required",
+								"name is required",
+								"workflow is required",
+								"persona.name is required",
+								"goal.summary is required",
+								"steps[0].intent is required",
+								"steps[0].patient_says is required"
+						));
+	}
+
+	@Test
+	void rejectsScenarioWithoutSteps() {
+		Scenario scenario = new Scenario(
+				"appointment_reschedule_001",
+				"Appointment reschedule",
+				"appointment_rescheduling",
+				new Scenario.Persona("Maria Lopez", null, null),
+				new Scenario.Goal("Reschedule appointment.", null),
+				null,
+				List.of()
+		);
+
+		assertThatThrownBy(() -> validator.validate(scenario))
+				.isInstanceOf(ScenarioValidationException.class)
+				.hasMessageContaining("steps must include at least one step");
+	}
+
+	private static Scenario validScenario() {
+		return new Scenario(
+				"appointment_reschedule_001",
+				"Appointment reschedule",
+				"appointment_rescheduling",
+				new Scenario.Persona("Maria Lopez", "1982-04-19", "+15555550123"),
+				new Scenario.Goal("Reschedule an existing appointment.", "Agent confirms a new appointment."),
+				null,
+				List.of(new Scenario.Step("greeting", "Hi, I need to reschedule my appointment."))
+		);
+	}
+}

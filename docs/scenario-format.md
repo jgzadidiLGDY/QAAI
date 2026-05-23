@@ -2,7 +2,7 @@
 
 Scenarios define patient behavior and expected workflow outcomes. They are intended to make call execution reproducible and reviewable.
 
-Phase 0 does not parse scenario files yet. Phase 1 will introduce the first scenario schema and deterministic dry-run behavior.
+Phase 1 introduces the first parsed scenario schema and deterministic dry-run behavior.
 
 ## Planned YAML Shape
 
@@ -50,3 +50,20 @@ outputs/{call_id}/scenario.yaml
 outputs/{call_id}/metadata.json
 outputs/{call_id}/transcript.txt
 ```
+
+## Current Example
+
+The repository includes:
+
+```text
+scenarios/appointment-reschedule.yaml
+```
+
+Run it locally with:
+
+```powershell
+.\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml"
+```
+
+The generated transcript is deterministic and uses only the ordered `steps` in
+the scenario file.

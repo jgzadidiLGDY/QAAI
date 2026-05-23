@@ -31,6 +31,26 @@ outputs/{call_id}/
 
 Not every phase produces every artifact. Each phase should document which artifacts are expected.
 
+## Phase 1 Artifact Bundle
+
+Phase 1 dry runs produce:
+
+```text
+outputs/{call_id}/
+|-- scenario.yaml
+|-- metadata.json
+`-- transcript.txt
+```
+
+The metadata must clearly mark the local-only execution mode:
+
+```json
+{
+  "run_mode": "dry_run",
+  "retell_call_id": null
+}
+```
+
 ## Artifact Purposes
 
 ### `scenario.yaml`

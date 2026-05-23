@@ -113,6 +113,7 @@ Phase 1 should implement the first concrete subset:
 - `call_id`
 - `scenario_id`
 - `run_mode = dry_run`
+- `retell_call_id = null`
 - scenario snapshot
 - metadata JSON
 - transcript text

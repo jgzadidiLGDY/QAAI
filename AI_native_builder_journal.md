@@ -39,12 +39,13 @@ reviewable evidence.
 The phase closeout files will become the primary evidence of the build process:
 
 - [Phase 0 Closeout](docs/phase-0-closeout.md)
+- [Phase 1 Closeout](docs/phase-1-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 0 created the runnable Java/Spring Boot foundation, configuration contract,
-environment template, setup docs, and basic tests. It intentionally left scenario
-execution, Retell calls, artifact capture, and OpenAI analysis for later phases.
+Phase 1 added the deterministic scenario runner. A local scenario YAML file now
+loads, validates, produces a generated `call_id`, and writes dry-run artifacts
+under `outputs/{call_id}/` with metadata explicitly marked as `dry_run`.
 
 ## Additional Implementation Notes
 
