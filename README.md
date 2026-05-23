@@ -16,6 +16,9 @@ The initial target healthcare voice agent is:
 +18054398008
 ```
 
+For notes on the AI-native build workflow and phase closeout trail, see
+[AI_native_builder_journal.md](AI_native_builder_journal.md).
+
 ## Working Principles
 
 - Build in small, reviewable phases.
@@ -211,42 +214,48 @@ docs/conversation-quality-notes.md
 
 ```text
 .
-├── README.md
-├── AGENTS.md
-├── .env.example
-├── build.gradle
-├── settings.gradle
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── qaai
-│   │   │           ├── QAAIApplication.java
-│   │   │           ├── config
-│   │   │           ├── scenario
-│   │   │           ├── runner
-│   │   │           ├── artifacts
-│   │   │           ├── retell
-│   │   │           └── analysis
-│   │   └── resources
-│   │       └── application.yml
-│   └── test
-│       └── java
-│           └── com
-│               └── qaai
-├── scenarios
-│   ├── appointment-reschedule.yaml
-│   ├── appointment-scheduling.yaml
-│   ├── prescription-refill.yaml
-│   ├── billing-question.yaml
-│   └── insurance-verification.yaml
-├── docs
-│   ├── retell-setup.md
-│   ├── scenario-format.md
-│   └── conversation-quality-notes.md
-└── outputs
-    └── .gitkeep
+|-- README.md
+|-- AGENTS.md
+|-- AI_native_builder_journal.md
+|-- .gitignore
+|-- .env.example
+|-- build.gradle
+|-- settings.gradle
+|-- src
+|   |-- main
+|   |   |-- java
+|   |   |   `-- com
+|   |   |       `-- qaai
+|   |   |           |-- QAAIApplication.java
+|   |   |           |-- config
+|   |   |           |-- scenario
+|   |   |           |-- runner
+|   |   |           |-- artifacts
+|   |   |           |-- retell
+|   |   |           `-- analysis
+|   |   `-- resources
+|   |       `-- application.yml
+|   `-- test
+|       `-- java
+|           `-- com
+|               `-- qaai
+|-- scenarios
+|   |-- appointment-reschedule.yaml
+|   |-- appointment-scheduling.yaml
+|   |-- prescription-refill.yaml
+|   |-- billing-question.yaml
+|   `-- insurance-verification.yaml
+|-- docs
+|   |-- retell-setup.md
+|   |-- scenario-format.md
+|   `-- conversation-quality-notes.md
+|-- outputs
+|   `-- .gitkeep
+|-- skills
+`-- silver
 ```
+
+`skills/` and `silver/` are local-only workspace folders and are ignored by Git.
 
 ## What You Need To Set Up
 
@@ -305,10 +314,11 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-The recommended first implementation milestone is Phase 0 plus Phase 1:
+Phase 0 establishes the runnable project foundation. The next implementation
+milestone is Phase 1:
 
 ```text
-Create a Java Spring Boot project that can load a scenario, run a deterministic dry run, and write inspectable artifacts under outputs/{call_id}/.
+Load a scenario, run a deterministic dry run, and write inspectable artifacts under outputs/{call_id}/.
 ```
 
-This gives the project a reliable base before adding real Retell calls.
+This gives the project a deterministic scenario runner before adding real Retell calls.

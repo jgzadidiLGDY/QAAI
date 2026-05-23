@@ -1,0 +1,12 @@
+qaai:
+  retell:
+    api-key: ${RETELL_API_KEY:}
+    agent-id: ${RETELL_AGENT_ID:}
+    from-number: ${RETELL_FROM_NUMBER:}
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    analysis-model: ${OPENAI_ANALYSIS_MODEL:gpt-4.1-mini}
+  target:
+    agent-phone-number: ${TARGET_AGENT_PHONE_NUMBER:+18054398008}
+  outputs:
+    base-dir: ${QAAI_OUTPUTS_BASE_DIR:outputs}
