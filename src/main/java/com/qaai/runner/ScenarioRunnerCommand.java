@@ -6,15 +6,17 @@ import java.nio.file.Path;
 import java.util.List;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScenarioRunnerCommand implements ApplicationRunner {
+public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerator {
 
 	private final DryRunRunner dryRunRunner;
 	private final RetellCallRunner retellCallRunner;
 	private final ArtifactCaptureService artifactCaptureService;
 	private final AnalysisService analysisService;
+	private int exitCode;
 
 	public ScenarioRunnerCommand(
 			DryRunRunner dryRunRunner,
@@ -30,6 +32,20 @@ public class ScenarioRunnerCommand implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) {
+		try {
+			runCommand(args);
+		} catch (RuntimeException exception) {
+			exitCode = 1;
+			System.err.println("Error: " + exception.getMessage());
+		}
+	}
+
+	@Override
+	public int getExitCode() {
+		return exitCode;
+	}
+
+	private void runCommand(ApplicationArguments args) {
 		if (args.containsOption("analyze-call")) {
 			AnalysisResult result = analysisService.analyze(callId(args, "--analyze-call"));
 			System.out.println("Analysis completed");

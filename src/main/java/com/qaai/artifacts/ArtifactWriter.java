@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArtifactWriter {
 
+	private static final String CALL_ID_PATTERN = "[A-Za-z0-9._-]+";
+
 	private final ObjectMapper objectMapper;
 	private final Path outputBaseDir;
 
@@ -36,7 +38,7 @@ public class ArtifactWriter {
 			String transcriptText,
 			String observationsMarkdown
 	) {
-		Path runDirectory = outputBaseDir.resolve(callId);
+		Path runDirectory = runDirectory(callId);
 		Path scenarioSnapshot = runDirectory.resolve("scenario.yaml");
 		Path metadataPath = runDirectory.resolve("metadata.json");
 		Path patientSimulationPath = runDirectory.resolve("patient_simulation.md");
@@ -72,7 +74,7 @@ public class ArtifactWriter {
 			String patientSimulationPrompt,
 			String observationsMarkdown
 	) {
-		Path runDirectory = outputBaseDir.resolve(callId);
+		Path runDirectory = runDirectory(callId);
 		Path scenarioSnapshot = runDirectory.resolve("scenario.yaml");
 		Path metadataPath = runDirectory.resolve("metadata.json");
 		Path patientSimulationPath = runDirectory.resolve("patient_simulation.md");
@@ -107,7 +109,7 @@ public class ArtifactWriter {
 			byte[] audioBytes,
 			ArtifactManifest manifest
 	) {
-		Path runDirectory = outputBaseDir.resolve(callId);
+		Path runDirectory = runDirectory(callId);
 		Path metadataPath = runDirectory.resolve("metadata.json");
 		Path transcriptJsonPath = runDirectory.resolve("transcript.json");
 		Path transcriptTextPath = runDirectory.resolve("transcript.txt");
@@ -134,7 +136,7 @@ public class ArtifactWriter {
 			AnalysisReport analysisReport,
 			String analysisMarkdown
 	) {
-		Path runDirectory = outputBaseDir.resolve(callId);
+		Path runDirectory = runDirectory(callId);
 		Path metadataPath = runDirectory.resolve("metadata.json");
 		Path analysisJsonPath = runDirectory.resolve("analysis.json");
 		Path analysisMarkdownPath = runDirectory.resolve("analysis.md");
@@ -151,7 +153,7 @@ public class ArtifactWriter {
 	}
 
 	public RunMetadata readMetadata(String callId) {
-		Path metadataPath = outputBaseDir.resolve(callId).resolve("metadata.json");
+		Path metadataPath = runDirectory(callId).resolve("metadata.json");
 
 		try {
 			if (!Files.exists(metadataPath)) {
@@ -166,7 +168,7 @@ public class ArtifactWriter {
 	}
 
 	public NormalizedTranscript readTranscript(String callId) {
-		Path transcriptPath = outputBaseDir.resolve(callId).resolve("transcript.json");
+		Path transcriptPath = runDirectory(callId).resolve("transcript.json");
 
 		try {
 			if (!Files.exists(transcriptPath)) {
@@ -181,7 +183,19 @@ public class ArtifactWriter {
 	}
 
 	public Path runDirectory(String callId) {
+		validateCallId(callId);
 		return outputBaseDir.resolve(callId);
+	}
+
+	private void validateCallId(String callId) {
+		if (callId == null || callId.isBlank()) {
+			throw new IllegalArgumentException("call_id is required");
+		}
+		if (!callId.matches(CALL_ID_PATTERN)) {
+			throw new IllegalArgumentException(
+					"call_id may contain only letters, numbers, dots, underscores, and hyphens"
+			);
+		}
 	}
 
 	private void updateManifestWithAnalysis(Path runDirectory, RunMetadata metadata) throws IOException {

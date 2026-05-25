@@ -149,6 +149,20 @@ class AnalysisServiceTest {
 				.hasMessageContaining("transcript_json");
 	}
 
+	@Test
+	void rejectsCallIdWithPathCharactersBeforeResolvingArtifacts() {
+		AnalysisService service = new AnalysisService(
+				new ArtifactWriter(new ObjectMapper(), tempDir.resolve("outputs")),
+				new ScenarioLoader(),
+				new AnalysisPromptBuilder(),
+				prompt -> report("unused")
+		);
+
+		assertThatThrownBy(() -> service.analyze("<retell_call_id_without_transcript>"))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("call_id may contain only letters");
+	}
+
 	private void writeCapturedRun(Path outputs, String callId) throws Exception {
 		Path runDirectory = outputs.resolve(callId);
 		Files.createDirectories(runDirectory);
