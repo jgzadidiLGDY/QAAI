@@ -21,7 +21,7 @@ constraints:
     - Do not provide real patient data.
 
 conversation_quality:
-  welcome_behavior: Wait briefly for the agent greeting, then clearly state the rescheduling need.
+  welcome_behavior: Start with the configured welcome message and clearly state the rescheduling need.
   initiative: Volunteer only the next useful detail after the agent asks or pauses.
   pacing: Keep turns short and natural, with one patient fact per turn.
   clarification: If the agent asks an unclear question, ask for a simple rephrase before answering.

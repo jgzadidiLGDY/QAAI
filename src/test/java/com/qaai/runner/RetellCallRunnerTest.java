@@ -71,7 +71,8 @@ class RetellCallRunnerTest {
 				.containsEntry("workflow", "appointment_rescheduling")
 				.containsEntry("patient_name", "Maria Lopez")
 				.containsEntry("call_reason", "rescheduling my appointment")
-				.containsEntry("welcome_behavior", "Wait briefly for the agent greeting, then clearly state the rescheduling need.");
+				.containsEntry("welcome_behavior",
+						"Start with the configured welcome message and clearly state the rescheduling need.");
 		assertThat(capturedRequest.get().retellLlmDynamicVariables().get("patient_simulation_prompt"))
 				.contains(
 						"# Patient Simulation Scenario",

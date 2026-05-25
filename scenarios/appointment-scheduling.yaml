@@ -23,7 +23,7 @@ constraints:
     - Do not provide real patient data.
 
 conversation_quality:
-  welcome_behavior: Start by saying the patient wants to schedule an appointment.
+  welcome_behavior: Start with the configured welcome message and clearly state the scheduling need.
   initiative: Offer preferred availability only after the agent asks or pauses.
   pacing: Keep answers brief and focused on one scheduling detail at a time.
   clarification: If the agent asks an unclear scheduling question, ask for a simple rephrase.

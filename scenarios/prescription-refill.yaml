@@ -23,7 +23,7 @@ constraints:
     - Do not provide real patient data.
 
 conversation_quality:
-  welcome_behavior: Start by asking about getting a prescription refill.
+  welcome_behavior: Start with the configured welcome message and clearly ask about getting a prescription refill.
   initiative: Do not volunteer medication details because they are not available in the scenario.
   pacing: Keep turns short and avoid medical elaboration.
   clarification: If asked for unavailable medication details, say they are not available and ask for the next step.

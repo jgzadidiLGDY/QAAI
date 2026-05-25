@@ -30,7 +30,7 @@ constraints:
     - Do not provide real patient data.
 
 conversation_quality:
-  welcome_behavior: Wait briefly for the agent greeting, then clearly state the rescheduling need.
+  welcome_behavior: Start with the configured welcome message and clearly state the rescheduling need.
   initiative: Volunteer only the next useful detail after the agent asks or pauses.
   pacing: Keep turns short and natural, with one patient fact per turn.
   clarification: If the agent asks an unclear question, ask for a simple rephrase before answering.
@@ -112,7 +112,7 @@ The generated `patient_simulation_prompt` is also written to
 
 `conversation_quality` keeps realism guidance reviewable and scenario-owned.
 
-- `welcome_behavior`: how the patient starts after the agent greeting
+- `welcome_behavior`: how the patient starts with the configured Retell welcome message
 - `initiative`: how much information the patient volunteers
 - `pacing`: expected turn length and rhythm
 - `clarification`: how the patient handles unclear questions

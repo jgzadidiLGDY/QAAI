@@ -264,10 +264,10 @@ public class ArtifactCaptureService {
 	}
 
 	private String normalizeSpeaker(String role) {
-		if ("user".equalsIgnoreCase(role)) {
+		if ("agent".equalsIgnoreCase(role)) {
 			return "patient";
 		}
-		if ("agent".equalsIgnoreCase(role)) {
+		if ("user".equalsIgnoreCase(role)) {
 			return "agent";
 		}
 		if (isBlank(role)) {

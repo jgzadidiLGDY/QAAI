@@ -56,6 +56,11 @@ Planned JSON shape:
 }
 ```
 
+For Retell transcripts, normalized speaker labels are workflow-specific:
+Retell `agent` turns become `patient`, and Retell `user` turns become `agent`.
+This reflects the project setup where Retell plays the simulated patient and
+calls the target healthcare voice agent.
+
 ## Analysis Contract
 
 Planned JSON shape:

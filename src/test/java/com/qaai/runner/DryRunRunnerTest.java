@@ -56,7 +56,7 @@ class DryRunRunnerTest {
 		assertThat(transcript).contains(
 				"source: dry_run",
 				"Conversation Quality Guidance",
-				"welcome_behavior: Wait briefly for the agent greeting, then clearly state the rescheduling need.",
+				"welcome_behavior: Start with the configured welcome message and clearly state the rescheduling need.",
 				"Patient Turns",
 				"1. [patient] Hi, I need to reschedule my appointment. (intent: greeting)",
 				"3. [patient] Next Tuesday or Wednesday morning would work for me. (intent: availability)"
@@ -76,6 +76,7 @@ class DryRunRunnerTest {
 				"# Patient Simulation Scenario",
 				"Call reason: rescheduling my appointment",
 				"Success condition: Agent confirms a new appointment date and time.",
+				"Welcome behavior: Start with the configured welcome message",
 				"Do not invent insurance details."
 		);
 

@@ -149,6 +149,11 @@ Human-readable transcript for quick inspection.
 
 Normalized transcript with speaker labels, timestamps when available, and source metadata.
 
+For Retell calls, this project labels Retell `agent` transcript turns as
+`patient` because the Retell AI agent is the simulated patient. Retell `user`
+turns are labeled as `agent` because they represent the target healthcare voice
+agent in this QA workflow.
+
 ### `patient_simulation.md`
 
 Deterministic patient behavior instructions generated from the scenario. This is

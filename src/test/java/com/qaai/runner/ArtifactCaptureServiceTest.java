@@ -60,11 +60,11 @@ class ArtifactCaptureServiceTest {
 		assertThat(result.manifest()).exists();
 		assertThat(Files.readString(result.transcriptText())).contains(
 				"Retell Transcript",
-				"1. [agent] Thanks for calling.",
-				"2. [patient] I need to reschedule."
+				"1. [patient] Thanks for calling.",
+				"2. [agent] I need to reschedule."
 		);
 		assertThat(Files.readString(result.transcriptJson())).contains(
-				"\"speaker\" : \"patient\"",
+				"\"speaker\" : \"agent\"",
 				"\"timestamp\" : 1.2"
 		);
 		assertThat(Files.readString(result.manifest())).contains(

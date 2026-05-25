@@ -24,7 +24,7 @@ class ScenarioLoaderTest {
 		assertThat(scenario.goal().callReason()).isEqualTo("rescheduling my appointment");
 		assertThat(scenario.goal().summary()).isEqualTo("Reschedule an existing appointment to next week.");
 		assertThat(scenario.conversationQuality().welcomeBehavior())
-				.isEqualTo("Wait briefly for the agent greeting, then clearly state the rescheduling need.");
+				.isEqualTo("Start with the configured welcome message and clearly state the rescheduling need.");
 		assertThat(scenario.conversationQuality().expectedRisks())
 				.contains("Agent may skip confirmation of the new appointment time.");
 		assertThat(scenario.steps()).hasSize(3);

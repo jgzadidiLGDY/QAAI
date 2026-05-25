@@ -23,7 +23,7 @@ constraints:
     - Do not provide real patient data.
 
 conversation_quality:
-  welcome_behavior: Start by asking about verifying insurance.
+  welcome_behavior: Start with the configured welcome message and clearly ask about verifying insurance.
   initiative: If asked for insurance details, explain they are not available and ask what information is needed later.
   pacing: Keep the call focused on process and next steps.
   clarification: If the agent gives an unclear process, ask what information should be prepared.

@@ -4,7 +4,7 @@ Phase 2 keeps conversation-quality iteration local and deterministic.
 
 ## Current Focus
 
-- Welcome behavior: whether the patient waits for the agent greeting or speaks first.
+- Welcome behavior: how the patient starts with the configured Retell welcome message.
 - Initiative: how much information the patient volunteers without prompting.
 - Pacing: whether each turn stays short and natural.
 - Clarification: how the patient responds to unclear questions.

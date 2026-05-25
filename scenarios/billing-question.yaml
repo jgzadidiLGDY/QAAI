@@ -23,7 +23,7 @@ constraints:
     - Do not provide real patient data.
 
 conversation_quality:
-  welcome_behavior: Start by saying the patient has a billing question.
+  welcome_behavior: Start with the configured welcome message and clearly state the billing question.
   initiative: Ask for the right department or next step if the agent response is generic.
   pacing: Keep the request concise and non-confrontational.
   clarification: If the agent asks for unavailable account details, say they are not available right now.
