@@ -21,6 +21,7 @@ Silver task boundary harder to explain and verify.
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Evidence-linked call analysis | `e9c38bf` | `041c2be` | Captured calls should be analyzable by local `call_id`, producing advisory JSON and Markdown reports only when findings cite transcript evidence and human review remains required. | A captured run with `transcript.json` produces `analysis.json`, `analysis.md`, updated metadata paths, and manifest entries; reports with missing or unsupported evidence are rejected. |
+| CLI call id validation | `6c258e4` | `8ae0777` | CLI commands that load artifacts by `call_id` should reject invalid directory-key characters with a clear error instead of leaking platform path exceptions or stack traces. | Running analysis with a literal placeholder-style call id such as `<retell_call_id_without_transcript>` reports a controlled validation error and exits nonzero; artifact reads do not attempt to resolve the invalid path. |
 
 Candidate invariant:
 
@@ -28,6 +29,13 @@ Candidate invariant:
 - Symptom: without this phase, captured call artifacts cannot produce structured analysis artifacts for review.
 - Root cause: the workflow ended at artifact capture and had no analysis command, report contract, or evidence validation.
 - Why it may be Silver-relevant: the task requires connecting command routing, artifact persistence, scenario/transcript loading, AI response validation, and deterministic tests.
+
+Candidate invariant:
+
+- Invariant: user-provided `call_id` values must be validated before artifact paths are resolved.
+- Symptom: placeholder-style input such as `<retell_call_id_without_transcript>` can surface as a raw Windows `InvalidPathException`.
+- Root cause: artifact loading resolved the `call_id` as a filesystem path segment before checking the allowed call id shape.
+- Why it may be Silver-relevant: the task is a small but real CLI hardening fix that crosses command handling, artifact path construction, process exit behavior, and a negative-path regression test.
 
 ## Test Expectations
 
