@@ -13,6 +13,10 @@ public record ArtifactPaths(
 		String patientSimulation,
 		String audio,
 		String manifest,
+		@JsonProperty("analysis_json")
+		String analysisJson,
+		@JsonProperty("analysis_markdown")
+		String analysisMarkdown,
 		@JsonProperty("observations_markdown")
 		String observationsMarkdown
 ) {

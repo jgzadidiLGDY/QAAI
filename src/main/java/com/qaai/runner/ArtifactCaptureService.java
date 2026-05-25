@@ -166,6 +166,8 @@ public class ArtifactCaptureService {
 						runDirectory.resolve("patient_simulation.md")),
 				audioCapture.present() ? runDirectory.resolve("audio.wav").toString() : null,
 				runDirectory.resolve("manifest.json").toString(),
+				existingMetadata.artifactPaths().analysisJson(),
+				existingMetadata.artifactPaths().analysisMarkdown(),
 				pathIfExists(existingMetadata.artifactPaths().observationsMarkdown(), runDirectory.resolve("observations.md"))
 		);
 

@@ -80,6 +80,8 @@ public class DryRunRunner {
 				runDirectory.resolve("patient_simulation.md").toString(),
 				null,
 				null,
+				null,
+				null,
 				runDirectory.resolve("observations.md").toString()
 		);
 		RunMetadata metadata = new RunMetadata(

@@ -247,6 +247,22 @@ Deliverables:
 - evidence-linked findings
 - JSON and Markdown report output
 
+Current Phase 6 implementation:
+
+- analyzes one captured call by local `call_id`
+- requires captured `transcript.json`
+- writes `analysis.json` and `analysis.md`
+- updates metadata analysis artifact paths
+- appends analysis entries to `manifest.json` when present
+- validates every finding has transcript evidence
+- requires `human_review_required = true`
+
+Local usage after artifacts have been captured:
+
+```powershell
+.\gradlew bootRun --args="--analyze-call --call-id=<local_call_id>"
+```
+
 Expected artifacts:
 
 ```text

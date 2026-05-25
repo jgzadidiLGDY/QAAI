@@ -1,11 +1,14 @@
 package com.qaai.artifacts;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qaai.analysis.AnalysisReport;
 import com.qaai.config.QaaiProperties;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -125,6 +128,28 @@ public class ArtifactWriter {
 		}
 	}
 
+	public void writeAnalysisArtifacts(
+			String callId,
+			RunMetadata metadata,
+			AnalysisReport analysisReport,
+			String analysisMarkdown
+	) {
+		Path runDirectory = outputBaseDir.resolve(callId);
+		Path metadataPath = runDirectory.resolve("metadata.json");
+		Path analysisJsonPath = runDirectory.resolve("analysis.json");
+		Path analysisMarkdownPath = runDirectory.resolve("analysis.md");
+
+		try {
+			Files.createDirectories(runDirectory);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(analysisJsonPath.toFile(), analysisReport);
+			Files.writeString(analysisMarkdownPath, analysisMarkdown);
+			updateManifestWithAnalysis(runDirectory, metadata);
+		} catch (IOException exception) {
+			throw new ArtifactWriteException("Unable to write analysis artifacts for call_id: " + callId, exception);
+		}
+	}
+
 	public RunMetadata readMetadata(String callId) {
 		Path metadataPath = outputBaseDir.resolve(callId).resolve("metadata.json");
 
@@ -140,7 +165,55 @@ public class ArtifactWriter {
 		}
 	}
 
+	public NormalizedTranscript readTranscript(String callId) {
+		Path transcriptPath = outputBaseDir.resolve(callId).resolve("transcript.json");
+
+		try {
+			if (!Files.exists(transcriptPath)) {
+				throw new ArtifactWriteException("No transcript.json found for call_id: " + callId);
+			}
+			return objectMapper.readValue(transcriptPath.toFile(), NormalizedTranscript.class);
+		} catch (ArtifactWriteException exception) {
+			throw exception;
+		} catch (IOException exception) {
+			throw new ArtifactWriteException("Unable to read transcript for call_id: " + callId, exception);
+		}
+	}
+
 	public Path runDirectory(String callId) {
 		return outputBaseDir.resolve(callId);
+	}
+
+	private void updateManifestWithAnalysis(Path runDirectory, RunMetadata metadata) throws IOException {
+		if (metadata.artifactPaths().manifest() == null || !Files.exists(Path.of(metadata.artifactPaths().manifest()))) {
+			return;
+		}
+
+		Path manifestPath = Path.of(metadata.artifactPaths().manifest());
+		ArtifactManifest existingManifest = objectMapper.readValue(manifestPath.toFile(), ArtifactManifest.class);
+		List<ArtifactManifest.ArtifactEntry> entries = new ArrayList<>(existingManifest.artifacts());
+		entries.removeIf(entry -> "analysis_json".equals(entry.name()) || "analysis_markdown".equals(entry.name()));
+		entries.add(new ArtifactManifest.ArtifactEntry(
+				"analysis_json",
+				runDirectory.resolve("analysis.json").toString(),
+				true,
+				"Generated during Phase 6 AI-assisted analysis."
+		));
+		entries.add(new ArtifactManifest.ArtifactEntry(
+				"analysis_markdown",
+				runDirectory.resolve("analysis.md").toString(),
+				true,
+				"Generated during Phase 6 AI-assisted analysis."
+		));
+		ArtifactManifest updatedManifest = new ArtifactManifest(
+				existingManifest.callId(),
+				existingManifest.scenarioId(),
+				existingManifest.retellCallId(),
+				existingManifest.capturedAt(),
+				existingManifest.retellStatus(),
+				existingManifest.recordingUrl(),
+				entries
+		);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(manifestPath.toFile(), updatedManifest);
 	}
 }

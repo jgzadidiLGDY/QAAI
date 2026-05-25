@@ -207,6 +207,8 @@ class ArtifactCaptureServiceTest {
 								runDirectory.resolve("patient_simulation.md").toString(),
 								null,
 								null,
+								null,
+								null,
 								null
 						)
 				)
@@ -238,6 +240,8 @@ class ArtifactCaptureServiceTest {
 						null,
 						null,
 						runDirectory.resolve("patient_simulation.md").toString(),
+						null,
+						null,
 						null,
 						null,
 						runDirectory.resolve("observations.md").toString()

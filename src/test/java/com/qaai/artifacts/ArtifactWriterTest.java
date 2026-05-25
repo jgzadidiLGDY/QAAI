@@ -36,6 +36,8 @@ class ArtifactWriterTest {
 						"outputs/call_20260523_130000_test1234/patient_simulation.md",
 						null,
 						null,
+						null,
+						null,
 						"outputs/call_20260523_130000_test1234/observations.md"
 				)
 		);

@@ -216,6 +216,38 @@ outputs/{call_id}/
 For Retell call-start runs, `transcript.txt` remains unavailable until artifact
 capture, but `patient_simulation.md` is written at call start.
 
+## Phase 6 Artifact Bundle
+
+Phase 6 adds single-call AI-assisted analysis for captured calls:
+
+```powershell
+.\gradlew bootRun --args="--analyze-call --call-id=<local_call_id>"
+```
+
+The command requires an existing `outputs/{call_id}/transcript.json` artifact
+and writes:
+
+```text
+outputs/{call_id}/analysis.json
+outputs/{call_id}/analysis.md
+```
+
+`metadata.json` includes:
+
+```json
+{
+  "status": "analysis_completed",
+  "artifact_paths": {
+    "analysis_json": "outputs/call_20260523_001/analysis.json",
+    "analysis_markdown": "outputs/call_20260523_001/analysis.md"
+  }
+}
+```
+
+If `manifest.json` already exists, Phase 6 appends `analysis_json` and
+`analysis_markdown` entries. AI-assisted findings are advisory and must be
+grounded in exact transcript quotes.
+
 ## Git Rules
 
 Generated artifacts under `outputs/` are ignored by Git except for `outputs/.gitkeep`.

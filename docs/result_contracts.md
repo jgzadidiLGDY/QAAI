@@ -198,3 +198,23 @@ Phase 5 adds scenario-driven patient simulation instructions:
 The generated patient simulation prompt is deterministic and derived only from
 the scenario. It guides patient behavior but does not own workflow pass/fail
 judgment.
+
+## Phase 6 Contract Extension
+
+Phase 6 adds single-call AI-assisted analysis after transcript capture:
+
+- command: `--analyze-call --call-id=<local_call_id>`
+- requires `outputs/{call_id}/metadata.json`
+- requires `outputs/{call_id}/scenario.yaml`
+- requires `outputs/{call_id}/transcript.json`
+- writes `outputs/{call_id}/analysis.json`
+- writes `outputs/{call_id}/analysis.md`
+- updates `metadata.artifact_paths.analysis_json`
+- updates `metadata.artifact_paths.analysis_markdown`
+- updates `manifest.json` when it already exists
+
+Every finding must include at least one evidence reference whose quote appears
+in the normalized transcript. The report must set `human_review_required` to
+`true`.
+
+Phase 6 still does not produce authoritative pass/fail decisions.
