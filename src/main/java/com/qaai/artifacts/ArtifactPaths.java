@@ -9,6 +9,8 @@ public record ArtifactPaths(
 		String transcriptText,
 		@JsonProperty("transcript_json")
 		String transcriptJson,
+		@JsonProperty("patient_simulation")
+		String patientSimulation,
 		String audio,
 		String manifest,
 		@JsonProperty("observations_markdown")

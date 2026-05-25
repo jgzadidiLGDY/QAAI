@@ -1,0 +1,40 @@
+id: insurance_verification_001
+name: Insurance verification
+workflow: insurance_verification
+
+persona:
+  name: Marcus Brown
+  date_of_birth: "1985-12-14"
+  phone_number: "+15555550127"
+
+goal:
+  call_reason: verifying my insurance
+  summary: Ask whether the office can verify insurance before an appointment.
+  expected_outcome: Agent explains the insurance verification process or provides a clear next step.
+
+constraints:
+  allowed_facts:
+    - Patient wants to verify insurance before scheduling or attending an appointment.
+    - Patient can confirm name and date of birth.
+    - Patient does not have insurance card details available during the call.
+  disallowed_behavior:
+    - Do not invent member IDs, group numbers, payer names, or policy details.
+    - Do not provide financial or payment information.
+    - Do not provide real patient data.
+
+conversation_quality:
+  welcome_behavior: Start by asking about verifying insurance.
+  initiative: If asked for insurance details, explain they are not available and ask what information is needed later.
+  pacing: Keep the call focused on process and next steps.
+  clarification: If the agent gives an unclear process, ask what information should be prepared.
+  expected_risks:
+    - Patient may invent insurance identifiers.
+    - Agent may not explain what information is needed.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I am calling about verifying my insurance.
+  - intent: identity_verification
+    patient_says: My date of birth is December 14th, 1985.
+  - intent: unavailable_information
+    patient_says: I do not have my insurance card with me. What information should I prepare?

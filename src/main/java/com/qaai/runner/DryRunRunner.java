@@ -5,6 +5,7 @@ import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.artifacts.RunMetadata;
 import com.qaai.config.QaaiProperties;
+import com.qaai.scenario.PatientSimulationPromptBuilder;
 import com.qaai.scenario.Scenario;
 import com.qaai.scenario.ScenarioLoader;
 import com.qaai.scenario.ScenarioValidator;
@@ -24,6 +25,7 @@ public class DryRunRunner {
 
 	private final ScenarioLoader scenarioLoader;
 	private final ScenarioValidator scenarioValidator;
+	private final PatientSimulationPromptBuilder patientSimulationPromptBuilder;
 	private final ArtifactWriter artifactWriter;
 	private final QaaiProperties properties;
 	private final Clock clock;
@@ -33,16 +35,19 @@ public class DryRunRunner {
 	public DryRunRunner(
 			ScenarioLoader scenarioLoader,
 			ScenarioValidator scenarioValidator,
+			PatientSimulationPromptBuilder patientSimulationPromptBuilder,
 			ArtifactWriter artifactWriter,
 			QaaiProperties properties
 	) {
-		this(scenarioLoader, scenarioValidator, artifactWriter, properties, Clock.systemDefaultZone(),
+		this(scenarioLoader, scenarioValidator, patientSimulationPromptBuilder, artifactWriter, properties,
+				Clock.systemDefaultZone(),
 				() -> UUID.randomUUID().toString().substring(0, 8));
 	}
 
 	public DryRunRunner(
 			ScenarioLoader scenarioLoader,
 			ScenarioValidator scenarioValidator,
+			PatientSimulationPromptBuilder patientSimulationPromptBuilder,
 			ArtifactWriter artifactWriter,
 			QaaiProperties properties,
 			Clock clock,
@@ -50,6 +55,7 @@ public class DryRunRunner {
 	) {
 		this.scenarioLoader = scenarioLoader;
 		this.scenarioValidator = scenarioValidator;
+		this.patientSimulationPromptBuilder = patientSimulationPromptBuilder;
 		this.artifactWriter = artifactWriter;
 		this.properties = properties;
 		this.clock = clock;
@@ -59,6 +65,7 @@ public class DryRunRunner {
 	public ScenarioRunResult run(Path scenarioPath) {
 		Scenario scenario = scenarioLoader.load(scenarioPath);
 		scenarioValidator.validate(scenario);
+		String patientSimulationPrompt = patientSimulationPromptBuilder.build(scenario);
 
 		OffsetDateTime startedAt = OffsetDateTime.now(clock);
 		String callId = generateCallId(startedAt);
@@ -70,6 +77,7 @@ public class DryRunRunner {
 				runDirectory.resolve("metadata.json").toString(),
 				runDirectory.resolve("transcript.txt").toString(),
 				null,
+				runDirectory.resolve("patient_simulation.md").toString(),
 				null,
 				null,
 				runDirectory.resolve("observations.md").toString()
@@ -90,6 +98,7 @@ public class DryRunRunner {
 				callId,
 				scenarioPath,
 				metadata,
+				patientSimulationPrompt,
 				buildTranscript(callId, scenario),
 				buildObservations(callId, scenario)
 		);

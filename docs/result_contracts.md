@@ -29,6 +29,7 @@ Planned shape:
   "artifact_paths": {
     "scenario": "outputs/call_20260523_001/scenario.yaml",
     "metadata": "outputs/call_20260523_001/metadata.json",
+    "patient_simulation": "outputs/call_20260523_001/patient_simulation.md",
     "transcript_text": "outputs/call_20260523_001/transcript.txt",
     "observations_markdown": "outputs/call_20260523_001/observations.md"
   }
@@ -176,3 +177,19 @@ Capture statuses:
 - `artifacts_partially_captured`: transcript or audio was unavailable
 
 Phase 4 still does not produce bug findings or pass/fail judgments.
+
+## Phase 5 Contract Extension
+
+Phase 5 adds scenario-driven patient simulation instructions:
+
+- scenario `goal.call_reason`
+- generated `patient_simulation.md`
+- metadata `artifact_paths.patient_simulation`
+- Retell dynamic variables:
+  - `patient_name`
+  - `call_reason`
+  - `patient_simulation_prompt`
+
+The generated patient simulation prompt is deterministic and derived only from
+the scenario. It guides patient behavior but does not own workflow pass/fail
+judgment.

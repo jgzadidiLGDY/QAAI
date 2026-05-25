@@ -8,6 +8,7 @@ public record ArtifactBundle(
 		Path scenarioSnapshot,
 		Path metadata,
 		Path transcriptText,
+		Path patientSimulation,
 		Path observationsMarkdown
 ) {
 }

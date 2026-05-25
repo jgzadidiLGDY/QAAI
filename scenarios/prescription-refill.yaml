@@ -1,0 +1,40 @@
+id: prescription_refill_001
+name: Prescription refill
+workflow: prescription_refill
+
+persona:
+  name: Angela Carter
+  date_of_birth: "1968-02-03"
+  phone_number: "+15555550125"
+
+goal:
+  call_reason: a prescription refill
+  summary: Ask how to request a refill for an existing prescription.
+  expected_outcome: Agent explains the refill request process or provides a clear next step.
+
+constraints:
+  allowed_facts:
+    - Patient is asking about an existing prescription.
+    - Patient wants to know the refill request process.
+    - Patient can confirm name and date of birth.
+  disallowed_behavior:
+    - Do not invent medication names, dosage, pharmacy, or clinical details.
+    - Do not claim an emergency or active symptoms.
+    - Do not provide real patient data.
+
+conversation_quality:
+  welcome_behavior: Start by asking about getting a prescription refill.
+  initiative: Do not volunteer medication details because they are not available in the scenario.
+  pacing: Keep turns short and avoid medical elaboration.
+  clarification: If asked for unavailable medication details, say they are not available and ask for the next step.
+  expected_risks:
+    - Patient may invent medication details.
+    - Agent may continue requiring details the scenario does not provide.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I am calling about getting a prescription refill.
+  - intent: identity_verification
+    patient_says: My date of birth is February 3rd, 1968.
+  - intent: refill_process
+    patient_says: I do not have the medication details with me right now. Can you tell me the best next step?

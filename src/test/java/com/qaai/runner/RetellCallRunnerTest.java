@@ -9,6 +9,7 @@ import com.qaai.config.QaaiProperties;
 import com.qaai.retell.RetellClient;
 import com.qaai.retell.RetellOutboundCallRequest;
 import com.qaai.retell.RetellOutboundCallResponse;
+import com.qaai.scenario.PatientSimulationPromptBuilder;
 import com.qaai.scenario.ScenarioLoader;
 import com.qaai.scenario.ScenarioValidator;
 import java.nio.file.Files;
@@ -41,6 +42,7 @@ class RetellCallRunnerTest {
 		RetellCallRunner runner = new RetellCallRunner(
 				new ScenarioLoader(),
 				new ScenarioValidator(),
+				new PatientSimulationPromptBuilder(),
 				new ArtifactWriter(new ObjectMapper(), tempDir.resolve("outputs")),
 				retellClient(capturedRequest),
 				properties,
@@ -57,6 +59,7 @@ class RetellCallRunnerTest {
 		assertThat(result.artifacts().scenarioSnapshot()).exists();
 		assertThat(result.artifacts().metadata()).exists();
 		assertThat(result.artifacts().transcriptText()).isNull();
+		assertThat(result.artifacts().patientSimulation()).exists();
 		assertThat(result.artifacts().observationsMarkdown()).exists();
 
 		assertThat(capturedRequest.get().fromNumber()).isEqualTo("+15555550100");
@@ -66,7 +69,15 @@ class RetellCallRunnerTest {
 		assertThat(capturedRequest.get().metadata()).containsEntry("scenario_id", "appointment_reschedule_001");
 		assertThat(capturedRequest.get().retellLlmDynamicVariables())
 				.containsEntry("workflow", "appointment_rescheduling")
+				.containsEntry("patient_name", "Maria Lopez")
+				.containsEntry("call_reason", "rescheduling my appointment")
 				.containsEntry("welcome_behavior", "Wait briefly for the agent greeting, then clearly state the rescheduling need.");
+		assertThat(capturedRequest.get().retellLlmDynamicVariables().get("patient_simulation_prompt"))
+				.contains(
+						"# Patient Simulation Scenario",
+						"Scenario ID: appointment_reschedule_001",
+						"Must Not Provide Or Invent"
+				);
 
 		String metadata = Files.readString(result.artifacts().metadata());
 		assertThat(metadata).contains(
@@ -74,6 +85,7 @@ class RetellCallRunnerTest {
 				"\"retell_call_id\" : \"retell_call_123\"",
 				"\"status\" : \"retell_registered\"",
 				"\"transcript_text\" : null",
+				"\"patient_simulation\"",
 				"\"observations_markdown\""
 		);
 
@@ -90,6 +102,7 @@ class RetellCallRunnerTest {
 		RetellCallRunner runner = new RetellCallRunner(
 				new ScenarioLoader(),
 				new ScenarioValidator(),
+				new PatientSimulationPromptBuilder(),
 				new ArtifactWriter(new ObjectMapper(), tempDir.resolve("outputs")),
 				retellClient(new AtomicReference<>()),
 				properties(new QaaiProperties.Retell("", "agent_123", "+15555550100", "https://api.example.test")),

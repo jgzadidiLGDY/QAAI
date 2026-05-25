@@ -42,6 +42,7 @@ class ArtifactCaptureServiceTest {
 				callId,
 				scenarioPath,
 				retellMetadata(callId, runDirectory),
+				"# Patient Simulation Scenario%n".formatted(),
 				"# Retell Call Start Observations%n".formatted()
 		);
 		ArtifactCaptureService service = new ArtifactCaptureService(
@@ -92,6 +93,7 @@ class ArtifactCaptureServiceTest {
 				callId,
 				scenarioPath,
 				retellMetadata(callId, runDirectory),
+				"# Patient Simulation Scenario%n".formatted(),
 				"# Retell Call Start Observations%n".formatted()
 		);
 		ArtifactCaptureService service = new ArtifactCaptureService(
@@ -125,6 +127,7 @@ class ArtifactCaptureServiceTest {
 				callId,
 				scenarioPath,
 				retellMetadata(callId, runDirectory),
+				"# Patient Simulation Scenario%n".formatted(),
 				"# Retell Call Start Observations%n".formatted()
 		);
 		ArtifactCaptureService service = new ArtifactCaptureService(
@@ -159,6 +162,7 @@ class ArtifactCaptureServiceTest {
 				callId,
 				scenarioPath,
 				retellMetadata(callId, runDirectory),
+				"# Patient Simulation Scenario%n".formatted(),
 				"# Retell Call Start Observations%n".formatted()
 		);
 		ArtifactCaptureService service = new ArtifactCaptureService(
@@ -200,6 +204,7 @@ class ArtifactCaptureServiceTest {
 								runDirectory.resolve("metadata.json").toString(),
 								runDirectory.resolve("transcript.txt").toString(),
 								null,
+								runDirectory.resolve("patient_simulation.md").toString(),
 								null,
 								null,
 								null
@@ -232,6 +237,7 @@ class ArtifactCaptureServiceTest {
 						runDirectory.resolve("metadata.json").toString(),
 						null,
 						null,
+						runDirectory.resolve("patient_simulation.md").toString(),
 						null,
 						null,
 						runDirectory.resolve("observations.md").toString()

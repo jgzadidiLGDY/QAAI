@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.config.QaaiProperties;
+import com.qaai.scenario.PatientSimulationPromptBuilder;
 import com.qaai.scenario.ScenarioLoader;
 import com.qaai.scenario.ScenarioValidator;
 import java.nio.file.Files;
@@ -31,6 +32,7 @@ class DryRunRunnerTest {
 		DryRunRunner runner = new DryRunRunner(
 				new ScenarioLoader(),
 				new ScenarioValidator(),
+				new PatientSimulationPromptBuilder(),
 				new ArtifactWriter(new ObjectMapper(), tempDir.resolve("outputs")),
 				properties,
 				Clock.fixed(Instant.parse("2026-05-23T17:00:00Z"), ZoneOffset.ofHours(-4)),
@@ -47,6 +49,7 @@ class DryRunRunnerTest {
 		assertThat(result.artifacts().scenarioSnapshot()).exists();
 		assertThat(result.artifacts().metadata()).exists();
 		assertThat(result.artifacts().transcriptText()).exists();
+		assertThat(result.artifacts().patientSimulation()).exists();
 		assertThat(result.artifacts().observationsMarkdown()).exists();
 
 		String transcript = Files.readString(result.artifacts().transcriptText());
@@ -68,11 +71,20 @@ class DryRunRunnerTest {
 				"Agent may skip confirmation of the new appointment time."
 		);
 
+		String patientSimulation = Files.readString(result.artifacts().patientSimulation());
+		assertThat(patientSimulation).contains(
+				"# Patient Simulation Scenario",
+				"Call reason: rescheduling my appointment",
+				"Success condition: Agent confirms a new appointment date and time.",
+				"Do not invent insurance details."
+		);
+
 		String metadata = Files.readString(result.artifacts().metadata());
 		assertThat(metadata).contains(
 				"\"run_mode\" : \"dry_run\"",
 				"\"retell_call_id\" : null",
 				"\"transcript_text\"",
+				"\"patient_simulation\"",
 				"\"observations_markdown\""
 		);
 	}

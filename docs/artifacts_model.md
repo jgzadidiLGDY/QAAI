@@ -22,6 +22,7 @@ outputs/{call_id}/
 |-- metadata.json
 |-- transcript.txt
 |-- transcript.json
+|-- patient_simulation.md
 |-- audio.wav
 |-- analysis.json
 |-- analysis.md
@@ -106,6 +107,7 @@ The command reads `outputs/{call_id}/metadata.json`, uses the stored
 outputs/{call_id}/
 |-- scenario.yaml
 |-- metadata.json
+|-- patient_simulation.md
 |-- transcript.json
 |-- transcript.txt
 |-- audio.wav
@@ -147,6 +149,11 @@ Human-readable transcript for quick inspection.
 
 Normalized transcript with speaker labels, timestamps when available, and source metadata.
 
+### `patient_simulation.md`
+
+Deterministic patient behavior instructions generated from the scenario. This is
+the same scenario-specific prompt sent to Retell as `patient_simulation_prompt`.
+
 ### `audio.wav`
 
 Downloaded or normalized call recording when available and permitted.
@@ -187,6 +194,22 @@ Bug findings must be grounded in artifacts:
 - recording evidence must reference the recording artifact when used
 - metadata claims must come from `metadata.json` or Retell source data
 - analysis must not invent facts absent from the artifacts
+
+## Phase 5 Artifact Bundle
+
+Phase 5 adds scenario-driven patient simulation instructions:
+
+```text
+outputs/{call_id}/
+|-- scenario.yaml
+|-- metadata.json
+|-- patient_simulation.md
+|-- transcript.txt
+`-- observations.md
+```
+
+For Retell call-start runs, `transcript.txt` remains unavailable until artifact
+capture, but `patient_simulation.md` is written at call start.
 
 ## Git Rules
 

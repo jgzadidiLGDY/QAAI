@@ -25,6 +25,8 @@ public record Scenario(
 	}
 
 	public record Goal(
+			@JsonProperty("call_reason")
+			String callReason,
 			String summary,
 			@JsonProperty("expected_outcome")
 			String expectedOutcome

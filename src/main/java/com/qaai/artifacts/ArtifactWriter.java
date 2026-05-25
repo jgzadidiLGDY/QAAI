@@ -29,12 +29,14 @@ public class ArtifactWriter {
 			String callId,
 			Path scenarioPath,
 			RunMetadata metadata,
+			String patientSimulationPrompt,
 			String transcriptText,
 			String observationsMarkdown
 	) {
 		Path runDirectory = outputBaseDir.resolve(callId);
 		Path scenarioSnapshot = runDirectory.resolve("scenario.yaml");
 		Path metadataPath = runDirectory.resolve("metadata.json");
+		Path patientSimulationPath = runDirectory.resolve("patient_simulation.md");
 		Path transcriptPath = runDirectory.resolve("transcript.txt");
 		Path observationsPath = runDirectory.resolve("observations.md");
 
@@ -42,36 +44,56 @@ public class ArtifactWriter {
 			Files.createDirectories(runDirectory);
 			Files.copy(scenarioPath, scenarioSnapshot, StandardCopyOption.REPLACE_EXISTING);
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
+			Files.writeString(patientSimulationPath, patientSimulationPrompt);
 			Files.writeString(transcriptPath, transcriptText);
 			Files.writeString(observationsPath, observationsMarkdown);
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to write dry-run artifacts for call_id: " + callId, exception);
 		}
 
-		return new ArtifactBundle(callId, runDirectory, scenarioSnapshot, metadataPath, transcriptPath, observationsPath);
+		return new ArtifactBundle(
+				callId,
+				runDirectory,
+				scenarioSnapshot,
+				metadataPath,
+				transcriptPath,
+				patientSimulationPath,
+				observationsPath
+		);
 	}
 
 	public ArtifactBundle writeCallStartedArtifacts(
 			String callId,
 			Path scenarioPath,
 			RunMetadata metadata,
+			String patientSimulationPrompt,
 			String observationsMarkdown
 	) {
 		Path runDirectory = outputBaseDir.resolve(callId);
 		Path scenarioSnapshot = runDirectory.resolve("scenario.yaml");
 		Path metadataPath = runDirectory.resolve("metadata.json");
+		Path patientSimulationPath = runDirectory.resolve("patient_simulation.md");
 		Path observationsPath = runDirectory.resolve("observations.md");
 
 		try {
 			Files.createDirectories(runDirectory);
 			Files.copy(scenarioPath, scenarioSnapshot, StandardCopyOption.REPLACE_EXISTING);
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
+			Files.writeString(patientSimulationPath, patientSimulationPrompt);
 			Files.writeString(observationsPath, observationsMarkdown);
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to write Retell call artifacts for call_id: " + callId, exception);
 		}
 
-		return new ArtifactBundle(callId, runDirectory, scenarioSnapshot, metadataPath, null, observationsPath);
+		return new ArtifactBundle(
+				callId,
+				runDirectory,
+				scenarioSnapshot,
+				metadataPath,
+				null,
+				patientSimulationPath,
+				observationsPath
+		);
 	}
 
 	public void writeCapturedArtifacts(

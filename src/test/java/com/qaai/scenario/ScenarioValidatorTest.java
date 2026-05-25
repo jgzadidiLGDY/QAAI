@@ -24,7 +24,7 @@ class ScenarioValidatorTest {
 				null,
 				" ",
 				new Scenario.Persona("", null, null),
-				new Scenario.Goal(null, null),
+				new Scenario.Goal(null, null, null),
 				null,
 				new Scenario.ConversationQuality("", null, " ", null, List.of()),
 				List.of(new Scenario.Step("", null))
@@ -38,7 +38,10 @@ class ScenarioValidatorTest {
 								"name is required",
 								"workflow is required",
 								"persona.name is required",
+								"goal.call_reason is required",
 								"goal.summary is required",
+								"goal.expected_outcome is required",
+								"constraints is required",
 								"conversation_quality.welcome_behavior is required",
 								"conversation_quality.initiative is required",
 								"conversation_quality.pacing is required",
@@ -56,7 +59,7 @@ class ScenarioValidatorTest {
 				"Appointment reschedule",
 				"appointment_rescheduling",
 				new Scenario.Persona("Maria Lopez", null, null),
-				new Scenario.Goal("Reschedule appointment.", null),
+				new Scenario.Goal("rescheduling my appointment", "Reschedule appointment.", "Agent confirms it."),
 				null,
 				new Scenario.ConversationQuality(
 						"Wait for greeting.",
@@ -79,8 +82,15 @@ class ScenarioValidatorTest {
 				"Appointment reschedule",
 				"appointment_rescheduling",
 				new Scenario.Persona("Maria Lopez", "1982-04-19", "+15555550123"),
-				new Scenario.Goal("Reschedule an existing appointment.", "Agent confirms a new appointment."),
-				null,
+				new Scenario.Goal(
+						"rescheduling my appointment",
+						"Reschedule an existing appointment.",
+						"Agent confirms a new appointment."
+				),
+				new Scenario.Constraints(
+						List.of("Patient has an existing appointment."),
+						List.of("Do not invent insurance details.")
+				),
 				new Scenario.ConversationQuality(
 						"Wait for greeting.",
 						"Answer one prompt at a time.",

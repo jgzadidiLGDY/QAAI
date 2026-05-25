@@ -33,6 +33,7 @@ class ArtifactWriterTest {
 						"outputs/call_20260523_130000_test1234/metadata.json",
 						"outputs/call_20260523_130000_test1234/transcript.txt",
 						null,
+						"outputs/call_20260523_130000_test1234/patient_simulation.md",
 						null,
 						null,
 						"outputs/call_20260523_130000_test1234/observations.md"
@@ -43,12 +44,14 @@ class ArtifactWriterTest {
 				"call_20260523_130000_test1234",
 				scenarioPath,
 				metadata,
+				"# Patient Simulation Scenario%n".formatted(),
 				"Dry Run Transcript%nsource: dry_run%n".formatted(),
 				"# Conversation Quality Observations%n".formatted()
 		);
 
 		assertThat(bundle.runDirectory()).exists();
 		assertThat(bundle.scenarioSnapshot()).hasContent("id: appointment_reschedule_001%n".formatted());
+		assertThat(bundle.patientSimulation()).hasContent("# Patient Simulation Scenario%n".formatted());
 		assertThat(bundle.transcriptText()).hasContent("Dry Run Transcript%nsource: dry_run%n".formatted());
 		assertThat(bundle.observationsMarkdown()).hasContent("# Conversation Quality Observations%n".formatted());
 		assertThat(bundle.metadata()).content()

@@ -1,0 +1,40 @@
+id: appointment_scheduling_001
+name: Appointment scheduling
+workflow: appointment_scheduling
+
+persona:
+  name: Daniel Kim
+  date_of_birth: "1979-08-11"
+  phone_number: "+15555550124"
+
+goal:
+  call_reason: scheduling an appointment
+  summary: Schedule a non-urgent primary care appointment.
+  expected_outcome: Agent provides an available appointment time or a clear next step for scheduling.
+
+constraints:
+  allowed_facts:
+    - Patient wants a routine primary care appointment.
+    - Patient prefers Thursday afternoon or Friday morning.
+    - Patient is flexible if those times are unavailable.
+  disallowed_behavior:
+    - Do not invent symptoms or urgent medical concerns.
+    - Do not provide insurance details.
+    - Do not provide real patient data.
+
+conversation_quality:
+  welcome_behavior: Start by saying the patient wants to schedule an appointment.
+  initiative: Offer preferred availability only after the agent asks or pauses.
+  pacing: Keep answers brief and focused on one scheduling detail at a time.
+  clarification: If the agent asks an unclear scheduling question, ask for a simple rephrase.
+  expected_risks:
+    - Patient may make the request sound urgent without scenario support.
+    - Agent may not offer a clear scheduling next step.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I need to schedule an appointment.
+  - intent: appointment_type
+    patient_says: It is just a routine primary care visit.
+  - intent: availability
+    patient_says: Thursday afternoon or Friday morning would work best.

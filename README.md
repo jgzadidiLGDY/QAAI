@@ -220,6 +220,13 @@ Deliverables:
 - conversation pacing guidance
 - repeat/rephrase behavior
 
+Current Phase 5 implementation:
+
+- scenarios include `goal.call_reason`
+- dry-run and Retell call-start flows write `patient_simulation.md`
+- Retell receives `patient_name`, `call_reason`, and `patient_simulation_prompt`
+- starter scenarios exist for the initial workflows below
+
 Initial workflows:
 
 - appointment scheduling
@@ -400,11 +407,11 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 4 should collect Retell artifacts after a real call exists:
+Phase 6 should add AI-assisted analysis after transcript artifacts exist:
 
 ```text
-Fetch or import transcript and recording metadata, then normalize them under outputs/{call_id}/.
+Generate evidence-linked analysis.json and analysis.md from captured transcripts.
 ```
 
-This should build on Phase 3's local-to-Retell call id mapping without changing
-the human-owned pass/fail boundary.
+This should build on Phase 4's artifact capture and Phase 5's scenario-driven
+patient simulation without changing the human-owned pass/fail boundary.

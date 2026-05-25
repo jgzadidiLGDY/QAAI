@@ -27,7 +27,16 @@ public class ScenarioValidator {
 		if (scenario.goal() == null) {
 			errors.add("goal is required");
 		} else {
+			requireText(errors, "goal.call_reason", scenario.goal().callReason());
 			requireText(errors, "goal.summary", scenario.goal().summary());
+			requireText(errors, "goal.expected_outcome", scenario.goal().expectedOutcome());
+		}
+
+		if (scenario.constraints() == null) {
+			errors.add("constraints is required");
+		} else {
+			requireNonEmpty(errors, "constraints.allowed_facts", scenario.constraints().allowedFacts());
+			requireNonEmpty(errors, "constraints.disallowed_behavior", scenario.constraints().disallowedBehavior());
 		}
 
 		if (scenario.conversationQuality() == null) {

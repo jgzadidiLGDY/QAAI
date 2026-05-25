@@ -16,6 +16,7 @@ This document describes the planned system shape. It will evolve as each phase a
 ```text
 scenario YAML
   -> scenario loader and validator
+  -> patient simulation prompt builder
   -> run coordinator
   -> dry-run or Retell outbound call
   -> artifact writer
@@ -35,6 +36,10 @@ Package:
 ```text
 com.qaai.scenario
 ```
+
+Phase 5 adds `PatientSimulationPromptBuilder`, which converts a scenario into a
+deterministic `patient_simulation_prompt` for Retell and the local
+`patient_simulation.md` artifact.
 
 ### Runner
 
@@ -136,3 +141,8 @@ It fetches Retell call details, normalizes transcripts, downloads audio when
 available, and writes a manifest under `outputs/{call_id}/`.
 
 Webhook handling and AI analysis belong to later phases.
+
+Phase 5 adds scenario-driven patient simulation instructions. Dry-run and Retell
+call-start flows now write `patient_simulation.md`, and Retell receives
+`patient_name`, `call_reason`, and `patient_simulation_prompt` dynamic
+variables.

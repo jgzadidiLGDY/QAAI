@@ -5,6 +5,7 @@ import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.artifacts.RunMetadata;
 import com.qaai.config.QaaiProperties;
+import com.qaai.scenario.PatientSimulationPromptBuilder;
 import com.qaai.retell.RetellClient;
 import com.qaai.retell.RetellOutboundCallRequest;
 import com.qaai.retell.RetellOutboundCallResponse;
@@ -29,6 +30,7 @@ public class RetellCallRunner {
 
 	private final ScenarioLoader scenarioLoader;
 	private final ScenarioValidator scenarioValidator;
+	private final PatientSimulationPromptBuilder patientSimulationPromptBuilder;
 	private final ArtifactWriter artifactWriter;
 	private final RetellClient retellClient;
 	private final QaaiProperties properties;
@@ -39,17 +41,19 @@ public class RetellCallRunner {
 	public RetellCallRunner(
 			ScenarioLoader scenarioLoader,
 			ScenarioValidator scenarioValidator,
+			PatientSimulationPromptBuilder patientSimulationPromptBuilder,
 			ArtifactWriter artifactWriter,
 			RetellClient retellClient,
 			QaaiProperties properties
 	) {
-		this(scenarioLoader, scenarioValidator, artifactWriter, retellClient, properties, Clock.systemDefaultZone(),
-				() -> UUID.randomUUID().toString().substring(0, 8));
+		this(scenarioLoader, scenarioValidator, patientSimulationPromptBuilder, artifactWriter, retellClient,
+				properties, Clock.systemDefaultZone(), () -> UUID.randomUUID().toString().substring(0, 8));
 	}
 
 	public RetellCallRunner(
 			ScenarioLoader scenarioLoader,
 			ScenarioValidator scenarioValidator,
+			PatientSimulationPromptBuilder patientSimulationPromptBuilder,
 			ArtifactWriter artifactWriter,
 			RetellClient retellClient,
 			QaaiProperties properties,
@@ -58,6 +62,7 @@ public class RetellCallRunner {
 	) {
 		this.scenarioLoader = scenarioLoader;
 		this.scenarioValidator = scenarioValidator;
+		this.patientSimulationPromptBuilder = patientSimulationPromptBuilder;
 		this.artifactWriter = artifactWriter;
 		this.retellClient = retellClient;
 		this.properties = properties;
@@ -70,10 +75,13 @@ public class RetellCallRunner {
 
 		Scenario scenario = scenarioLoader.load(scenarioPath);
 		scenarioValidator.validate(scenario);
+		String patientSimulationPrompt = patientSimulationPromptBuilder.build(scenario);
 
 		OffsetDateTime startedAt = OffsetDateTime.now(clock);
 		String callId = generateCallId(startedAt);
-		RetellOutboundCallResponse response = retellClient.createPhoneCall(buildRequest(callId, scenario));
+		RetellOutboundCallResponse response = retellClient.createPhoneCall(
+				buildRequest(callId, scenario, patientSimulationPrompt)
+		);
 		String retellCallId = response == null ? null : response.callId();
 		if (isBlank(retellCallId)) {
 			throw new IllegalStateException("Retell create-phone-call response did not include call_id");
@@ -86,6 +94,7 @@ public class RetellCallRunner {
 				runDirectory.resolve("metadata.json").toString(),
 				null,
 				null,
+				runDirectory.resolve("patient_simulation.md").toString(),
 				null,
 				null,
 				runDirectory.resolve("observations.md").toString()
@@ -106,13 +115,18 @@ public class RetellCallRunner {
 				callId,
 				scenarioPath,
 				metadata,
+				patientSimulationPrompt,
 				buildObservations(callId, retellCallId, scenario, response)
 		);
 
 		return new ScenarioRunResult(metadata, artifacts);
 	}
 
-	private RetellOutboundCallRequest buildRequest(String callId, Scenario scenario) {
+	private RetellOutboundCallRequest buildRequest(
+			String callId,
+			Scenario scenario,
+			String patientSimulationPrompt
+	) {
 		Map<String, String> metadata = new LinkedHashMap<>();
 		metadata.put("qaai_call_id", callId);
 		metadata.put("scenario_id", scenario.id());
@@ -125,6 +139,8 @@ public class RetellCallRunner {
 		dynamicVariables.put("scenario_name", scenario.name());
 		dynamicVariables.put("workflow", scenario.workflow());
 		dynamicVariables.put("patient_name", scenario.persona().name());
+		dynamicVariables.put("call_reason", scenario.goal().callReason());
+		dynamicVariables.put("patient_simulation_prompt", patientSimulationPrompt);
 		dynamicVariables.put("patient_date_of_birth", scenario.persona().dateOfBirth());
 		dynamicVariables.put("patient_phone_number", scenario.persona().phoneNumber());
 		dynamicVariables.put("goal_summary", scenario.goal().summary());

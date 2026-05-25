@@ -43,12 +43,14 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 2 Closeout](docs/phase-2-closeout.md)
 - [Phase 3 Closeout](docs/phase-3-closeout.md)
 - [Phase 4 Closeout](docs/phase-4-closeout.md)
+- [Phase 5 Closeout](docs/phase-5-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 4 added manual Retell artifact capture. Given a local `call_id` from a
-Retell run, the app can fetch call details, normalize transcript artifacts,
-download audio when available, and write a manifest under `outputs/{call_id}/`.
+Phase 5 added scenario-driven patient simulation instructions. Dry runs and
+Retell call starts now write `patient_simulation.md`, and Retell receives
+`patient_name`, `call_reason`, and `patient_simulation_prompt` dynamic
+variables.
 
 ## Additional Implementation Notes
 

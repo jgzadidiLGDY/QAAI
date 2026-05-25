@@ -162,6 +162,8 @@ public class ArtifactCaptureService {
 				runDirectory.resolve("metadata.json").toString(),
 				runDirectory.resolve("transcript.txt").toString(),
 				runDirectory.resolve("transcript.json").toString(),
+				pathIfExists(existingMetadata.artifactPaths().patientSimulation(),
+						runDirectory.resolve("patient_simulation.md")),
 				audioCapture.present() ? runDirectory.resolve("audio.wav").toString() : null,
 				runDirectory.resolve("manifest.json").toString(),
 				pathIfExists(existingMetadata.artifactPaths().observationsMarkdown(), runDirectory.resolve("observations.md"))
@@ -192,6 +194,7 @@ public class ArtifactCaptureService {
 				generatedEntry("metadata", metadata.artifactPaths().metadata()),
 				generatedEntry("transcript_json", metadata.artifactPaths().transcriptJson()),
 				generatedEntry("transcript_text", metadata.artifactPaths().transcriptText()),
+				entry("patient_simulation", metadata.artifactPaths().patientSimulation()),
 				new ArtifactManifest.ArtifactEntry(
 						"audio",
 						metadata.artifactPaths().audio(),

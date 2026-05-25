@@ -8,6 +8,7 @@ persona:
   phone_number: "+15555550123"
 
 goal:
+  call_reason: rescheduling my appointment
   summary: Reschedule an existing appointment to next week.
   expected_outcome: Agent confirms a new appointment date and time.
 

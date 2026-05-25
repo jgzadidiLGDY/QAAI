@@ -1,0 +1,40 @@
+id: billing_question_001
+name: Billing question
+workflow: billing_question
+
+persona:
+  name: Priya Shah
+  date_of_birth: "1991-06-27"
+  phone_number: "+15555550126"
+
+goal:
+  call_reason: a billing question
+  summary: Ask who can help with a question about a recent bill.
+  expected_outcome: Agent provides billing department guidance, a transfer, or a clear callback next step.
+
+constraints:
+  allowed_facts:
+    - Patient has a question about a recent bill.
+    - Patient wants to know who can help resolve the question.
+    - Patient can confirm name and date of birth.
+  disallowed_behavior:
+    - Do not invent account numbers, balances, services, or insurance details.
+    - Do not provide payment information.
+    - Do not provide real patient data.
+
+conversation_quality:
+  welcome_behavior: Start by saying the patient has a billing question.
+  initiative: Ask for the right department or next step if the agent response is generic.
+  pacing: Keep the request concise and non-confrontational.
+  clarification: If the agent asks for unavailable account details, say they are not available right now.
+  expected_risks:
+    - Patient may invent billing details.
+    - Agent may fail to route the billing question.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I have a question about a recent bill.
+  - intent: identity_verification
+    patient_says: My date of birth is June 27th, 1991.
+  - intent: routing
+    patient_says: Could you tell me who I should speak with about billing?
