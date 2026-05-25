@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.artifacts.RunMetadata;
+import com.qaai.retell.RetellApiException;
 import com.qaai.retell.RetellCallDetailsResponse;
 import com.qaai.retell.RetellClient;
 import java.nio.file.Files;
@@ -106,6 +107,73 @@ class ArtifactCaptureServiceTest {
 		assertThat(runDirectory.resolve("audio.wav")).doesNotExist();
 		assertThat(Files.readString(result.manifest())).contains(
 				"Retell did not provide a recording_url at capture time.",
+				"\"present\" : false"
+		);
+	}
+
+	@Test
+	void fallsBackToRawTranscriptWhenStructuredTranscriptIsMissing() throws Exception {
+		Path outputs = tempDir.resolve("outputs");
+		String callId = "call_20260523_130000_test1234";
+		Path runDirectory = outputs.resolve(callId);
+		Files.createDirectories(runDirectory);
+		Path scenarioPath = runDirectory.resolve("scenario.yaml");
+		Files.writeString(scenarioPath, "id: appointment_reschedule_001%n".formatted());
+
+		ArtifactWriter writer = new ArtifactWriter(new ObjectMapper(), outputs);
+		writer.writeCallStartedArtifacts(
+				callId,
+				scenarioPath,
+				retellMetadata(callId, runDirectory),
+				"# Retell Call Start Observations%n".formatted()
+		);
+		ArtifactCaptureService service = new ArtifactCaptureService(
+				writer,
+				retellClient(callDetailsWithRawTranscriptOnly(), "audio-bytes".getBytes()),
+				Clock.fixed(Instant.parse("2026-05-23T18:30:00Z"), ZoneOffset.ofHours(-4))
+		);
+
+		ArtifactCaptureResult result = service.capture(callId);
+
+		assertThat(result.metadata().status()).isEqualTo("artifacts_captured");
+		assertThat(Files.readString(result.transcriptText())).contains(
+				"1. [unknown] Agent: Thanks for calling.%nPatient: I need to reschedule.".formatted()
+		);
+		assertThat(Files.readString(result.transcriptJson())).contains(
+				"\"speaker\" : \"unknown\"",
+				"Agent: Thanks for calling."
+		);
+	}
+
+	@Test
+	void recordsAudioDownloadFailureInManifest() throws Exception {
+		Path outputs = tempDir.resolve("outputs");
+		String callId = "call_20260523_130000_test1234";
+		Path runDirectory = outputs.resolve(callId);
+		Files.createDirectories(runDirectory);
+		Path scenarioPath = runDirectory.resolve("scenario.yaml");
+		Files.writeString(scenarioPath, "id: appointment_reschedule_001%n".formatted());
+
+		ArtifactWriter writer = new ArtifactWriter(new ObjectMapper(), outputs);
+		writer.writeCallStartedArtifacts(
+				callId,
+				scenarioPath,
+				retellMetadata(callId, runDirectory),
+				"# Retell Call Start Observations%n".formatted()
+		);
+		ArtifactCaptureService service = new ArtifactCaptureService(
+				writer,
+				retellClientWithDownloadFailure(callDetailsWithRecording()),
+				Clock.fixed(Instant.parse("2026-05-23T18:30:00Z"), ZoneOffset.ofHours(-4))
+		);
+
+		ArtifactCaptureResult result = service.capture(callId);
+
+		assertThat(result.metadata().status()).isEqualTo("artifacts_partially_captured");
+		assertThat(result.audio()).isNull();
+		assertThat(Files.readString(result.manifest())).contains(
+				"Audio download failed: recording unavailable",
+				"\"name\" : \"audio\"",
 				"\"present\" : false"
 		);
 	}
@@ -214,6 +282,22 @@ class ArtifactCaptureServiceTest {
 		);
 	}
 
+	private RetellCallDetailsResponse callDetailsWithRawTranscriptOnly() {
+		return new RetellCallDetailsResponse(
+				"retell_call_123",
+				"ended",
+				"agent_123",
+				"+15555550100",
+				"+18054398008",
+				"outbound",
+				Map.of(),
+				"Agent: Thanks for calling.%nPatient: I need to reschedule.".formatted(),
+				null,
+				"https://recordings.example.test/recording.wav",
+				10000L
+		);
+	}
+
 	private RetellClient retellClient(RetellCallDetailsResponse callDetails, byte[] audioBytes) {
 		return new RetellClient(RestClient.builder().build(), "unused") {
 			@Override
@@ -224,6 +308,20 @@ class ArtifactCaptureServiceTest {
 			@Override
 			public byte[] downloadRecording(String recordingUrl) {
 				return audioBytes;
+			}
+		};
+	}
+
+	private RetellClient retellClientWithDownloadFailure(RetellCallDetailsResponse callDetails) {
+		return new RetellClient(RestClient.builder().build(), "unused") {
+			@Override
+			public RetellCallDetailsResponse getCall(String retellCallId) {
+				return callDetails;
+			}
+
+			@Override
+			public byte[] downloadRecording(String recordingUrl) {
+				throw new RetellApiException("recording unavailable");
 			}
 		};
 	}

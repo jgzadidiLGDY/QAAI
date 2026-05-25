@@ -47,16 +47,16 @@ public class ArtifactCaptureService {
 		RetellCallDetailsResponse callDetails = retellClient.getCall(existingMetadata.retellCallId());
 		NormalizedTranscript transcript = normalizeTranscript(existingMetadata, callDetails);
 		String transcriptText = buildTranscriptText(transcript, callDetails);
-		byte[] audioBytes = downloadAudioIfAvailable(callDetails);
-		RunMetadata updatedMetadata = updateMetadata(existingMetadata, callDetails, transcript, audioBytes);
-		ArtifactManifest manifest = buildManifest(updatedMetadata, callDetails, transcript, audioBytes);
+		AudioCapture audioCapture = downloadAudioIfAvailable(callDetails);
+		RunMetadata updatedMetadata = updateMetadata(existingMetadata, callDetails, transcript, audioCapture);
+		ArtifactManifest manifest = buildManifest(updatedMetadata, callDetails, transcript, audioCapture);
 
 		artifactWriter.writeCapturedArtifacts(
 				callId,
 				updatedMetadata,
 				transcript,
 				transcriptText,
-				audioBytes,
+				audioCapture.bytes(),
 				manifest
 		);
 
@@ -66,7 +66,7 @@ public class ArtifactCaptureService {
 				runDirectory,
 				runDirectory.resolve("transcript.json"),
 				runDirectory.resolve("transcript.txt"),
-				audioBytes == null || audioBytes.length == 0 ? null : runDirectory.resolve("audio.wav"),
+				audioCapture.present() ? runDirectory.resolve("audio.wav") : null,
 				runDirectory.resolve("manifest.json")
 		);
 	}
@@ -97,6 +97,10 @@ public class ArtifactCaptureService {
 					retellTurn.content(),
 					firstTimestamp(retellTurn)
 			));
+		}
+
+		if (turns.isEmpty() && callDetails != null && !isBlank(callDetails.transcript())) {
+			turns.add(new TranscriptTurn(1, "unknown", callDetails.transcript(), null));
 		}
 
 		return new NormalizedTranscript(metadata.callId(), metadata.scenarioId(), "retell", turns);
@@ -131,14 +135,18 @@ public class ArtifactCaptureService {
 		return text.toString();
 	}
 
-	private byte[] downloadAudioIfAvailable(RetellCallDetailsResponse callDetails) {
+	private AudioCapture downloadAudioIfAvailable(RetellCallDetailsResponse callDetails) {
 		if (callDetails == null || isBlank(callDetails.recordingUrl())) {
-			return null;
+			return new AudioCapture(null, "Retell did not provide a recording_url at capture time.");
 		}
 		try {
-			return retellClient.downloadRecording(callDetails.recordingUrl());
+			byte[] audioBytes = retellClient.downloadRecording(callDetails.recordingUrl());
+			if (audioBytes == null || audioBytes.length == 0) {
+				return new AudioCapture(null, "Retell provided a recording_url, but audio was not downloaded.");
+			}
+			return new AudioCapture(audioBytes, "Downloaded from Retell recording_url.");
 		} catch (RetellApiException exception) {
-			return null;
+			return new AudioCapture(null, "Audio download failed: " + exception.getMessage());
 		}
 	}
 
@@ -146,7 +154,7 @@ public class ArtifactCaptureService {
 			RunMetadata existingMetadata,
 			RetellCallDetailsResponse callDetails,
 			NormalizedTranscript transcript,
-			byte[] audioBytes
+			AudioCapture audioCapture
 	) {
 		Path runDirectory = artifactWriter.runDirectory(existingMetadata.callId());
 		ArtifactPaths artifactPaths = new ArtifactPaths(
@@ -154,7 +162,7 @@ public class ArtifactCaptureService {
 				runDirectory.resolve("metadata.json").toString(),
 				runDirectory.resolve("transcript.txt").toString(),
 				runDirectory.resolve("transcript.json").toString(),
-				audioBytes == null || audioBytes.length == 0 ? null : runDirectory.resolve("audio.wav").toString(),
+				audioCapture.present() ? runDirectory.resolve("audio.wav").toString() : null,
 				runDirectory.resolve("manifest.json").toString(),
 				pathIfExists(existingMetadata.artifactPaths().observationsMarkdown(), runDirectory.resolve("observations.md"))
 		);
@@ -167,7 +175,7 @@ public class ArtifactCaptureService {
 				existingMetadata.retellCallId(),
 				existingMetadata.startedAt(),
 				OffsetDateTime.now(clock),
-				captureStatus(callDetails, transcript, audioBytes),
+				captureStatus(callDetails, transcript, audioCapture),
 				artifactPaths
 		);
 	}
@@ -176,7 +184,7 @@ public class ArtifactCaptureService {
 			RunMetadata metadata,
 			RetellCallDetailsResponse callDetails,
 			NormalizedTranscript transcript,
-			byte[] audioBytes
+			AudioCapture audioCapture
 	) {
 		Path runDirectory = artifactWriter.runDirectory(metadata.callId());
 		List<ArtifactManifest.ArtifactEntry> artifacts = List.of(
@@ -187,8 +195,8 @@ public class ArtifactCaptureService {
 				new ArtifactManifest.ArtifactEntry(
 						"audio",
 						metadata.artifactPaths().audio(),
-						audioBytes != null && audioBytes.length > 0,
-						audioNote(callDetails, audioBytes)
+						audioCapture.present(),
+						audioCapture.note()
 				),
 				entry("observations_markdown", metadata.artifactPaths().observationsMarkdown()),
 				new ArtifactManifest.ArtifactEntry(
@@ -238,25 +246,15 @@ public class ArtifactCaptureService {
 		return new ArtifactManifest.ArtifactEntry(name, path, path != null, "Generated during Phase 4 artifact capture.");
 	}
 
-	private String audioNote(RetellCallDetailsResponse callDetails, byte[] audioBytes) {
-		if (isBlank(recordingUrl(callDetails))) {
-			return "Retell did not provide a recording_url at capture time.";
-		}
-		if (audioBytes == null || audioBytes.length == 0) {
-			return "Retell provided a recording_url, but audio was not downloaded.";
-		}
-		return "Downloaded from Retell recording_url.";
-	}
-
 	private String captureStatus(
 			RetellCallDetailsResponse callDetails,
 			NormalizedTranscript transcript,
-			byte[] audioBytes
+			AudioCapture audioCapture
 	) {
 		if (callDetails == null) {
 			return "artifacts_capture_failed";
 		}
-		if (transcript.turns().isEmpty() || (isBlank(callDetails.recordingUrl()) || audioBytes == null || audioBytes.length == 0)) {
+		if (transcript.turns().isEmpty() || !audioCapture.present()) {
 			return "artifacts_partially_captured";
 		}
 		return "artifacts_captured";
