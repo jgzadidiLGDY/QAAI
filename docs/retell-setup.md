@@ -3,8 +3,8 @@
 Retell AI is used for outbound call execution, voice agent configuration, transcripts, recordings, and call metadata.
 
 Phase 3 starts real outbound calls through Retell and records the Retell call id
-in local metadata. It does not yet fetch transcripts, recordings, or final call
-status.
+in local metadata. Phase 4 adds a manual capture command that fetches transcript
+and recording artifacts after a call exists.
 
 ## Required Values
 
@@ -58,8 +58,23 @@ Reference:
 - [Retell Create Phone Call API](https://docs.retellai.com/api-references/create-phone-call)
 - [Retell Outbound Calls Guide](https://docs.retellai.com/deploy/outbound-call)
 
+## Phase 4 Artifact Capture
+
+After a Retell call has completed or produced artifacts, capture them with the
+local `call_id` from the Phase 3 output:
+
+```powershell
+.\gradlew bootRun --args="--capture-artifacts --call-id=<local_call_id>"
+```
+
+The command uses Retell's `GET /v2/get-call/{call_id}` API and writes normalized
+artifacts under `outputs/{call_id}/`.
+
+Reference:
+
+- [Retell Get Call API](https://docs.retellai.com/api-references/get-call)
+
 ## Later Phase Notes
 
-Phase 4 should add transcript, recording, and call metadata capture. If webhook
-delivery is used, local development may need a public tunnel such as ngrok,
-Cloudflare Tunnel, or a deployed test endpoint.
+If webhook delivery is used later, local development may need a public tunnel
+such as ngrok, Cloudflare Tunnel, or a deployed test endpoint.

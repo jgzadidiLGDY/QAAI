@@ -185,6 +185,15 @@ Deliverables:
 - normalized transcript format
 - complete artifact manifest
 
+Local usage after a Retell call has been started:
+
+```powershell
+.\gradlew bootRun --args="--capture-artifacts --call-id=<local_call_id>"
+```
+
+This command loads `outputs/{call_id}/metadata.json`, uses the stored
+`retell_call_id`, and fetches call details through Retell's get-call API.
+
 Expected artifacts:
 
 ```text
@@ -194,6 +203,9 @@ outputs/{call_id}/transcript.txt
 outputs/{call_id}/metadata.json
 outputs/{call_id}/manifest.json
 ```
+
+If Retell has not yet produced a transcript or recording URL, the command writes
+the available artifacts and records the gap in `manifest.json`.
 
 ### Phase 5: Scenario-Driven Patient Simulation
 

@@ -142,3 +142,37 @@ Phase 3 adds Retell call-start metadata:
 
 Phase 3 does not claim the call completed successfully. It only records that
 Retell accepted the outbound call creation request and returned a call id.
+
+## Phase 4 Contract Extension
+
+Phase 4 adds manual Retell artifact capture for an existing local `call_id`:
+
+- loads existing `outputs/{call_id}/metadata.json`
+- requires `run_mode = retell`
+- requires `retell_call_id`
+- fetches Retell call details with `GET /v2/get-call/{retell_call_id}`
+- writes normalized `transcript.json`
+- writes human-readable `transcript.txt`
+- downloads `audio.wav` when Retell provides a recording URL
+- writes `manifest.json`
+- updates `metadata.artifact_paths`
+
+New metadata path fields:
+
+```json
+{
+  "artifact_paths": {
+    "transcript_text": "outputs/call_20260523_001/transcript.txt",
+    "transcript_json": "outputs/call_20260523_001/transcript.json",
+    "audio": "outputs/call_20260523_001/audio.wav",
+    "manifest": "outputs/call_20260523_001/manifest.json"
+  }
+}
+```
+
+Capture statuses:
+
+- `artifacts_captured`: transcript turns and audio were captured
+- `artifacts_partially_captured`: transcript or audio was unavailable
+
+Phase 4 still does not produce bug findings or pass/fail judgments.

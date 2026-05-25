@@ -32,6 +32,9 @@ class ArtifactWriterTest {
 						"outputs/call_20260523_130000_test1234/scenario.yaml",
 						"outputs/call_20260523_130000_test1234/metadata.json",
 						"outputs/call_20260523_130000_test1234/transcript.txt",
+						null,
+						null,
+						null,
 						"outputs/call_20260523_130000_test1234/observations.md"
 				)
 		);

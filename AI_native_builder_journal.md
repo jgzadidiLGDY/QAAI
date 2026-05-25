@@ -42,12 +42,13 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 1 Closeout](docs/phase-1-closeout.md)
 - [Phase 2 Closeout](docs/phase-2-closeout.md)
 - [Phase 3 Closeout](docs/phase-3-closeout.md)
+- [Phase 4 Closeout](docs/phase-4-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 3 added Retell outbound call-start execution. A scenario can now run in
-explicit `retell` mode, start a real outbound call, and persist the mapping
-between the local `call_id` and Retell's `call_id` under `outputs/{call_id}/`.
+Phase 4 added manual Retell artifact capture. Given a local `call_id` from a
+Retell run, the app can fetch call details, normalize transcript artifacts,
+download audio when available, and write a manifest under `outputs/{call_id}/`.
 
 ## Additional Implementation Notes
 

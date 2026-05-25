@@ -11,14 +11,30 @@ public class ScenarioRunnerCommand implements ApplicationRunner {
 
 	private final DryRunRunner dryRunRunner;
 	private final RetellCallRunner retellCallRunner;
+	private final ArtifactCaptureService artifactCaptureService;
 
-	public ScenarioRunnerCommand(DryRunRunner dryRunRunner, RetellCallRunner retellCallRunner) {
+	public ScenarioRunnerCommand(
+			DryRunRunner dryRunRunner,
+			RetellCallRunner retellCallRunner,
+			ArtifactCaptureService artifactCaptureService
+	) {
 		this.dryRunRunner = dryRunRunner;
 		this.retellCallRunner = retellCallRunner;
+		this.artifactCaptureService = artifactCaptureService;
 	}
 
 	@Override
 	public void run(ApplicationArguments args) {
+		if (args.containsOption("capture-artifacts")) {
+			ArtifactCaptureResult result = artifactCaptureService.capture(callId(args));
+			System.out.println("Artifact capture completed");
+			System.out.println("call_id: " + result.metadata().callId());
+			System.out.println("retell_call_id: " + result.metadata().retellCallId());
+			System.out.println("status: " + result.metadata().status());
+			System.out.println("artifacts: " + result.runDirectory());
+			return;
+		}
+
 		if (!args.containsOption("scenario")) {
 			return;
 		}
@@ -67,5 +83,17 @@ public class ScenarioRunnerCommand implements ApplicationRunner {
 			return "Dry run";
 		}
 		return "Retell call start";
+	}
+
+	private String callId(ApplicationArguments args) {
+		if (!args.containsOption("call-id")) {
+			throw new IllegalArgumentException("Provide --call-id=<local_call_id> with --capture-artifacts");
+		}
+
+		List<String> callIdValues = args.getOptionValues("call-id");
+		if (callIdValues == null || callIdValues.isEmpty() || callIdValues.getFirst().isBlank()) {
+			throw new IllegalArgumentException("Provide --call-id=<local_call_id> with --capture-artifacts");
+		}
+		return callIdValues.getFirst();
 	}
 }

@@ -85,6 +85,9 @@ public class RetellCallRunner {
 				runDirectory.resolve("scenario.yaml").toString(),
 				runDirectory.resolve("metadata.json").toString(),
 				null,
+				null,
+				null,
+				null,
 				runDirectory.resolve("observations.md").toString()
 		);
 		RunMetadata metadata = new RunMetadata(

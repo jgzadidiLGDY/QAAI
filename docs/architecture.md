@@ -127,9 +127,12 @@ Phase 1 added deterministic scenario loading and dry-run artifacts.
 Phase 2 added scenario-owned conversation-quality guidance and a deterministic
 observations artifact.
 
-Phase 3 adds explicit Retell call-start execution. The runner can now choose
+Phase 3 added explicit Retell call-start execution. The runner can now choose
 between `dry-run` and `retell` modes, and Retell mode persists the mapping
 between the local `call_id` and Retell's `call_id`.
 
-Transcript capture, recording capture, webhook handling, and AI analysis belong
-to later phases.
+Phase 4 adds a manual artifact capture command for an existing local `call_id`.
+It fetches Retell call details, normalizes transcripts, downloads audio when
+available, and writes a manifest under `outputs/{call_id}/`.
+
+Webhook handling and AI analysis belong to later phases.

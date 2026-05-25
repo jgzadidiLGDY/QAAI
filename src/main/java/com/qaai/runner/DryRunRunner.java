@@ -69,6 +69,9 @@ public class DryRunRunner {
 				runDirectory.resolve("scenario.yaml").toString(),
 				runDirectory.resolve("metadata.json").toString(),
 				runDirectory.resolve("transcript.txt").toString(),
+				null,
+				null,
+				null,
 				runDirectory.resolve("observations.md").toString()
 		);
 		RunMetadata metadata = new RunMetadata(

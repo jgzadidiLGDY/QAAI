@@ -91,6 +91,32 @@ The metadata must mark the real-call execution mode:
 `artifact_paths.transcript_text` is `null` in Phase 3 because transcript capture
 belongs to Phase 4.
 
+## Phase 4 Artifact Bundle
+
+Phase 4 adds a manual artifact capture step for an existing Retell run:
+
+```powershell
+.\gradlew bootRun --args="--capture-artifacts --call-id=<local_call_id>"
+```
+
+The command reads `outputs/{call_id}/metadata.json`, uses the stored
+`retell_call_id`, fetches call details from Retell, and writes:
+
+```text
+outputs/{call_id}/
+|-- scenario.yaml
+|-- metadata.json
+|-- transcript.json
+|-- transcript.txt
+|-- audio.wav
+|-- manifest.json
+`-- observations.md
+```
+
+`audio.wav` is only present when Retell provides a recording URL and the
+download succeeds. Missing transcript or audio data is recorded in
+`manifest.json` and reflected by `metadata.status = artifacts_partially_captured`.
+
 ## Artifact Purposes
 
 ### `scenario.yaml`

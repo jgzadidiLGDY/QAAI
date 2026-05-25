@@ -2,12 +2,14 @@ package com.qaai.retell;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withCreatedEntity;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
 
 import java.net.URI;
@@ -96,6 +98,45 @@ class RetellClientTest {
 				.hasMessageContaining("HTTP 401")
 				.hasMessageContaining("invalid api key");
 
+		server.verify();
+	}
+
+	@Test
+	void retrievesCallDetailsWithTranscriptAndRecordingUrl() {
+		RestClient.Builder builder = RestClient.builder().baseUrl("https://api.example.test");
+		MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+		RetellClient client = new RetellClient(builder.build(), "test-api-key");
+
+		server.expect(requestTo("https://api.example.test/v2/get-call/retell_call_123"))
+				.andExpect(method(GET))
+				.andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer test-api-key"))
+				.andRespond(withSuccess("""
+						{
+						  "call_id": "retell_call_123",
+						  "call_status": "ended",
+						  "recording_url": "https://recordings.example.test/recording.wav",
+						  "transcript_object": [
+						    {
+						      "role": "agent",
+						      "content": "Thanks for calling.",
+						      "words": [{ "word": "Thanks", "start": 0.5, "end": 0.9 }]
+						    },
+						    {
+						      "role": "user",
+						      "content": "I need to reschedule.",
+						      "words": [{ "word": "I", "start": 1.2, "end": 1.3 }]
+						    }
+						  ]
+						}
+						""", MediaType.APPLICATION_JSON));
+
+		RetellCallDetailsResponse response = client.getCall("retell_call_123");
+
+		assertThat(response.callId()).isEqualTo("retell_call_123");
+		assertThat(response.callStatus()).isEqualTo("ended");
+		assertThat(response.recordingUrl()).isEqualTo("https://recordings.example.test/recording.wav");
+		assertThat(response.transcriptObject()).hasSize(2);
+		assertThat(response.transcriptObject().getFirst().words().getFirst().start()).isEqualTo(0.5);
 		server.verify();
 	}
 
