@@ -124,6 +124,7 @@ class RetellCallRunnerTest {
 		return new QaaiProperties(
 				retell,
 				null,
+				null,
 				new QaaiProperties.Target("+18054398008"),
 				new QaaiProperties.Outputs(tempDir.resolve("outputs").toString())
 		);

@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 @Component
+@ConditionalOnProperty(name = "qaai.analysis.provider", havingValue = "openai", matchIfMissing = true)
 public class OpenAiAnalysisClient implements AnalysisClient {
 
 	private static final int MAX_ERROR_BODY_LENGTH = 500;
@@ -42,10 +44,11 @@ public class OpenAiAnalysisClient implements AnalysisClient {
 	}
 
 	@Override
-	public AnalysisReport analyze(String prompt) {
+	public AnalysisReport analyze(AnalysisRequest analysisRequest) {
 		if (apiKey == null || apiKey.isBlank()) {
 			throw new AnalysisException("OPENAI_API_KEY is required for --analyze-call");
 		}
+		String prompt = analysisRequest.prompt();
 
 		Map<String, Object> request = Map.of(
 				"model", model,
@@ -81,6 +84,16 @@ public class OpenAiAnalysisClient implements AnalysisClient {
 			throw new AnalysisException("Provider openai operation chat-completions returned invalid analysis JSON",
 					exception);
 		}
+	}
+
+	@Override
+	public String provider() {
+		return "openai";
+	}
+
+	@Override
+	public String model() {
+		return model;
 	}
 
 	private String responseContent(ChatCompletionResponse response) {

@@ -2,6 +2,7 @@ package com.qaai.analysis;
 
 import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
+import com.qaai.artifacts.AnalysisMetadata;
 import com.qaai.artifacts.NormalizedTranscript;
 import com.qaai.artifacts.RunMetadata;
 import com.qaai.artifacts.TranscriptTurn;
@@ -52,7 +53,11 @@ public class AnalysisService {
 		validateTranscript(callId, transcript);
 
 		LOGGER.info("Requesting analysis call_id={} scenario_id={}", metadata.callId(), metadata.scenarioId());
-		AnalysisReport report = analysisClient.analyze(promptBuilder.build(scenario, transcript));
+		AnalysisReport report = analysisClient.analyze(new AnalysisRequest(
+				scenario,
+				transcript,
+				promptBuilder.build(scenario, transcript)
+		));
 		AnalysisReport validatedReport = validateReport(metadata, transcript, report);
 		RunMetadata updatedMetadata = updateMetadata(metadata, runDirectory);
 		String markdown = buildMarkdown(validatedReport);
@@ -165,7 +170,8 @@ public class AnalysisService {
 				metadata.startedAt(),
 				metadata.endedAt(),
 				"analysis_completed",
-				artifactPaths
+				artifactPaths,
+				new AnalysisMetadata(analysisClient.provider(), analysisClient.model())
 		);
 	}
 

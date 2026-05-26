@@ -6,6 +6,8 @@ qaai:
     base-url: ${RETELL_BASE_URL:https://api.retellai.com}
     api-timeout: ${RETELL_API_TIMEOUT:30s}
     recording-download-timeout: ${RETELL_RECORDING_DOWNLOAD_TIMEOUT:60s}
+  analysis:
+    provider: ${QAAI_ANALYZER_PROVIDER:openai}
   openai:
     api-key: ${OPENAI_API_KEY:}
     analysis-model: ${OPENAI_ANALYSIS_MODEL:gpt-4.1-mini}

@@ -34,7 +34,7 @@ class AnalysisServiceTest {
 				writer,
 				new ScenarioLoader(),
 				new AnalysisPromptBuilder(),
-				prompt -> report(callId)
+				recordingClient(callId)
 		);
 
 		AnalysisResult result = service.analyze(callId);
@@ -56,7 +56,10 @@ class AnalysisServiceTest {
 		assertThat(Files.readString(runDirectory.resolve("metadata.json"))).contains(
 				"\"status\" : \"analysis_completed\"",
 				"\"analysis_json\"",
-				"\"analysis_markdown\""
+				"\"analysis_markdown\"",
+				"\"analysis\" : {",
+				"\"provider\" : \"test-provider\"",
+				"\"model\" : \"test-model\""
 		);
 		assertThat(Files.readString(runDirectory.resolve("manifest.json"))).contains(
 				"\"name\" : \"analysis_json\"",
@@ -279,5 +282,24 @@ class AnalysisServiceTest {
 				)),
 				List.of("Human review should confirm whether this workflow later completed elsewhere.")
 		);
+	}
+
+	private AnalysisClient recordingClient(String callId) {
+		return new AnalysisClient() {
+			@Override
+			public AnalysisReport analyze(AnalysisRequest request) {
+				return report(callId);
+			}
+
+			@Override
+			public String provider() {
+				return "test-provider";
+			}
+
+			@Override
+			public String model() {
+				return "test-model";
+			}
+		};
 	}
 }

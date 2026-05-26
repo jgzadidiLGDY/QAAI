@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "qaai")
 public record QaaiProperties(
 		Retell retell,
+		Analysis analysis,
 		OpenAi openai,
 		Target target,
 		Outputs outputs
@@ -16,6 +17,9 @@ public record QaaiProperties(
 			retell = new Retell(null, null, null, "https://api.retellai.com", Duration.ofSeconds(30),
 					Duration.ofSeconds(60));
 		}
+		if (analysis == null) {
+			analysis = new Analysis("openai");
+		}
 		if (openai == null) {
 			openai = new OpenAi(null, "gpt-4.1-mini", Duration.ofSeconds(60));
 		}
@@ -24,6 +28,15 @@ public record QaaiProperties(
 		}
 		if (outputs == null) {
 			outputs = new Outputs("outputs");
+		}
+	}
+
+	public record Analysis(String provider) {
+
+		public Analysis {
+			if (provider == null || provider.isBlank()) {
+				provider = "openai";
+			}
 		}
 	}
 
