@@ -10,11 +10,15 @@ import com.qaai.scenario.ScenarioLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AnalysisService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AnalysisService.class);
 
 	private final ArtifactWriter artifactWriter;
 	private final ScenarioLoader scenarioLoader;
@@ -38,6 +42,7 @@ public class AnalysisService {
 		if (callId == null || callId.isBlank()) {
 			throw new IllegalArgumentException("Provide --call-id=<local_call_id> with --analyze-call");
 		}
+		LOGGER.info("Starting analysis call_id={}", callId);
 
 		RunMetadata metadata = artifactWriter.readMetadata(callId);
 		validateMetadata(callId, metadata);
@@ -46,12 +51,15 @@ public class AnalysisService {
 		NormalizedTranscript transcript = artifactWriter.readTranscript(callId);
 		validateTranscript(callId, transcript);
 
+		LOGGER.info("Requesting analysis call_id={} scenario_id={}", metadata.callId(), metadata.scenarioId());
 		AnalysisReport report = analysisClient.analyze(promptBuilder.build(scenario, transcript));
 		AnalysisReport validatedReport = validateReport(metadata, transcript, report);
 		RunMetadata updatedMetadata = updateMetadata(metadata, runDirectory);
 		String markdown = buildMarkdown(validatedReport);
 		artifactWriter.writeAnalysisArtifacts(callId, updatedMetadata, validatedReport, markdown);
 
+		LOGGER.info("Completed analysis call_id={} analysis_json={} analysis_markdown={}", callId,
+				runDirectory.resolve("analysis.json"), runDirectory.resolve("analysis.md"));
 		return new AnalysisResult(
 				updatedMetadata,
 				runDirectory,

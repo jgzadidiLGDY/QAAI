@@ -15,11 +15,15 @@ import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ArtifactCaptureService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactCaptureService.class);
 
 	private final ArtifactWriter artifactWriter;
 	private final RetellClient retellClient;
@@ -40,10 +44,13 @@ public class ArtifactCaptureService {
 		if (isBlank(callId)) {
 			throw new IllegalArgumentException("Provide --call-id=<local_call_id> with --capture-artifacts");
 		}
+		LOGGER.info("Starting artifact capture call_id={}", callId);
 
 		RunMetadata existingMetadata = artifactWriter.readMetadata(callId);
 		validateMetadata(callId, existingMetadata);
 
+		LOGGER.info("Fetching Retell call details call_id={} retell_call_id={}", callId,
+				existingMetadata.retellCallId());
 		RetellCallDetailsResponse callDetails = retellClient.getCall(existingMetadata.retellCallId());
 		NormalizedTranscript transcript = normalizeTranscript(existingMetadata, callDetails);
 		String transcriptText = buildTranscriptText(transcript, callDetails);
@@ -61,6 +68,8 @@ public class ArtifactCaptureService {
 		);
 
 		Path runDirectory = artifactWriter.runDirectory(callId);
+		LOGGER.info("Completed artifact capture call_id={} status={} artifacts={}", callId, updatedMetadata.status(),
+				runDirectory);
 		return new ArtifactCaptureResult(
 				updatedMetadata,
 				runDirectory,
@@ -137,15 +146,19 @@ public class ArtifactCaptureService {
 
 	private AudioCapture downloadAudioIfAvailable(RetellCallDetailsResponse callDetails) {
 		if (callDetails == null || isBlank(callDetails.recordingUrl())) {
+			LOGGER.info("Skipping recording download because Retell did not provide recording_url");
 			return new AudioCapture(null, "Retell did not provide a recording_url at capture time.");
 		}
 		try {
 			byte[] audioBytes = retellClient.downloadRecording(callDetails.recordingUrl());
 			if (audioBytes == null || audioBytes.length == 0) {
+				LOGGER.warn("Recording download returned no bytes");
 				return new AudioCapture(null, "Retell provided a recording_url, but audio was not downloaded.");
 			}
+			LOGGER.info("Recording download completed bytes={}", audioBytes.length);
 			return new AudioCapture(audioBytes, "Downloaded from Retell recording_url.");
 		} catch (RetellApiException exception) {
+			LOGGER.warn("Recording download failed: {}", exception.getMessage());
 			return new AudioCapture(null, "Audio download failed: " + exception.getMessage());
 		}
 	}

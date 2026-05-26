@@ -4,9 +4,12 @@ qaai:
     agent-id: ${RETELL_AGENT_ID:}
     from-number: ${RETELL_FROM_NUMBER:}
     base-url: ${RETELL_BASE_URL:https://api.retellai.com}
+    api-timeout: ${RETELL_API_TIMEOUT:30s}
+    recording-download-timeout: ${RETELL_RECORDING_DOWNLOAD_TIMEOUT:60s}
   openai:
     api-key: ${OPENAI_API_KEY:}
     analysis-model: ${OPENAI_ANALYSIS_MODEL:gpt-4.1-mini}
+    analysis-timeout: ${OPENAI_ANALYSIS_TIMEOUT:60s}
   target:
     agent-phone-number: ${TARGET_AGENT_PHONE_NUMBER:+18054398008}
   outputs:

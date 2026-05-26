@@ -15,11 +15,15 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DryRunRunner {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DryRunRunner.class);
 
 	private static final DateTimeFormatter CALL_ID_TIME = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
@@ -63,6 +67,7 @@ public class DryRunRunner {
 	}
 
 	public ScenarioRunResult run(Path scenarioPath) {
+		LOGGER.info("Starting dry run for scenario_path={}", scenarioPath);
 		Scenario scenario = scenarioLoader.load(scenarioPath);
 		scenarioValidator.validate(scenario);
 		String patientSimulationPrompt = patientSimulationPromptBuilder.build(scenario);
@@ -105,6 +110,8 @@ public class DryRunRunner {
 				buildObservations(callId, scenario)
 		);
 
+		LOGGER.info("Completed dry run call_id={} scenario_id={} artifacts={}", callId, scenario.id(),
+				artifacts.runDirectory());
 		return new ScenarioRunResult(metadata, artifacts);
 	}
 

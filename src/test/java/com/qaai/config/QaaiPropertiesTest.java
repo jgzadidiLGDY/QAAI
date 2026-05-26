@@ -2,6 +2,7 @@ package com.qaai.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,8 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 		"qaai.retell.agent-id=agent_123",
 		"qaai.retell.from-number=+15555550100",
 		"qaai.retell.base-url=https://api.example.test",
+		"qaai.retell.api-timeout=12s",
+		"qaai.retell.recording-download-timeout=34s",
 		"qaai.openai.api-key=test-openai-key",
 		"qaai.openai.analysis-model=test-analysis-model",
+		"qaai.openai.analysis-timeout=56s",
 		"qaai.target.agent-phone-number=+18054398008",
 		"qaai.outputs.base-dir=outputs"
 })
@@ -27,8 +31,11 @@ class QaaiPropertiesTest {
 		assertThat(properties.retell().agentId()).isEqualTo("agent_123");
 		assertThat(properties.retell().fromNumber()).isEqualTo("+15555550100");
 		assertThat(properties.retell().baseUrl()).isEqualTo("https://api.example.test");
+		assertThat(properties.retell().apiTimeout()).isEqualTo(Duration.ofSeconds(12));
+		assertThat(properties.retell().recordingDownloadTimeout()).isEqualTo(Duration.ofSeconds(34));
 		assertThat(properties.openai().apiKey()).isEqualTo("test-openai-key");
 		assertThat(properties.openai().analysisModel()).isEqualTo("test-analysis-model");
+		assertThat(properties.openai().analysisTimeout()).isEqualTo(Duration.ofSeconds(56));
 		assertThat(properties.target().agentPhoneNumber()).isEqualTo("+18054398008");
 		assertThat(properties.outputs().baseDir()).isEqualTo("outputs");
 	}

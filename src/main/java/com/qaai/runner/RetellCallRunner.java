@@ -20,11 +20,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RetellCallRunner {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RetellCallRunner.class);
 
 	private static final DateTimeFormatter CALL_ID_TIME = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
@@ -72,6 +76,7 @@ public class RetellCallRunner {
 
 	public ScenarioRunResult run(Path scenarioPath) {
 		validateRetellConfig();
+		LOGGER.info("Starting Retell call for scenario_path={}", scenarioPath);
 
 		Scenario scenario = scenarioLoader.load(scenarioPath);
 		scenarioValidator.validate(scenario);
@@ -79,6 +84,7 @@ public class RetellCallRunner {
 
 		OffsetDateTime startedAt = OffsetDateTime.now(clock);
 		String callId = generateCallId(startedAt);
+		LOGGER.info("Creating Retell phone call call_id={} scenario_id={}", callId, scenario.id());
 		RetellOutboundCallResponse response = retellClient.createPhoneCall(
 				buildRequest(callId, scenario, patientSimulationPrompt)
 		);
@@ -121,6 +127,8 @@ public class RetellCallRunner {
 				buildObservations(callId, retellCallId, scenario, response)
 		);
 
+		LOGGER.info("Retell call started call_id={} retell_call_id={} status={} artifacts={}", callId, retellCallId,
+				metadata.status(), artifacts.runDirectory());
 		return new ScenarioRunResult(metadata, artifacts);
 	}
 

@@ -8,6 +8,8 @@ import com.qaai.quality.ConversationQualityReviewResult;
 import com.qaai.quality.ConversationQualityReviewService;
 import java.nio.file.Path;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.ExitCodeGenerator;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerator {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioRunnerCommand.class);
 
 	private final DryRunRunner dryRunRunner;
 	private final RetellCallRunner retellCallRunner;
@@ -46,7 +50,8 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			runCommand(args);
 		} catch (RuntimeException exception) {
 			exitCode = 1;
-			System.err.println("Error: " + exception.getMessage());
+			LOGGER.warn("Command failed: {}", failureContext(args), exception);
+			System.err.println("Error: " + failureContext(args) + ": " + exception.getMessage());
 		}
 	}
 
@@ -172,5 +177,41 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 					String.join(", ", entry.warnings())
 			));
 		}
+	}
+
+	private String failureContext(ApplicationArguments args) {
+		StringBuilder context = new StringBuilder("command=").append(commandName(args));
+		if (args.containsOption("call-id")) {
+			List<String> callIdValues = args.getOptionValues("call-id");
+			if (callIdValues != null && !callIdValues.isEmpty() && !callIdValues.getFirst().isBlank()) {
+				context.append(" call_id=").append(callIdValues.getFirst());
+			}
+		}
+		if (args.containsOption("scenario")) {
+			List<String> scenarioValues = args.getOptionValues("scenario");
+			if (scenarioValues != null && !scenarioValues.isEmpty() && !scenarioValues.getFirst().isBlank()) {
+				context.append(" scenario=").append(scenarioValues.getFirst());
+			}
+		}
+		return context.toString();
+	}
+
+	private String commandName(ApplicationArguments args) {
+		if (args.containsOption("list-runs")) {
+			return "list-runs";
+		}
+		if (args.containsOption("analyze-call")) {
+			return "analyze-call";
+		}
+		if (args.containsOption("review-conversation")) {
+			return "review-conversation";
+		}
+		if (args.containsOption("capture-artifacts")) {
+			return "capture-artifacts";
+		}
+		if (args.containsOption("scenario")) {
+			return "scenario";
+		}
+		return "none";
 	}
 }

@@ -15,6 +15,7 @@ import com.qaai.scenario.ScenarioValidator;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Map;
@@ -36,7 +37,9 @@ class RetellCallRunnerTest {
 						"test-retell-key",
 						"agent_123",
 						"+15555550100",
-						"https://api.example.test"
+						"https://api.example.test",
+						Duration.ofSeconds(30),
+						Duration.ofSeconds(60)
 				)
 		);
 		RetellCallRunner runner = new RetellCallRunner(
@@ -106,7 +109,8 @@ class RetellCallRunnerTest {
 				new PatientSimulationPromptBuilder(),
 				new ArtifactWriter(new ObjectMapper(), tempDir.resolve("outputs")),
 				retellClient(new AtomicReference<>()),
-				properties(new QaaiProperties.Retell("", "agent_123", "+15555550100", "https://api.example.test")),
+				properties(new QaaiProperties.Retell("", "agent_123", "+15555550100", "https://api.example.test",
+						Duration.ofSeconds(30), Duration.ofSeconds(60))),
 				Clock.systemUTC(),
 				() -> "test1234"
 		);

@@ -6,11 +6,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RunIndexWriter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RunIndexWriter.class);
 
 	private final ObjectMapper objectMapper;
 	private final Path outputBaseDir;
@@ -52,6 +56,8 @@ public class RunIndexWriter {
 			Files.createDirectories(outputBaseDir);
 			Files.writeString(indexPath(), objectMapper.writeValueAsString(entry) + System.lineSeparator(),
 					java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.APPEND);
+			LOGGER.info("Appended run index entry call_id={} status={} complete={} warnings={}", metadata.callId(),
+					metadata.status(), entry.complete(), entry.warnings());
 			return entry;
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to append run index entry for call_id: " + metadata.callId(),
