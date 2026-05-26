@@ -274,7 +274,7 @@ Important rule:
 
 Every bug finding must cite transcript evidence. The system must not fabricate evidence or make unsupported pass/fail decisions.
 
-### Phase 7: Reproducible QA Runs
+### Phase 7: Add reproducible run index and artifact completeness checks
 
 Make runs easy to repeat and compare.
 
@@ -282,15 +282,28 @@ Deliverables:
 
 - run index
 - scenario snapshots
-- rerun support
 - before/after notes
 - artifact completeness checks
+- local run listing
 
 Expected artifacts:
 
 ```text
 outputs/index.jsonl
 outputs/{call_id}/observations.md
+```
+
+Current Phase 7 implementation:
+
+- appends lifecycle entries to `outputs/index.jsonl`
+- records whether expected artifacts are complete for the run state
+- treats missing Retell audio as a warning instead of a hard failure
+- adds `--list-runs` for quick local inspection
+
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--list-runs"
 ```
 
 ### Phase 8: Expanded Conversation Quality Iteration

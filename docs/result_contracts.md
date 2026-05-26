@@ -90,6 +90,49 @@ Planned JSON shape:
 }
 ```
 
+## Run Index Contract
+
+Phase 7 writes append-only JSONL entries to:
+
+```text
+outputs/index.jsonl
+```
+
+Each line has this shape:
+
+```json
+{
+  "call_id": "call_20260523_001",
+  "scenario_id": "appointment_reschedule_001",
+  "run_mode": "retell",
+  "status": "artifacts_partially_captured",
+  "retell_call_id": "retell_call_123",
+  "started_at": "2026-05-23T10:00:00-04:00",
+  "ended_at": "2026-05-23T10:05:00-04:00",
+  "run_directory": "outputs/call_20260523_001",
+  "metadata_path": "outputs/call_20260523_001/metadata.json",
+  "complete": true,
+  "missing_required_artifacts": [],
+  "warnings": ["audio missing or unavailable"],
+  "artifact_paths": {
+    "scenario": "outputs/call_20260523_001/scenario.yaml",
+    "metadata": "outputs/call_20260523_001/metadata.json",
+    "transcript_text": "outputs/call_20260523_001/transcript.txt",
+    "transcript_json": "outputs/call_20260523_001/transcript.json",
+    "patient_simulation": "outputs/call_20260523_001/patient_simulation.md",
+    "audio": null,
+    "manifest": "outputs/call_20260523_001/manifest.json",
+    "analysis_json": null,
+    "analysis_markdown": null,
+    "observations_markdown": "outputs/call_20260523_001/observations.md"
+  }
+}
+```
+
+The index does not replace `metadata.json`. It is a chronological inspection
+aid, so the same `call_id` may appear in multiple entries as a run gains more
+artifacts.
+
 ## Severity Guidance
 
 Initial severity labels:
@@ -218,3 +261,22 @@ in the normalized transcript. The report must set `human_review_required` to
 `true`.
 
 Phase 6 still does not produce authoritative pass/fail decisions.
+
+## Phase 7 Contract Extension
+
+Phase 7 adds:
+
+- `outputs/index.jsonl`
+- an append-only index entry after successful artifact writes
+- artifact completeness derived from metadata paths and files on disk
+- `--list-runs` for local inspection
+
+Completeness is status-aware:
+
+- `completed` dry runs require scenario, metadata, transcript text, patient simulation, and observations
+- Retell call-start statuses require scenario, metadata, patient simulation, and observations
+- artifact capture statuses require transcript JSON/text and manifest in addition to call-start artifacts
+- `analysis_completed` also requires `analysis.json` and `analysis.md`
+
+Missing audio is a warning because recording availability depends on Retell
+capture output.

@@ -37,6 +37,19 @@ Candidate invariant:
 - Root cause: artifact loading resolved the `call_id` as a filesystem path segment before checking the allowed call id shape.
 - Why it may be Silver-relevant: the task is a small but real CLI hardening fix that crosses command handling, artifact path construction, process exit behavior, and a negative-path regression test.
 
+## Phase 7 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Reproducible run index and artifact completeness | `4b0dc98` | `bdd37b9` | Successful artifact writes should append a local run index entry that records run identity, status, artifact paths, completeness, and warnings without using the index to control workflow decisions. | Dry-run, Retell-start, capture, and analysis artifact writes append JSONL entries; completeness reports required missing artifacts by lifecycle status while unavailable audio is only a warning; `--list-runs` handles empty and populated indexes. |
+
+Candidate invariant:
+
+- Invariant: run history must be reproducible from written artifacts and must not become hidden workflow control state.
+- Symptom: before this phase, a reviewer had to inspect individual `outputs/{call_id}` folders manually and had no local lifecycle index or completeness summary.
+- Root cause: artifact bundles were persisted per call, but there was no append-only cross-run summary derived from metadata and files on disk.
+- Why it may be Silver-relevant: the task requires connecting artifact persistence, metadata contracts, lifecycle statuses, CLI inspection, and deterministic filesystem tests without introducing AI-driven pass/fail behavior.
+
 ## Test Expectations
 
 Silver-oriented tests should:

@@ -183,13 +183,30 @@ phases can add human notes after real call artifacts exist.
 
 ## Run Index
 
-Later phases may maintain:
+Phase 7 maintains:
 
 ```text
 outputs/index.jsonl
 ```
 
-Each line should summarize one run and point to its artifact bundle.
+Each line summarizes one completed artifact-write lifecycle step and points to
+the run artifact bundle. A single `call_id` can appear more than once as the run
+moves from call start to capture to analysis. The per-run `metadata.json`
+remains the source of truth; the index is an append-only inspection aid.
+
+Each index entry records:
+
+- `call_id`
+- `scenario_id`
+- `run_mode`
+- `status`
+- `retell_call_id`
+- start and end timestamps
+- run directory and metadata path
+- whether expected artifacts are complete for the current status
+- missing required artifact names
+- warnings, including unavailable optional audio
+- the current metadata artifact paths
 
 ## Evidence Rules
 
@@ -247,6 +264,33 @@ outputs/{call_id}/analysis.md
 If `manifest.json` already exists, Phase 6 appends `analysis_json` and
 `analysis_markdown` entries. AI-assisted findings are advisory and must be
 grounded in exact transcript quotes.
+
+## Phase 7 Artifact Bundle
+
+Phase 7 adds an append-only run index and artifact completeness checks.
+
+Any successful artifact write now appends an entry to:
+
+```text
+outputs/index.jsonl
+```
+
+The local inspection command is:
+
+```powershell
+.\gradlew bootRun --args="--list-runs"
+```
+
+Completeness is derived from the current `metadata.json` artifact paths and the
+files present on disk. Required artifacts vary by lifecycle status:
+
+- dry run: scenario, metadata, transcript text, patient simulation, observations
+- Retell call start: scenario, metadata, patient simulation, observations
+- artifact capture: scenario, metadata, transcript JSON/text, patient simulation, manifest, observations
+- analysis: captured artifacts plus analysis JSON and Markdown
+
+Audio remains optional because Retell may not provide a recording URL or a
+downloadable recording at capture time.
 
 ## Git Rules
 

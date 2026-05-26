@@ -61,6 +61,10 @@ Package:
 com.qaai.artifacts
 ```
 
+Phase 7 adds an append-only `outputs/index.jsonl` and status-aware artifact
+completeness checks. The index is derived from completed artifact writes; it
+does not drive workflow control.
+
 ### Retell
 
 Wraps Retell outbound call APIs, call lookup, transcript access, recording metadata, and later webhook handling.
@@ -146,3 +150,11 @@ Phase 5 adds scenario-driven patient simulation instructions. Dry-run and Retell
 call-start flows now write `patient_simulation.md`, and Retell receives
 `patient_name`, `call_reason`, and `patient_simulation_prompt` dynamic
 variables.
+
+Phase 6 adds single-call AI-assisted analysis after transcript capture.
+Analysis writes evidence-linked JSON and Markdown reports, requires human
+review, and rejects unsupported transcript evidence.
+
+Phase 7 adds reproducible run indexing and artifact completeness checks. Each
+successful artifact write appends a JSONL entry under `outputs/index.jsonl`, and
+`--list-runs` prints the local run history for inspection.
