@@ -270,7 +270,7 @@ public class ArtifactCaptureService {
 			return "patient";
 		}
 		if ("user".equalsIgnoreCase(role)) {
-			return "agent";
+			return "receptionist";
 		}
 		if (isBlank(role)) {
 			return "unknown";

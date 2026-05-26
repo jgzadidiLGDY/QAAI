@@ -38,7 +38,7 @@ public class AnalysisPromptBuilder {
 				      "evidence": [
 				        {
 				          "artifact": "transcript.txt",
-				          "speaker": "patient|agent|unknown",
+				          "speaker": "patient|receptionist|unknown",
 				          "quote": "exact quote from one transcript turn",
 				          "timestamp": null
 				        }

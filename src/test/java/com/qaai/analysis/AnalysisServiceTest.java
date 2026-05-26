@@ -115,7 +115,8 @@ class AnalysisServiceTest {
 								"appointment_rescheduling",
 								"Expected behavior",
 								"Actual behavior",
-								List.of(new EvidenceReference("transcript.txt", "agent", "This quote does not exist.", null))
+								List.of(new EvidenceReference("transcript.txt", "receptionist",
+										"This quote does not exist.", null))
 						)),
 						List.of()
 				)
@@ -176,11 +177,12 @@ class AnalysisServiceTest {
 						"retell",
 						List.of(
 								new TranscriptTurn(1, "patient", "Hi, I need to reschedule my appointment.", 0.5),
-								new TranscriptTurn(2, "agent", "I can put in a request.", 1.0)
+								new TranscriptTurn(2, "receptionist", "I can put in a request.", 1.0)
 						)
 				)
 		);
-		Files.writeString(runDirectory.resolve("transcript.txt"), "1. [patient] Hi%n2. [agent] I can put in a request.%n".formatted());
+		Files.writeString(runDirectory.resolve("transcript.txt"),
+				"1. [patient] Hi%n2. [receptionist] I can put in a request.%n".formatted());
 		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
 				runDirectory.resolve("metadata.json").toFile(),
 				metadata(callId, runDirectory, runDirectory.resolve("transcript.json").toString())
@@ -272,7 +274,8 @@ class AnalysisServiceTest {
 						"appointment_rescheduling",
 						"Agent confirms a new appointment date and time.",
 						"Agent only said a request would be entered.",
-						List.of(new EvidenceReference("transcript.txt", "agent", "I can put in a request.", 1.0))
+						List.of(new EvidenceReference("transcript.txt", "receptionist",
+								"I can put in a request.", 1.0))
 				)),
 				List.of("Human review should confirm whether this workflow later completed elsewhere.")
 		);

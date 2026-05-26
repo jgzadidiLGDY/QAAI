@@ -19,7 +19,7 @@ class AnalysisPromptBuilderTest {
 				"retell",
 				List.of(
 						new TranscriptTurn(1, "patient", "Hi, I need to reschedule my appointment.", 0.5),
-						new TranscriptTurn(2, "agent", "I can help with that.", 1.0)
+						new TranscriptTurn(2, "receptionist", "I can help with that.", 1.0)
 				)
 		);
 
@@ -31,6 +31,8 @@ class AnalysisPromptBuilderTest {
 				"scenario_id: appointment_reschedule_001",
 				"expected_outcome: Agent confirms a new appointment date and time.",
 				"1. speaker=patient timestamp=0.5 text=Hi, I need to reschedule my appointment.",
+				"2. speaker=receptionist timestamp=1.0 text=I can help with that.",
+				"\"speaker\": \"patient|receptionist|unknown\"",
 				"\"human_review_required\": true"
 		);
 	}
