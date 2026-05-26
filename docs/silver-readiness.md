@@ -90,6 +90,19 @@ Candidate invariant:
 - Root cause: Retell, recording download, and OpenAI integrations were implemented as narrow happy-path clients before repeated real-call operation was the priority.
 - Why it may be Silver-relevant: the task crosses configuration binding, HTTP client setup, provider error handling, command failure context, and deterministic client tests while preserving artifact and human-review boundaries.
 
+## Phase 10 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Analyzer provider selection | `3444632` | `580438f` | Call analysis should be selectable between OpenAI, a deterministic local analyzer, and a disabled mode while preserving evidence validation, human-review requirements, and analyzer provider/model metadata. | Configured local analysis produces stable advisory analysis artifacts without network access and records provider/model metadata; disabled analysis fails clearly; OpenAI remains selectable and keeps provider/model reporting. |
+
+Candidate invariant:
+
+- Invariant: analysis provider choice must be explicit and reproducible, while report validation remains provider-independent.
+- Symptom: before this phase, `--analyze-call` was coupled to OpenAI, so offline demos and tests could not exercise the full analysis artifact flow without external provider credentials.
+- Root cause: the analysis client interface accepted only a prompt string and exposed no provider identity or deterministic local implementation.
+- Why it may be Silver-relevant: the task crosses configuration binding, Spring provider selection, artifact metadata, analysis service validation, and deterministic tests without letting AI own pass/fail decisions.
+
 ## Test Expectations
 
 Silver-oriented tests should:

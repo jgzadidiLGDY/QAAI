@@ -32,7 +32,8 @@ Planned shape:
     "patient_simulation": "outputs/call_20260523_001/patient_simulation.md",
     "transcript_text": "outputs/call_20260523_001/transcript.txt",
     "observations_markdown": "outputs/call_20260523_001/observations.md"
-  }
+  },
+  "analysis": null
 }
 ```
 
@@ -333,21 +334,35 @@ environment-configurable and safe for local development.
 
 Phase 10 makes the analyzer module explicitly pluggable:
 
-- workflow code continues to depend on an analyzer interface
-- analyzer provider selection is environment-configurable
-- a deterministic local analyzer is available for tests, demos, and offline workflows
+- workflow code depends on an analyzer interface
+- analyzer provider selection is environment-configurable with `QAAI_ANALYZER_PROVIDER`
+- supported values are `openai`, `local`, and `disabled`
+- the deterministic local analyzer is available for tests, demos, and offline workflows
 - the OpenAI-backed analyzer has adapter-level tests
 - analysis artifacts remain evidence-linked and human-reviewed
+- `metadata.json` records analyzer provider and model after successful analysis
 
-Expected configuration additions may include:
+Configuration:
 
 ```text
-QAAI_ANALYSIS_PROVIDER=openai
+QAAI_ANALYZER_PROVIDER=openai
 OPENAI_ANALYSIS_MODEL=gpt-4.1-mini
 ```
 
-Analysis metadata should record provider and model when practical so a reviewer
-can understand how `analysis.json` and `analysis.md` were produced.
+Successful analysis extends run metadata:
+
+```json
+{
+  "status": "analysis_completed",
+  "analysis": {
+    "provider": "local",
+    "model": "deterministic-v1"
+  }
+}
+```
+
+The `disabled` provider does not write analysis artifacts. It fails clearly when
+`--analyze-call` is requested.
 
 ## Phase 11 Contract Direction
 

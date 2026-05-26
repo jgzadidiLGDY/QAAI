@@ -386,13 +386,21 @@ Goal:
 Make AI-assisted analysis a replaceable module while preserving the deterministic
 workflow and evidence-validation boundary.
 
-Planned deliverables:
+Current Phase 10 implementation:
 
-- explicit analyzer provider selection, for example OpenAI, deterministic stub, or disabled
-- a deterministic local analyzer for demos, tests, and offline workflows
-- documented analyzer input/output contract
-- adapter-level tests for the OpenAI-backed analyzer
-- metadata that records analyzer provider and model for reproducibility
+- `QAAI_ANALYZER_PROVIDER=openai|local|disabled`
+- OpenAI remains the default analyzer provider
+- `local` produces deterministic advisory analysis artifacts without network access
+- `disabled` rejects `--analyze-call` with a clear error
+- `metadata.json` records analyzer provider and model after successful analysis
+- all analyzer reports still pass through the same evidence and human-review validation boundary
+
+Local deterministic analysis example:
+
+```powershell
+$env:QAAI_ANALYZER_PROVIDER="local"
+.\gradlew bootRun --args="--analyze-call --call-id=<local_call_id>"
+```
 
 ### Phase 11: Run Inspection and Workflow UX
 
@@ -532,14 +540,13 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 9 should harden reliability and observability before the project expands
-its analysis and workflow surface:
+Phase 11 should make repeated local QA work easier to inspect and recover from:
 
 ```text
-Add bounded external API calls, useful logs, direct client tests, and clearer
-failure context for Retell, OpenAI, and recording capture paths.
+Add one-run inspection, useful run filters, clearer command validation, and
+concise help output for the local workflow.
 ```
 
-This should build on the existing artifact capture, analysis, run index, and
-conversation-quality review behavior without changing the human-owned pass/fail
-boundary.
+This should build on the existing artifact capture, analysis, run index,
+conversation-quality review, and analyzer selection behavior without changing
+the human-owned pass/fail boundary.

@@ -140,6 +140,7 @@ Expected fields over time:
 - `ended_at`
 - `status`
 - `artifact_paths`
+- `analysis` after successful analysis, including analyzer provider and model
 
 ### `transcript.txt`
 
@@ -257,6 +258,10 @@ outputs/{call_id}/analysis.md
   "artifact_paths": {
     "analysis_json": "outputs/call_20260523_001/analysis.json",
     "analysis_markdown": "outputs/call_20260523_001/analysis.md"
+  },
+  "analysis": {
+    "provider": "openai",
+    "model": "gpt-4.1-mini"
   }
 }
 ```
@@ -319,6 +324,30 @@ unavailable rather than inferred.
 The command appends a run index entry after writing observations. It does not
 change `metadata.status`, does not create pass/fail decisions, and does not
 rewrite historical artifacts outside the requested `call_id`.
+
+## Phase 10 Artifact Bundle
+
+Phase 10 keeps the Phase 6 analysis artifact shape, but makes the analyzer
+provider explicit. After successful analysis, `metadata.json` records:
+
+```json
+{
+  "analysis": {
+    "provider": "local",
+    "model": "deterministic-v1"
+  }
+}
+```
+
+The supported providers are:
+
+- `openai`: OpenAI-backed analysis, using `OPENAI_ANALYSIS_MODEL`
+- `local`: deterministic local analyzer for offline workflow checks
+- `disabled`: explicit mode that rejects analysis requests
+
+All successful providers still write `analysis.json` and `analysis.md` through
+the same service-level validation. Findings remain advisory, evidence-linked,
+and human-reviewed.
 
 ## MVP+ Artifact Trust Direction
 

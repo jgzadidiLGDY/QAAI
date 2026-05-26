@@ -48,13 +48,14 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 7 Closeout](docs/phase-7-closeout.md)
 - [Phase 7a Closeout](docs/phase-7a-closeout.md)
 - [Phase 8 Closeout](docs/phase-8-closeout.md)
+- [Phase 9 Closeout](docs/phase-9-closeout.md)
+- [Phase 10 Closeout](docs/phase-10-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 8 added deterministic conversation-quality review for existing local runs.
-The `--review-conversation --call-id=<local_call_id>` command refreshes
-`observations.md` from scenario guidance and available transcript evidence while
-preserving the human-owned pass/fail boundary.
+Phase 10 added analyzer provider selection. `--analyze-call` can now use OpenAI,
+a deterministic local analyzer, or a disabled mode while preserving shared
+report validation, evidence requirements, and human-owned review.
 
 ## MVP+ Direction
 
