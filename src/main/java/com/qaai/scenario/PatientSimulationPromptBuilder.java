@@ -67,6 +67,12 @@ public class PatientSimulationPromptBuilder {
 		prompt.append("Use the suggested turns as the planned patient path, but answer direct questions naturally ")
 				.append("using only the known facts above. Do not claim success unless the success condition is clearly met.")
 				.append(System.lineSeparator());
+		prompt.append("If the receptionist gives a vague response or leaves a pause, ask one short follow-up that keeps ")
+				.append("the workflow moving toward the success condition.")
+				.append(System.lineSeparator());
+		prompt.append("Avoid front-loading facts. Share one relevant fact at a time, and wait for the receptionist ")
+				.append("to ask for the next detail when possible.")
+				.append(System.lineSeparator());
 
 		return prompt.toString();
 	}

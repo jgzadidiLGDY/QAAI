@@ -4,6 +4,8 @@ import com.qaai.analysis.AnalysisResult;
 import com.qaai.analysis.AnalysisService;
 import com.qaai.artifacts.RunIndexEntry;
 import com.qaai.artifacts.RunIndexWriter;
+import com.qaai.quality.ConversationQualityReviewResult;
+import com.qaai.quality.ConversationQualityReviewService;
 import java.nio.file.Path;
 import java.util.List;
 import org.springframework.boot.ApplicationArguments;
@@ -19,6 +21,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final ArtifactCaptureService artifactCaptureService;
 	private final AnalysisService analysisService;
 	private final RunIndexWriter runIndexWriter;
+	private final ConversationQualityReviewService conversationQualityReviewService;
 	private int exitCode;
 
 	public ScenarioRunnerCommand(
@@ -26,13 +29,15 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			RetellCallRunner retellCallRunner,
 			ArtifactCaptureService artifactCaptureService,
 			AnalysisService analysisService,
-			RunIndexWriter runIndexWriter
+			RunIndexWriter runIndexWriter,
+			ConversationQualityReviewService conversationQualityReviewService
 	) {
 		this.dryRunRunner = dryRunRunner;
 		this.retellCallRunner = retellCallRunner;
 		this.artifactCaptureService = artifactCaptureService;
 		this.analysisService = analysisService;
 		this.runIndexWriter = runIndexWriter;
+		this.conversationQualityReviewService = conversationQualityReviewService;
 	}
 
 	@Override
@@ -63,6 +68,17 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("status: " + result.metadata().status());
 			System.out.println("analysis_json: " + result.analysisJson());
 			System.out.println("analysis_markdown: " + result.analysisMarkdown());
+			return;
+		}
+
+		if (args.containsOption("review-conversation")) {
+			ConversationQualityReviewResult result = conversationQualityReviewService.review(
+					callId(args, "--review-conversation")
+			);
+			System.out.println("Conversation-quality review completed");
+			System.out.println("call_id: " + result.metadata().callId());
+			System.out.println("status: " + result.metadata().status());
+			System.out.println("observations_markdown: " + result.observationsMarkdown());
 			return;
 		}
 

@@ -44,7 +44,9 @@ class PatientSimulationPromptBuilderTest {
 				"- Patient has an existing appointment.",
 				"- Do not invent insurance details.",
 				"1. Hi, I need to reschedule my appointment. [intent: greeting]",
-				"Do not claim success unless the success condition is clearly met."
+				"Do not claim success unless the success condition is clearly met.",
+				"If the receptionist gives a vague response or leaves a pause",
+				"Avoid front-loading facts."
 		);
 	}
 }

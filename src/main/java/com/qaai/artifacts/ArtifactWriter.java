@@ -168,6 +168,28 @@ public class ArtifactWriter {
 		}
 	}
 
+	public Path writeConversationQualityReview(
+			String callId,
+			RunMetadata metadata,
+			String observationsMarkdown
+	) {
+		Path runDirectory = runDirectory(callId);
+		Path observationsPath = runDirectory.resolve("observations.md");
+
+		try {
+			Files.createDirectories(runDirectory);
+			Files.writeString(observationsPath, observationsMarkdown);
+			runIndexWriter.append(metadata);
+		} catch (IOException exception) {
+			throw new ArtifactWriteException(
+					"Unable to write conversation-quality observations for call_id: " + callId,
+					exception
+			);
+		}
+
+		return observationsPath;
+	}
+
 	public List<RunIndexEntry> readRunIndex() {
 		return runIndexWriter.readAll();
 	}
