@@ -165,6 +165,25 @@ class RetellClientTest {
 	}
 
 	@Test
+	void classifiesGetCallHttpErrors() {
+		RestClient.Builder builder = RestClient.builder().baseUrl("https://api.example.test");
+		MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+		RetellClient client = new RetellClient(builder.build(), "test-api-key");
+
+		server.expect(requestTo("https://api.example.test/v2/get-call/retell_call_123"))
+				.andExpect(method(GET))
+				.andRespond(withServerError().body("retell unavailable"));
+
+		assertThatThrownBy(() -> client.getCall("retell_call_123"))
+				.isInstanceOf(RetellApiException.class)
+				.hasMessageContaining("Provider retell operation get-call failed")
+				.hasMessageContaining("HTTP 500")
+				.hasMessageContaining("retell unavailable");
+
+		server.verify();
+	}
+
+	@Test
 	void downloadsRecordingWithSeparateRecordingClient() {
 		RestClient.Builder apiBuilder = RestClient.builder().baseUrl("https://api.example.test");
 		RestClient.Builder recordingBuilder = RestClient.builder();
