@@ -299,3 +299,90 @@ transcript evidence is missing, the artifact must say it is unavailable.
 
 Phase 8 does not change the run status, does not score conversation quality, and
 does not produce authoritative pass/fail decisions.
+
+## MVP+ Contract Direction
+
+Phases 9 through 12 move the project into an MVP+ stage. Contract changes in
+this stage should strengthen reliability, inspection, and reproducibility
+without replacing the existing local file model.
+
+MVP+ contract changes should be additive where possible. Existing artifacts
+should remain readable unless a later phase explicitly documents a migration.
+
+## Phase 9 Contract Direction
+
+Phase 9 hardens reliability and observability:
+
+- external Retell, OpenAI, and recording-download calls should have explicit timeout configuration
+- provider failures should include useful provider and operation context
+- command-level failures should include local context such as `call_id` when available
+- important lifecycle events should be logged
+- logs must not include API keys, full prompts, full transcript bodies, or audio contents by default
+
+Expected configuration additions may include:
+
+```text
+QAAI_HTTP_CONNECT_TIMEOUT_SECONDS=
+QAAI_HTTP_READ_TIMEOUT_SECONDS=
+```
+
+Exact names may change during implementation, but timeout values should be
+environment-configurable and safe for local development.
+
+## Phase 10 Contract Direction
+
+Phase 10 makes the analyzer module explicitly pluggable:
+
+- workflow code continues to depend on an analyzer interface
+- analyzer provider selection is environment-configurable
+- a deterministic local analyzer is available for tests, demos, and offline workflows
+- the OpenAI-backed analyzer has adapter-level tests
+- analysis artifacts remain evidence-linked and human-reviewed
+
+Expected configuration additions may include:
+
+```text
+QAAI_ANALYSIS_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4.1-mini
+```
+
+Analysis metadata should record provider and model when practical so a reviewer
+can understand how `analysis.json` and `analysis.md` were produced.
+
+## Phase 11 Contract Direction
+
+Phase 11 improves run inspection and workflow UX:
+
+- `--show-run --call-id=<local_call_id>` should summarize one local run
+- run listing should support useful filters such as scenario, status, or run mode
+- commands should fail clearly when requested before required artifacts exist
+- help output should make the supported local workflow discoverable
+
+Run inspection output is an operator convenience. It should read existing
+metadata, index, and manifest artifacts rather than becoming a second source of
+truth.
+
+## Phase 12 Contract Direction
+
+Phase 12 consolidates MVP+ documentation and artifact trust:
+
+- README should describe setup, dry-run, real-call, capture, review, analyze, and test workflows
+- status lifecycle documentation should explain valid run states and command order
+- artifact completeness rules should be documented with troubleshooting guidance
+- security and privacy notes should reinforce authorized test calls and no real patient data
+- reproducibility metadata should be expanded where practical
+
+Potential metadata additions include:
+
+```json
+{
+  "command": "analyze-call",
+  "app_version": "0.0.1-SNAPSHOT",
+  "git_commit": "optional",
+  "analysis_provider": "openai",
+  "analysis_model": "gpt-4.1-mini"
+}
+```
+
+These fields are directional for MVP+ and should be introduced only when they
+are useful, tested, and documented.

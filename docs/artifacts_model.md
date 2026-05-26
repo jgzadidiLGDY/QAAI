@@ -319,3 +319,19 @@ unavailable rather than inferred.
 The command appends a run index entry after writing observations. It does not
 change `metadata.status`, does not create pass/fail decisions, and does not
 rewrite historical artifacts outside the requested `call_id`.
+
+## MVP+ Artifact Trust Direction
+
+Phases 9 through 12 should make artifact bundles easier to trust during repeated
+real QA work.
+
+Expected additions should remain local-first and additive:
+
+- provider timeout and failure context should be visible in command output or logs
+- metadata may record the command, analyzer provider, analyzer model, app version, and git commit when practical
+- manifests should continue to describe missing or partial artifacts without fabricating completion
+- run inspection commands should read existing artifacts rather than creating a competing source of truth
+- docs should explain which artifacts are required, optional, unavailable, or advisory for each run state
+
+The artifact model should continue avoiding committed run outputs, credentials,
+recordings, and real patient data.

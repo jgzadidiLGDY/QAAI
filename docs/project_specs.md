@@ -36,6 +36,27 @@ The first useful version should:
 - run AI-assisted analysis over completed artifacts
 - produce structured bug findings with transcript evidence
 
+## MVP+ Scope
+
+The MVP+ project stage starts after the basic end-to-end workflow exists:
+scenario execution, Retell call start, artifact capture, AI-assisted analysis,
+run indexing, and conversation-quality review.
+
+MVP+ should make that workflow reliable enough for repeated local QA use by a
+human reviewer. The system should:
+
+- bound external Retell, OpenAI, and recording-download calls with timeouts
+- report provider and command failures with useful local context
+- log important lifecycle events without exposing secrets or full transcript content
+- keep AI analysis behind a pluggable module boundary
+- support a deterministic local analyzer for tests, demos, and offline review
+- make runs easy to inspect through focused CLI commands
+- record enough metadata to reproduce or compare a run later
+- keep README and operator docs accurate for setup, run, capture, review, analyze, and test workflows
+
+MVP+ should not add broad orchestration, autonomous pass/fail decisions, or a
+database unless a later milestone proves they are necessary.
+
 ## Non-Goals
 
 This project is not:
@@ -79,6 +100,14 @@ A phase is successful when:
 - docs are current
 - tests cover the behavior introduced
 - scope remains controlled
+
+An MVP+ milestone is successful when:
+
+- external calls have timeout and error behavior covered by tests
+- artifacts remain linked by `call_id` and are inspectable on disk
+- analysis remains advisory, evidence-linked, and replaceable
+- run inspection helps a reviewer understand current state without reading every file manually
+- setup, run, capture, review, analyze, and test commands are documented accurately
 
 ## AI Boundary
 

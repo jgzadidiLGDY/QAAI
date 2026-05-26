@@ -43,9 +43,9 @@ Additional project docs:
 - **Build tool:** Gradle
 - **Scenario format:** YAML first, JSON-compatible data model
 - **Voice platform:** Retell AI for outbound call execution, agent configuration, transcripts, recordings, and call metadata
-- **AI analysis:** OpenAI Java SDK
+- **AI analysis:** pluggable analysis client, initially backed by OpenAI over HTTP
 - **Serialization:** Jackson
-- **Testing:** JUnit 5, AssertJ, WireMock
+- **Testing:** JUnit 5, AssertJ, Spring HTTP client test support
 - **Storage:** local filesystem first under `outputs/`
 
 Retell AI should own the low-level voice infrastructure. This project should own the QA workflow, scenarios, artifacts, and analysis.
@@ -353,6 +353,76 @@ Local usage after a run exists:
 .\gradlew bootRun --args="--review-conversation --call-id=<local_call_id>"
 ```
 
+## MVP+ Scope Expansion
+
+The project has reached a strong enough base to move from phase-built prototype
+work into an MVP+ stage. MVP+ means the tool should support repeated real QA
+runs with bounded external-call failures, inspectable artifacts, a replaceable
+analysis module, useful run inspection, and operator-focused documentation.
+
+MVP+ remains intentionally local-first and human-reviewed. It does not turn the
+system into a production healthcare voice platform, and it does not give AI
+ownership of pass/fail decisions.
+
+### Phase 9: Reliability and Observability Hardening
+
+Goal:
+
+Make real-call and analysis workflows fail predictably and produce enough
+context for a human operator to understand what happened.
+
+Planned deliverables:
+
+- explicit timeout configuration for Retell, OpenAI, and recording downloads
+- tested HTTP error handling for provider failures and malformed responses
+- clearer command failure context including `call_id`, command, provider, and artifact path where relevant
+- application logging for important lifecycle events without logging secrets, full prompts, or transcript bodies by default
+- direct tests for external-client success and failure paths
+
+### Phase 10: Analyzer Pluggability
+
+Goal:
+
+Make AI-assisted analysis a replaceable module while preserving the deterministic
+workflow and evidence-validation boundary.
+
+Planned deliverables:
+
+- explicit analyzer provider selection, for example OpenAI, deterministic stub, or disabled
+- a deterministic local analyzer for demos, tests, and offline workflows
+- documented analyzer input/output contract
+- adapter-level tests for the OpenAI-backed analyzer
+- metadata that records analyzer provider and model for reproducibility
+
+### Phase 11: Run Inspection and Workflow UX
+
+Goal:
+
+Make local runs easier to inspect, filter, and recover from during real QA work.
+
+Planned deliverables:
+
+- `--show-run --call-id=<local_call_id>` for one-run inspection
+- filtered run listing by scenario, status, or run mode
+- clearer command validation when capture, review, or analysis is requested too early
+- concise help output when no command is provided
+- optional convenience affordances for local iteration, such as latest-run inspection
+
+### Phase 12: MVP+ Documentation and Artifact Trust
+
+Goal:
+
+Turn the accumulated phase history into a practical operator guide and make
+artifact completeness easier to trust.
+
+Planned deliverables:
+
+- operator-focused README sections for setup, dry runs, real calls, capture, review, and analysis
+- documented run status lifecycle
+- documented artifact completeness rules and troubleshooting paths
+- security and privacy notes for authorized test calls and no real patient data
+- metadata refinements for reproducibility, such as command context, analyzer provider/model, and app or git version where practical
+
 ## Proposed Folder Structure
 
 ```text
@@ -462,11 +532,14 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 6 should add AI-assisted analysis after transcript artifacts exist:
+Phase 9 should harden reliability and observability before the project expands
+its analysis and workflow surface:
 
 ```text
-Generate evidence-linked analysis.json and analysis.md from captured transcripts.
+Add bounded external API calls, useful logs, direct client tests, and clearer
+failure context for Retell, OpenAI, and recording capture paths.
 ```
 
-This should build on Phase 4's artifact capture and Phase 5's scenario-driven
-patient simulation without changing the human-owned pass/fail boundary.
+This should build on the existing artifact capture, analysis, run index, and
+conversation-quality review behavior without changing the human-owned pass/fail
+boundary.

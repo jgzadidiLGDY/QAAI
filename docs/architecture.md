@@ -75,6 +75,11 @@ Package:
 com.qaai.retell
 ```
 
+MVP+ hardening should give all Retell and recording-download HTTP calls explicit
+timeouts, provider-specific error messages, and tests for failed or malformed
+responses. Retell failures should be visible to the operator, but they should
+not corrupt existing run artifacts.
+
 ### Analysis
 
 Runs AI-assisted review after transcripts and metadata are available. Analysis must cite transcript evidence and produce structured outputs for humans.
@@ -85,6 +90,18 @@ Package:
 com.qaai.analysis
 ```
 
+The analysis module is a pluggable component. Workflow code depends on the
+`AnalysisClient` boundary, not directly on a specific AI provider. MVP+ should
+make provider selection explicit and support at least:
+
+- an OpenAI-backed analyzer for real analysis
+- a deterministic local analyzer for tests, demos, and offline workflows
+- a disabled or unavailable analyzer state that fails clearly when analysis is requested
+
+Analysis output remains advisory. The service layer should continue validating
+`call_id`, `scenario_id`, `human_review_required`, and exact transcript
+evidence before writing analysis artifacts.
+
 ### Config
 
 Owns typed application settings, environment variable binding, and local defaults that are safe for tests.
@@ -94,6 +111,28 @@ Package:
 ```text
 com.qaai.config
 ```
+
+MVP+ configuration should include safe defaults for local runs and explicit
+environment-backed settings for provider credentials, analyzer selection,
+models, and HTTP timeout values. Secrets must remain outside committed files.
+
+### Observability
+
+Observability should explain what the deterministic workflow did without
+turning logs into another artifact store.
+
+MVP+ logging should cover:
+
+- command start and completion
+- scenario load and validation
+- Retell call request and returned external call id
+- artifact capture start, completion, and partial-capture reasons
+- analysis start, completion, provider, and model
+- run inspection and artifact completeness warnings
+
+Logs should include identifiers such as `call_id`, `scenario_id`, status, and
+artifact paths where useful. Logs should not include API keys, full prompts,
+full transcript text, or audio contents by default.
 
 ## Storage Model
 
@@ -158,3 +197,21 @@ review, and rejects unsupported transcript evidence.
 Phase 7 adds reproducible run indexing and artifact completeness checks. Each
 successful artifact write appends a JSONL entry under `outputs/index.jsonl`, and
 `--list-runs` prints the local run history for inspection.
+
+Phase 8 adds deterministic conversation-quality review for existing runs. It
+refreshes `observations.md` from scenario guidance and available transcript
+evidence while keeping review advisory.
+
+Phase 9 hardens reliability and observability. It should add bounded external
+HTTP behavior, provider failure context, and lifecycle logging before the
+workflow surface grows further.
+
+Phase 10 makes analysis provider selection explicit and keeps the analyzer
+module replaceable behind the existing client boundary.
+
+Phase 11 improves run inspection and workflow UX through focused CLI commands,
+status-aware command validation, and clearer help output.
+
+Phase 12 consolidates MVP+ documentation and artifact trust by updating
+operator docs, status lifecycle documentation, artifact completeness guidance,
+and reproducibility metadata.

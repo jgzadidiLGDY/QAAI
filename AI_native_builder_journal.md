@@ -56,6 +56,21 @@ The `--review-conversation --call-id=<local_call_id>` command refreshes
 `observations.md` from scenario guidance and available transcript evidence while
 preserving the human-owned pass/fail boundary.
 
+## MVP+ Direction
+
+After the interim review, the project scope expands into an MVP+ stage. MVP+
+keeps the same disciplined build model, but shifts the next milestones toward
+real-world repeatability:
+
+- Phase 9: reliability and observability hardening
+- Phase 10: analyzer pluggability
+- Phase 11: run inspection and workflow UX
+- Phase 12: MVP+ documentation and artifact trust
+
+This expansion does not change the core boundary: deterministic workflow code
+owns orchestration, artifacts provide evidence, AI assists with analysis, and
+humans own final review.
+
 ## Additional Implementation Notes
 
 Additional notes will be made available for future implementation or extensions.
