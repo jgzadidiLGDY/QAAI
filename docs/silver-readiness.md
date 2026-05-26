@@ -76,6 +76,19 @@ Candidate invariant:
 - Root cause: observations were created at dry-run or call-start time and were not connected to normalized captured transcript turns after Phase 7a role clarification.
 - Why it may be Silver-relevant: the task crosses CLI routing, artifact loading and writing, scenario validation, normalized transcript role semantics, prompt behavior, and deterministic filesystem tests without relying on external services.
 
+## Phase 9 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Provider reliability and observability hardening | `9ffdc24` | `5e02594` | External Retell, recording-download, and OpenAI analysis calls should use bounded timeouts, classify provider failures with operation-specific errors, reject malformed provider responses clearly, and emit lifecycle logs without logging secrets, full prompts, or transcript bodies. | Retell and OpenAI client tests cover HTTP failures, missing provider bodies, recording-download failures, configured timeout binding, and command failure context; provider errors include provider/operation/status while analysis errors do not echo the prompt. |
+
+Candidate invariant:
+
+- Invariant: external provider calls must fail predictably with provider and operation context, and local logs must describe lifecycle progress without becoming another artifact store for sensitive content.
+- Symptom: before this phase, provider clients had no explicit timeout configuration, some provider failures used generic error text, OpenAI HTTP errors were not classified before response parsing, and workflow logs did not consistently expose lifecycle progress.
+- Root cause: Retell, recording download, and OpenAI integrations were implemented as narrow happy-path clients before repeated real-call operation was the priority.
+- Why it may be Silver-relevant: the task crosses configuration binding, HTTP client setup, provider error handling, command failure context, and deterministic client tests while preserving artifact and human-review boundaries.
+
 ## Test Expectations
 
 Silver-oriented tests should:
