@@ -1,6 +1,8 @@
 # Conversation Quality Notes
 
-Phase 2 keeps conversation-quality iteration local and deterministic.
+Phase 2 kept conversation-quality iteration local and deterministic. Phase 8
+adds a transcript-aware review command that refreshes observations from captured
+artifacts without making pass/fail decisions.
 
 ## Current Focus
 
@@ -31,8 +33,41 @@ outputs/{call_id}/observations.md
 `observations.md` is a deterministic starting point for human review. It does
 not score the call, decide pass/fail, or invent evidence.
 
-## Later Iteration
+## Phase 8 Review Command
 
-After Retell calls and real transcripts exist, reviewers can compare actual
-agent behavior against the scenario's expected risks and add grounded notes to
-the observation artifact.
+Run conversation-quality review for an existing local run:
+
+```powershell
+.\gradlew bootRun --args="--review-conversation --call-id=<local_call_id>"
+```
+
+The command reads:
+
+- `outputs/{call_id}/metadata.json`
+- `outputs/{call_id}/scenario.yaml`
+- `outputs/{call_id}/transcript.json` when available
+
+It refreshes:
+
+```text
+outputs/{call_id}/observations.md
+```
+
+The generated observations include:
+
+- scenario conversation-quality guidance
+- welcome behavior evidence
+- initiative and over-sharing prompts for review
+- pacing evidence
+- clarification and confusion-recovery evidence
+- workflow movement evidence
+- a human reviewer notes placeholder
+
+When transcript evidence is unavailable, the artifact says so explicitly and
+does not infer conversation quality.
+
+## Review Boundary
+
+The review command is deterministic and evidence-oriented. It may cite transcript
+turns and highlight review questions, but it does not score the call, decide
+pass/fail, or replace human judgment.

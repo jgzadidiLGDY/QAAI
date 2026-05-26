@@ -63,6 +63,19 @@ Candidate invariant:
 - Root cause: Retell `user` transcript turns were mapped to the generic label `agent` during normalization.
 - Why it may be Silver-relevant: the task is small and behavioral, but it crosses transcript capture, human-readable artifacts, analysis prompt contracts, evidence validation fixtures, and documentation.
 
+## Phase 8 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Transcript-aware conversation-quality review | `000640b` | `722419b` | Existing runs should be reviewable by local `call_id`, refreshing `observations.md` from scenario guidance and captured transcript evidence while explicitly marking missing evidence unavailable and preserving human-owned pass/fail decisions. | A run with `metadata.json`, `scenario.yaml`, and `transcript.json` writes observations citing patient and receptionist turn numbers for welcome, initiative, pacing, clarification, and workflow movement; a run without `transcript.json` records evidence as unavailable instead of inventing observations; `--review-conversation` rejects missing `call_id`. |
+
+Candidate invariant:
+
+- Invariant: conversation-quality observations must be grounded in scenario guidance and available transcript turns, and must remain advisory.
+- Symptom: before this phase, reviewers had scenario-owned guidance and captured transcripts, but no deterministic command to refresh observations from the actual run evidence.
+- Root cause: observations were created at dry-run or call-start time and were not connected to normalized captured transcript turns after Phase 7a role clarification.
+- Why it may be Silver-relevant: the task crosses CLI routing, artifact loading and writing, scenario validation, normalized transcript role semantics, prompt behavior, and deterministic filesystem tests without relying on external services.
+
 ## Test Expectations
 
 Silver-oriented tests should:

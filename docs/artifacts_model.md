@@ -297,3 +297,25 @@ downloadable recording at capture time.
 Generated artifacts under `outputs/` are ignored by Git except for `outputs/.gitkeep`.
 
 Scenario definitions, docs, and code should be committed. Real credentials, recordings, and generated run outputs should not be committed.
+
+## Phase 8 Artifact Bundle
+
+Phase 8 adds deterministic conversation-quality review for an existing local run:
+
+```powershell
+.\gradlew bootRun --args="--review-conversation --call-id=<local_call_id>"
+```
+
+The command refreshes:
+
+```text
+outputs/{call_id}/observations.md
+```
+
+It uses the scenario snapshot and, when available, normalized transcript turns to
+cite evidence by turn number. Missing transcript evidence is recorded as
+unavailable rather than inferred.
+
+The command appends a run index entry after writing observations. It does not
+change `metadata.status`, does not create pass/fail decisions, and does not
+rewrite historical artifacts outside the requested `call_id`.

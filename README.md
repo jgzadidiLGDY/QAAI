@@ -338,6 +338,21 @@ outputs/{call_id}/observations.md
 docs/conversation-quality-notes.md
 ```
 
+Current Phase 8 implementation:
+
+- adds `--review-conversation --call-id=<local_call_id>`
+- refreshes `observations.md` from scenario guidance and transcript evidence
+- cites transcript turn numbers when captured `transcript.json` exists
+- records missing transcript evidence explicitly instead of inferring quality
+- keeps observations advisory and human-reviewed
+- refines patient simulation guidance for vague responses, pauses, pacing, and avoiding front-loaded facts
+
+Local usage after a run exists:
+
+```powershell
+.\gradlew bootRun --args="--review-conversation --call-id=<local_call_id>"
+```
+
 ## Proposed Folder Structure
 
 ```text

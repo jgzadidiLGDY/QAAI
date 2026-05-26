@@ -281,3 +281,21 @@ Completeness is status-aware:
 
 Missing audio is a warning because recording availability depends on Retell
 capture output.
+
+## Phase 8 Contract Extension
+
+Phase 8 adds deterministic conversation-quality review:
+
+- command: `--review-conversation --call-id=<local_call_id>`
+- requires `outputs/{call_id}/metadata.json`
+- requires `outputs/{call_id}/scenario.yaml`
+- reads `outputs/{call_id}/transcript.json` when present
+- writes `outputs/{call_id}/observations.md`
+- appends a run index entry after the observations artifact is written
+
+The observations artifact may cite normalized transcript turn numbers for
+welcome behavior, initiative, pacing, clarification, and workflow movement. When
+transcript evidence is missing, the artifact must say it is unavailable.
+
+Phase 8 does not change the run status, does not score conversation quality, and
+does not produce authoritative pass/fail decisions.

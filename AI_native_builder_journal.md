@@ -44,13 +44,17 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 3 Closeout](docs/phase-3-closeout.md)
 - [Phase 4 Closeout](docs/phase-4-closeout.md)
 - [Phase 5 Closeout](docs/phase-5-closeout.md)
+- [Phase 6 Closeout](docs/phase-6-closeout.md)
+- [Phase 7 Closeout](docs/phase-7-closeout.md)
+- [Phase 7a Closeout](docs/phase-7a-closeout.md)
+- [Phase 8 Closeout](docs/phase-8-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 5 added scenario-driven patient simulation instructions. Dry runs and
-Retell call starts now write `patient_simulation.md`, and Retell receives
-`patient_name`, `call_reason`, and `patient_simulation_prompt` dynamic
-variables.
+Phase 8 added deterministic conversation-quality review for existing local runs.
+The `--review-conversation --call-id=<local_call_id>` command refreshes
+`observations.md` from scenario guidance and available transcript evidence while
+preserving the human-owned pass/fail boundary.
 
 ## Additional Implementation Notes
 
