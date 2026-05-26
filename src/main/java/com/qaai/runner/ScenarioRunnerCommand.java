@@ -2,6 +2,8 @@ package com.qaai.runner;
 
 import com.qaai.analysis.AnalysisResult;
 import com.qaai.analysis.AnalysisService;
+import com.qaai.artifacts.RunIndexEntry;
+import com.qaai.artifacts.RunIndexWriter;
 import java.nio.file.Path;
 import java.util.List;
 import org.springframework.boot.ApplicationArguments;
@@ -16,18 +18,21 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final RetellCallRunner retellCallRunner;
 	private final ArtifactCaptureService artifactCaptureService;
 	private final AnalysisService analysisService;
+	private final RunIndexWriter runIndexWriter;
 	private int exitCode;
 
 	public ScenarioRunnerCommand(
 			DryRunRunner dryRunRunner,
 			RetellCallRunner retellCallRunner,
 			ArtifactCaptureService artifactCaptureService,
-			AnalysisService analysisService
+			AnalysisService analysisService,
+			RunIndexWriter runIndexWriter
 	) {
 		this.dryRunRunner = dryRunRunner;
 		this.retellCallRunner = retellCallRunner;
 		this.artifactCaptureService = artifactCaptureService;
 		this.analysisService = analysisService;
+		this.runIndexWriter = runIndexWriter;
 	}
 
 	@Override
@@ -46,6 +51,11 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	}
 
 	private void runCommand(ApplicationArguments args) {
+		if (args.containsOption("list-runs")) {
+			listRuns();
+			return;
+		}
+
 		if (args.containsOption("analyze-call")) {
 			AnalysisResult result = analysisService.analyze(callId(args, "--analyze-call"));
 			System.out.println("Analysis completed");
@@ -126,5 +136,25 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			throw new IllegalArgumentException("Provide --call-id=<local_call_id> with " + commandName);
 		}
 		return callIdValues.getFirst();
+	}
+
+	private void listRuns() {
+		List<RunIndexEntry> entries = runIndexWriter.readAll();
+		if (entries.isEmpty()) {
+			System.out.println("No runs indexed yet.");
+			return;
+		}
+
+		System.out.println("call_id | scenario_id | run_mode | status | complete | warnings");
+		for (RunIndexEntry entry : entries) {
+			System.out.println(String.join(" | ",
+					entry.callId(),
+					entry.scenarioId(),
+					entry.runMode(),
+					entry.status(),
+					Boolean.toString(entry.complete()),
+					String.join(", ", entry.warnings())
+			));
+		}
 	}
 }

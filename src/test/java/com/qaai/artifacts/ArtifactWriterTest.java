@@ -18,7 +18,9 @@ class ArtifactWriterTest {
 	void writesDryRunArtifacts() throws Exception {
 		Path scenarioPath = tempDir.resolve("source-scenario.yaml");
 		Files.writeString(scenarioPath, "id: appointment_reschedule_001%n".formatted());
-		ArtifactWriter writer = new ArtifactWriter(new ObjectMapper(), tempDir.resolve("outputs"));
+		Path outputs = tempDir.resolve("outputs");
+		Path runDirectory = outputs.resolve("call_20260523_130000_test1234");
+		ArtifactWriter writer = new ArtifactWriter(new ObjectMapper(), outputs);
 		RunMetadata metadata = new RunMetadata(
 				"call_20260523_130000_test1234",
 				"appointment_reschedule_001",
@@ -29,16 +31,16 @@ class ArtifactWriterTest {
 				OffsetDateTime.parse("2026-05-23T13:00:01-04:00"),
 				"completed",
 				new ArtifactPaths(
-						"outputs/call_20260523_130000_test1234/scenario.yaml",
-						"outputs/call_20260523_130000_test1234/metadata.json",
-						"outputs/call_20260523_130000_test1234/transcript.txt",
+						runDirectory.resolve("scenario.yaml").toString(),
+						runDirectory.resolve("metadata.json").toString(),
+						runDirectory.resolve("transcript.txt").toString(),
 						null,
-						"outputs/call_20260523_130000_test1234/patient_simulation.md",
-						null,
-						null,
+						runDirectory.resolve("patient_simulation.md").toString(),
 						null,
 						null,
-						"outputs/call_20260523_130000_test1234/observations.md"
+						null,
+						null,
+						runDirectory.resolve("observations.md").toString()
 				)
 		);
 
@@ -63,5 +65,10 @@ class ArtifactWriterTest {
 						"\"run_mode\" : \"dry_run\"",
 						"\"status\" : \"completed\""
 				);
+		assertThat(outputs.resolve("index.jsonl")).exists();
+		assertThat(Files.readString(outputs.resolve("index.jsonl"))).contains(
+				"\"call_id\":\"call_20260523_130000_test1234\"",
+				"\"complete\":true"
+		);
 	}
 }

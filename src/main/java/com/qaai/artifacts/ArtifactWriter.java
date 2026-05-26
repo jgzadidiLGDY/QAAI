@@ -19,6 +19,7 @@ public class ArtifactWriter {
 
 	private final ObjectMapper objectMapper;
 	private final Path outputBaseDir;
+	private final RunIndexWriter runIndexWriter;
 
 	@Autowired
 	public ArtifactWriter(ObjectMapper objectMapper, QaaiProperties properties) {
@@ -28,6 +29,17 @@ public class ArtifactWriter {
 	public ArtifactWriter(ObjectMapper objectMapper, Path outputBaseDir) {
 		this.objectMapper = objectMapper.findAndRegisterModules();
 		this.outputBaseDir = outputBaseDir;
+		this.runIndexWriter = new RunIndexWriter(
+				this.objectMapper,
+				outputBaseDir,
+				new ArtifactCompletenessChecker()
+		);
+	}
+
+	public ArtifactWriter(ObjectMapper objectMapper, Path outputBaseDir, RunIndexWriter runIndexWriter) {
+		this.objectMapper = objectMapper.findAndRegisterModules();
+		this.outputBaseDir = outputBaseDir;
+		this.runIndexWriter = runIndexWriter;
 	}
 
 	public ArtifactBundle writeDryRunArtifacts(
@@ -52,6 +64,7 @@ public class ArtifactWriter {
 			Files.writeString(patientSimulationPath, patientSimulationPrompt);
 			Files.writeString(transcriptPath, transcriptText);
 			Files.writeString(observationsPath, observationsMarkdown);
+			runIndexWriter.append(metadata);
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to write dry-run artifacts for call_id: " + callId, exception);
 		}
@@ -86,6 +99,7 @@ public class ArtifactWriter {
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
 			Files.writeString(patientSimulationPath, patientSimulationPrompt);
 			Files.writeString(observationsPath, observationsMarkdown);
+			runIndexWriter.append(metadata);
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to write Retell call artifacts for call_id: " + callId, exception);
 		}
@@ -125,6 +139,7 @@ public class ArtifactWriter {
 				Files.write(audioPath, audioBytes);
 			}
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(manifestPath.toFile(), manifest);
+			runIndexWriter.append(metadata);
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to write captured artifacts for call_id: " + callId, exception);
 		}
@@ -147,9 +162,14 @@ public class ArtifactWriter {
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(analysisJsonPath.toFile(), analysisReport);
 			Files.writeString(analysisMarkdownPath, analysisMarkdown);
 			updateManifestWithAnalysis(runDirectory, metadata);
+			runIndexWriter.append(metadata);
 		} catch (IOException exception) {
 			throw new ArtifactWriteException("Unable to write analysis artifacts for call_id: " + callId, exception);
 		}
+	}
+
+	public List<RunIndexEntry> readRunIndex() {
+		return runIndexWriter.readAll();
 	}
 
 	public RunMetadata readMetadata(String callId) {
