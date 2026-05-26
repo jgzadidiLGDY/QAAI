@@ -81,6 +81,7 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Provider reliability and observability hardening | `9ffdc24` | `5e02594` | External Retell, recording-download, and OpenAI analysis calls should use bounded timeouts, classify provider failures with operation-specific errors, reject malformed provider responses clearly, and emit lifecycle logs without logging secrets, full prompts, or transcript bodies. | Retell and OpenAI client tests cover HTTP failures, missing provider bodies, recording-download failures, configured timeout binding, and command failure context; provider errors include provider/operation/status while analysis errors do not echo the prompt. |
+| Reliability follow-up coverage and env example | `58e39e5` | `3b98f4f` | The sample environment file should expose every optional timeout override introduced by reliability hardening, and Retell get-call HTTP failures should be verified with the same provider/operation error contract as other provider calls. | `.env.example` includes Retell API, Retell recording-download, and OpenAI analysis timeout variables; a mocked Retell get-call HTTP 500 fails with provider, operation, status, and response context. |
 
 Candidate invariant:
 
