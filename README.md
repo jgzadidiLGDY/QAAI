@@ -306,6 +306,17 @@ Local usage:
 .\gradlew bootRun --args="--list-runs"
 ```
 
+### Phase 7a: Transcript Role Clarity
+
+Clarify normalized transcript labels before deeper conversation-quality work.
+
+Current Phase 7a implementation:
+
+- `[patient]` remains the Retell AI simulated patient
+- `[receptionist]` is the target healthcare front desk side
+- Retell `agent` transcript turns normalize to `patient`
+- Retell `user` transcript turns normalize to `receptionist`
+
 ### Phase 8: Expanded Conversation Quality Iteration
 
 Improve realism and conversational stability.

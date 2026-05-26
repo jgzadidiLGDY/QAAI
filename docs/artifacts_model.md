@@ -151,8 +151,8 @@ Normalized transcript with speaker labels, timestamps when available, and source
 
 For Retell calls, this project labels Retell `agent` transcript turns as
 `patient` because the Retell AI agent is the simulated patient. Retell `user`
-turns are labeled as `agent` because they represent the target healthcare voice
-agent in this QA workflow.
+turns are labeled as `receptionist` because they represent the target
+healthcare front desk side in this QA workflow.
 
 ### `patient_simulation.md`
 

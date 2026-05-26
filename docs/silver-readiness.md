@@ -50,6 +50,19 @@ Candidate invariant:
 - Root cause: artifact bundles were persisted per call, but there was no append-only cross-run summary derived from metadata and files on disk.
 - Why it may be Silver-relevant: the task requires connecting artifact persistence, metadata contracts, lifecycle statuses, CLI inspection, and deterministic filesystem tests without introducing AI-driven pass/fail behavior.
 
+## Phase 7a Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Receptionist transcript role clarity | `46233f8` | `63104e7` | Normalized Retell transcripts should label the simulated patient as `patient` and the target healthcare front desk side as `receptionist`, and analysis evidence should use the same speaker vocabulary. | Captured Retell `user` turns render as `[receptionist]` in `transcript.txt`, `transcript.json` stores `speaker = receptionist`, and analysis prompt/evidence validation accepts `receptionist` evidence. |
+
+Candidate invariant:
+
+- Invariant: normalized speaker labels must describe the QA workflow roles rather than Retell API role names.
+- Symptom: target-side transcript turns were labeled `agent`, which was ambiguous across Retell agent, target voice agent, QA agent, and AI agent meanings.
+- Root cause: Retell `user` transcript turns were mapped to the generic label `agent` during normalization.
+- Why it may be Silver-relevant: the task is small and behavioral, but it crosses transcript capture, human-readable artifacts, analysis prompt contracts, evidence validation fixtures, and documentation.
+
 ## Test Expectations
 
 Silver-oriented tests should:
