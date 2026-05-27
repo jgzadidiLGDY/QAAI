@@ -90,7 +90,10 @@ class RetellCallRunnerTest {
 				"\"status\" : \"retell_registered\"",
 				"\"transcript_text\" : null",
 				"\"patient_simulation\"",
-				"\"observations_markdown\""
+				"\"observations_markdown\"",
+				"\"reproducibility\" : {",
+				"\"command\" : \"retell-call-start\"",
+				"\"app_version\" : \"0.0.1-SNAPSHOT\""
 		);
 
 		String observations = Files.readString(result.artifacts().observationsMarkdown());

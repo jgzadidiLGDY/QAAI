@@ -71,4 +71,43 @@ class ArtifactWriterTest {
 				"\"complete\":true"
 		);
 	}
+
+	@Test
+	void readsOlderMetadataWithoutReproducibilityFields() throws Exception {
+		Path outputs = tempDir.resolve("outputs");
+		String callId = "call_20260523_130000_test1234";
+		Path runDirectory = outputs.resolve(callId);
+		Files.createDirectories(runDirectory);
+		Files.writeString(runDirectory.resolve("metadata.json"), """
+				{
+				  "call_id" : "call_20260523_130000_test1234",
+				  "scenario_id" : "appointment_reschedule_001",
+				  "run_mode" : "dry_run",
+				  "target_phone_number" : "+18054398008",
+				  "retell_call_id" : null,
+				  "started_at" : "2026-05-23T13:00:00-04:00",
+				  "ended_at" : "2026-05-23T13:00:01-04:00",
+				  "status" : "completed",
+				  "artifact_paths" : {
+				    "scenario" : "outputs/call_20260523_130000_test1234/scenario.yaml",
+				    "metadata" : "outputs/call_20260523_130000_test1234/metadata.json",
+				    "transcript_text" : "outputs/call_20260523_130000_test1234/transcript.txt",
+				    "transcript_json" : null,
+				    "patient_simulation" : "outputs/call_20260523_130000_test1234/patient_simulation.md",
+				    "audio" : null,
+				    "manifest" : null,
+				    "analysis_json" : null,
+				    "analysis_markdown" : null,
+				    "observations_markdown" : "outputs/call_20260523_130000_test1234/observations.md"
+				  },
+				  "analysis" : null
+				}
+				""");
+
+		RunMetadata metadata = new ArtifactWriter(new ObjectMapper(), outputs).readMetadata(callId);
+
+		assertThat(metadata.callId()).isEqualTo(callId);
+		assertThat(metadata.status()).isEqualTo("completed");
+		assertThat(metadata.reproducibility()).isNull();
+	}
 }

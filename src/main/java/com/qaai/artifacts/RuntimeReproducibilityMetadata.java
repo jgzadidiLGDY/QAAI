@@ -20,6 +20,10 @@ public final class RuntimeReproducibilityMetadata {
 		if (configuredVersion != null && !configuredVersion.isBlank()) {
 			return configuredVersion;
 		}
+		String propertyVersion = System.getProperty("QAAI_APP_VERSION");
+		if (propertyVersion != null && !propertyVersion.isBlank()) {
+			return propertyVersion;
+		}
 		String implementationVersion = RuntimeReproducibilityMetadata.class.getPackage().getImplementationVersion();
 		if (implementationVersion != null && !implementationVersion.isBlank()) {
 			return implementationVersion;
