@@ -51,13 +51,17 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 9 Closeout](docs/phase-9-closeout.md)
 - [Phase 10 Closeout](docs/phase-10-closeout.md)
 - [Phase 11 Closeout](docs/phase-11-closeout.md)
+- [Phase 12 Closeout](docs/phase-12-closeout.md)
+- [Phase 13 Closeout](docs/phase-13-closeout.md)
+- [Phase 14 Closeout](docs/phase-14-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 11 added local run inspection UX. Operators can now inspect one run by
-`call_id`, filter the run index by scenario, status, or run mode, and see concise
-help when no command is provided while preserving artifact-owned evidence and
-human-owned review.
+Phase 14 added reviewer-facing scenario coverage metadata, deterministic
+coverage validation, a curated set of edge-case scenarios, and coverage docs
+that map each scenario to its workflow area and review risk. One authorized
+live Retell call calibrated the new billing transfer/hold scenario without
+turning the result into an automated pass/fail decision.
 
 ## MVP+ Direction
 
@@ -69,6 +73,8 @@ real-world repeatability:
 - Phase 10: analyzer pluggability
 - Phase 11: run inspection and workflow UX
 - Phase 12: MVP+ documentation and artifact trust
+- Phase 13: conversation-depth and short-call review signals
+- Phase 14: scenario coverage and edge-case expansion
 
 This expansion does not change the core boundary: deterministic workflow code
 owns orchestration, artifacts provide evidence, AI assists with analysis, and

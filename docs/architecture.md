@@ -223,7 +223,8 @@ advisory observations such as low turn count, short duration, no stated goal, no
 workflow-specific target response, or no confirmation/next step. They should not
 score the call or decide pass/fail.
 
-Phase 14 should expand scenarios through a curated coverage model. Scenario
-growth should be tied to workflow breadth and explicit edge-case risks rather
-than volume alone. New scenarios should remain synthetic, deterministic, and
-reviewable through existing artifact and validation flows.
+Phase 14 expands scenarios through a curated coverage model. Scenario growth is
+tied to workflow breadth and explicit edge-case risks rather than volume alone.
+Scenario YAML now includes reviewer-facing coverage metadata, validation
+enforces supported edge-case tags, and scenario tests dynamically validate every
+scenario file.
