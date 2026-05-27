@@ -2,8 +2,12 @@ package com.qaai.runner;
 
 import com.qaai.analysis.AnalysisResult;
 import com.qaai.analysis.AnalysisService;
+import com.qaai.artifacts.ArtifactCompleteness;
+import com.qaai.artifacts.ArtifactCompleteness.ArtifactStatus;
+import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.RunIndexEntry;
 import com.qaai.artifacts.RunIndexWriter;
+import com.qaai.artifacts.RunMetadata;
 import com.qaai.quality.ConversationQualityReviewResult;
 import com.qaai.quality.ConversationQualityReviewService;
 import java.nio.file.Path;
@@ -26,6 +30,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final AnalysisService analysisService;
 	private final RunIndexWriter runIndexWriter;
 	private final ConversationQualityReviewService conversationQualityReviewService;
+	private final RunInspectionService runInspectionService;
 	private int exitCode;
 
 	public ScenarioRunnerCommand(
@@ -34,7 +39,8 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			ArtifactCaptureService artifactCaptureService,
 			AnalysisService analysisService,
 			RunIndexWriter runIndexWriter,
-			ConversationQualityReviewService conversationQualityReviewService
+			ConversationQualityReviewService conversationQualityReviewService,
+			RunInspectionService runInspectionService
 	) {
 		this.dryRunRunner = dryRunRunner;
 		this.retellCallRunner = retellCallRunner;
@@ -42,6 +48,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		this.analysisService = analysisService;
 		this.runIndexWriter = runIndexWriter;
 		this.conversationQualityReviewService = conversationQualityReviewService;
+		this.runInspectionService = runInspectionService;
 	}
 
 	@Override
@@ -62,7 +69,12 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 
 	private void runCommand(ApplicationArguments args) {
 		if (args.containsOption("list-runs")) {
-			listRuns();
+			listRuns(args);
+			return;
+		}
+
+		if (args.containsOption("show-run")) {
+			showRun(callId(args, "--show-run"));
 			return;
 		}
 
@@ -98,6 +110,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 
 		if (!args.containsOption("scenario")) {
+			printHelp();
 			return;
 		}
 
@@ -159,10 +172,17 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		return callIdValues.getFirst();
 	}
 
-	private void listRuns() {
-		List<RunIndexEntry> entries = runIndexWriter.readAll();
+	private void listRuns(ApplicationArguments args) {
+		RunFilters filters = new RunFilters(
+				optionValue(args, "scenario"),
+				optionValue(args, "status"),
+				optionValue(args, "run-mode")
+		);
+		List<RunIndexEntry> entries = runInspectionService == null
+				? runIndexWriter.readAll()
+				: runInspectionService.listRuns(filters);
 		if (entries.isEmpty()) {
-			System.out.println("No runs indexed yet.");
+			System.out.println("No runs matched.");
 			return;
 		}
 
@@ -177,6 +197,109 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 					String.join(", ", entry.warnings())
 			));
 		}
+	}
+
+	private void showRun(String callId) {
+		RunInspection inspection = runInspectionService.showRun(callId);
+		RunMetadata metadata = inspection.metadata();
+		ArtifactCompleteness completeness = inspection.completeness();
+		System.out.println("Run inspection");
+		System.out.println("call_id: " + metadata.callId());
+		System.out.println("scenario_id: " + metadata.scenarioId());
+		System.out.println("run_mode: " + metadata.runMode());
+		System.out.println("status: " + metadata.status());
+		System.out.println("retell_call_id: " + valueOrNone(metadata.retellCallId()));
+		System.out.println("run_directory: " + inspection.runDirectory());
+		if (metadata.analysis() != null) {
+			System.out.println("analysis_provider: " + metadata.analysis().provider());
+			System.out.println("analysis_model: " + metadata.analysis().model());
+		}
+		System.out.println("complete: " + completeness.complete());
+		if (!completeness.missingRequiredArtifacts().isEmpty()) {
+			System.out.println("missing_required_artifacts: "
+					+ String.join(", ", completeness.missingRequiredArtifacts()));
+		}
+		if (!completeness.warnings().isEmpty()) {
+			System.out.println("warnings: " + String.join(", ", completeness.warnings()));
+		}
+		System.out.println("artifact_paths:");
+		printArtifactPaths(metadata.artifactPaths());
+		System.out.println("next_steps:");
+		for (String nextStep : nextSteps(metadata, completeness)) {
+			System.out.println("- " + nextStep);
+		}
+		if (inspection.latestIndexEntry() == null) {
+			System.out.println("index: no index entry found for this call_id");
+		}
+	}
+
+	private void printArtifactPaths(ArtifactPaths paths) {
+		printPath("scenario", paths.scenario());
+		printPath("metadata", paths.metadata());
+		printPath("transcript_text", paths.transcriptText());
+		printPath("transcript_json", paths.transcriptJson());
+		printPath("patient_simulation", paths.patientSimulation());
+		printPath("audio", paths.audio());
+		printPath("manifest", paths.manifest());
+		printPath("analysis_json", paths.analysisJson());
+		printPath("analysis_markdown", paths.analysisMarkdown());
+		printPath("observations_markdown", paths.observationsMarkdown());
+	}
+
+	private void printPath(String name, String path) {
+		System.out.println("- " + name + ": " + valueOrNone(path));
+	}
+
+	private List<String> nextSteps(RunMetadata metadata, ArtifactCompleteness completeness) {
+		if ("retell".equals(metadata.runMode()) && isBlank(metadata.artifactPaths().transcriptJson())) {
+			return List.of("Capture Retell artifacts with --capture-artifacts --call-id=" + metadata.callId());
+		}
+		if (!hasArtifact(completeness, "observations_markdown")) {
+			return List.of("Refresh observations with --review-conversation --call-id=" + metadata.callId());
+		}
+		if (hasArtifact(completeness, "transcript_json") && isBlank(metadata.artifactPaths().analysisJson())) {
+			return List.of("Analyze captured transcript with --analyze-call --call-id=" + metadata.callId());
+		}
+		return List.of("Inspect artifacts under " + metadata.artifactPaths().metadata());
+	}
+
+	private boolean hasArtifact(ArtifactCompleteness completeness, String name) {
+		for (ArtifactStatus status : completeness.artifacts()) {
+			if (name.equals(status.name())) {
+				return status.present();
+			}
+		}
+		return false;
+	}
+
+	private void printHelp() {
+		System.out.println("Voice AI QA Agent");
+		System.out.println("Commands:");
+		System.out.println("- --scenario=<path> [--run-mode=dry-run|retell]");
+		System.out.println("- --capture-artifacts --call-id=<local_call_id>");
+		System.out.println("- --review-conversation --call-id=<local_call_id>");
+		System.out.println("- --analyze-call --call-id=<local_call_id>");
+		System.out.println("- --show-run --call-id=<local_call_id>");
+		System.out.println("- --list-runs [--scenario=<scenario_id>] [--status=<status>] [--run-mode=dry-run|retell]");
+	}
+
+	private String optionValue(ApplicationArguments args, String optionName) {
+		if (!args.containsOption(optionName)) {
+			return null;
+		}
+		List<String> values = args.getOptionValues(optionName);
+		if (values == null || values.isEmpty()) {
+			return null;
+		}
+		return values.getFirst();
+	}
+
+	private String valueOrNone(String value) {
+		return isBlank(value) ? "(none)" : value;
+	}
+
+	private boolean isBlank(String value) {
+		return value == null || value.isBlank();
 	}
 
 	private String failureContext(ApplicationArguments args) {
@@ -199,6 +322,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private String commandName(ApplicationArguments args) {
 		if (args.containsOption("list-runs")) {
 			return "list-runs";
+		}
+		if (args.containsOption("show-run")) {
+			return "show-run";
 		}
 		if (args.containsOption("analyze-call")) {
 			return "analyze-call";
