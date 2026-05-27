@@ -116,6 +116,19 @@ Candidate invariant:
 - Root cause: run history existed as append-only JSONL entries, but command routing had only a broad list view and no read-only inspection service over metadata and completeness checks.
 - Why it may be Silver-relevant: the task crosses CLI routing, artifact metadata loading, index filtering, completeness checks, and deterministic filesystem tests while preserving the artifact and human-review boundaries.
 
+## Phase 12 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Reproducibility metadata | `6cda895` | `52d0353` | Run metadata should record reproducibility context for the command that last produced or updated the artifact bundle, including command name, app version, and optional Git commit, without breaking older metadata that lacks these fields. | Dry-run, artifact capture, and analysis flows write `metadata.json` with `reproducibility.command` and `reproducibility.app_version`; analysis still records provider/model metadata; older metadata fixtures without reproducibility fields still deserialize. |
+
+Candidate invariant:
+
+- Invariant: artifact bundles should explain which local command produced the current metadata state without making reproducibility fields required workflow inputs.
+- Symptom: before this phase, metadata recorded run identity, status, artifact paths, and analysis provider details, but not the command/app context that produced the state under review.
+- Root cause: artifact metadata evolved around run artifacts first, before repeated MVP+ operation made provenance and review trust more important.
+- Why it may be Silver-relevant: the task crosses metadata schema compatibility, dry-run creation, Retell capture updates, analysis updates, optional local Git context, and deterministic artifact tests.
+
 ## Test Expectations
 
 Silver-oriented tests should:
