@@ -140,6 +140,7 @@ Candidate invariant:
 | Phase 13 depth-review documentation | `fcd2b7a` | `9795ac9` | Weak/docs-only candidate: project docs should explain conversation-depth signals, live calibration, duration interpretation, and the Phase 13 scope boundary. | Documentation-only change; useful for reviewers and operators, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 | Next-step evidence phrase matching | `9815b05` | `9746d5a` | Conversation-depth review should not treat words that merely contain a next-step keyword as confirmation or next-step evidence. | A transcript containing "already" but no confirmation or next-step phrase reports "Confirmation or next step reached: not observed" while preserving short-call duration review. |
 | Capture-to-review next-step hint | `ce93eb8` | `162b14d` | After artifact capture succeeds, the CLI should make the next review step discoverable so operators know to refresh conversation-depth observations. | `--capture-artifacts` output includes `next_step: --review-conversation --call-id=<local_call_id>` after reporting captured artifact paths. |
+| Final Phase 13 closeout update | `e151f2a` | `8afa5bc` | Weak/docs-only candidate: the phase closeout should mention the final heuristic and CLI hint hardening. | Documentation-only change; useful for phase handoff, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 
 Candidate invariant:
 
