@@ -11,6 +11,10 @@ turning depth signals into automated pass/fail decisions.
 - Distinguished unknown duration from short, typical, and long duration.
 - Added advisory checks for turn counts, patient goal statement,
   workflow-specific receptionist questions, and confirmation or next-step cues.
+- Tightened next-step evidence matching so words like `already` do not count as
+  `ready` evidence.
+- Added a post-capture CLI hint that points operators to
+  `--review-conversation` so refreshed depth observations are easier to find.
 - Kept older metadata readable when `call_duration_seconds` is absent.
 - Preserved human-owned review and AI-assisted analysis boundaries.
 
@@ -57,7 +61,7 @@ duration and audio.
 ## Tests
 
 ```powershell
-.\gradlew test --tests "*ConversationQualityReviewServiceTest" --tests "*ArtifactCaptureServiceTest"
+.\gradlew test --tests "*ConversationQualityReviewServiceTest" --tests "*ScenarioRunnerCommandTest" --tests "*ArtifactCaptureServiceTest"
 .\gradlew test
 ```
 
