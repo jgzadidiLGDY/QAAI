@@ -4,6 +4,7 @@ import com.qaai.artifacts.ArtifactBundle;
 import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.artifacts.RunMetadata;
+import com.qaai.artifacts.RuntimeReproducibilityMetadata;
 import com.qaai.config.QaaiProperties;
 import com.qaai.scenario.PatientSimulationPromptBuilder;
 import com.qaai.retell.RetellClient;
@@ -116,7 +117,9 @@ public class RetellCallRunner {
 				startedAt,
 				OffsetDateTime.now(clock),
 				normalizeStatus(response.callStatus()),
-				artifactPaths
+				artifactPaths,
+				null,
+				RuntimeReproducibilityMetadata.forCommand("retell-call-start")
 		);
 
 		ArtifactBundle artifacts = artifactWriter.writeCallStartedArtifacts(

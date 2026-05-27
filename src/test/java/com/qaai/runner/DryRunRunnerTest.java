@@ -87,7 +87,10 @@ class DryRunRunnerTest {
 				"\"retell_call_id\" : null",
 				"\"transcript_text\"",
 				"\"patient_simulation\"",
-				"\"observations_markdown\""
+				"\"observations_markdown\"",
+				"\"reproducibility\" : {",
+				"\"command\" : \"dry-run\"",
+				"\"app_version\" : \"0.0.1-SNAPSHOT\""
 		);
 	}
 }

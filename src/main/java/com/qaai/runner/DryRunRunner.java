@@ -4,6 +4,7 @@ import com.qaai.artifacts.ArtifactBundle;
 import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.artifacts.RunMetadata;
+import com.qaai.artifacts.RuntimeReproducibilityMetadata;
 import com.qaai.config.QaaiProperties;
 import com.qaai.scenario.PatientSimulationPromptBuilder;
 import com.qaai.scenario.Scenario;
@@ -98,7 +99,9 @@ public class DryRunRunner {
 				startedAt,
 				OffsetDateTime.now(clock),
 				"completed",
-				artifactPaths
+				artifactPaths,
+				null,
+				RuntimeReproducibilityMetadata.forCommand("dry-run")
 		);
 
 		ArtifactBundle artifacts = artifactWriter.writeDryRunArtifacts(

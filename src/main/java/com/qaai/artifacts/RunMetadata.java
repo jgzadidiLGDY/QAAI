@@ -21,7 +21,8 @@ public record RunMetadata(
 		String status,
 		@JsonProperty("artifact_paths")
 		ArtifactPaths artifactPaths,
-		AnalysisMetadata analysis
+		AnalysisMetadata analysis,
+		ReproducibilityMetadata reproducibility
 ) {
 
 	public RunMetadata(
@@ -36,6 +37,22 @@ public record RunMetadata(
 			ArtifactPaths artifactPaths
 	) {
 		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
-				null);
+				null, null);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String runMode,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			String status,
+			ArtifactPaths artifactPaths,
+			AnalysisMetadata analysis
+	) {
+		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
+				analysis, null);
 	}
 }

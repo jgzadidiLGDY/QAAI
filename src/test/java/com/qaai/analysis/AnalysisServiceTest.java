@@ -59,7 +59,10 @@ class AnalysisServiceTest {
 				"\"analysis_markdown\"",
 				"\"analysis\" : {",
 				"\"provider\" : \"test-provider\"",
-				"\"model\" : \"test-model\""
+				"\"model\" : \"test-model\"",
+				"\"reproducibility\" : {",
+				"\"command\" : \"analyze-call\"",
+				"\"app_version\" : \"0.0.1-SNAPSHOT\""
 		);
 		assertThat(Files.readString(runDirectory.resolve("manifest.json"))).contains(
 				"\"name\" : \"analysis_json\"",

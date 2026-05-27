@@ -5,6 +5,7 @@ import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.artifacts.AnalysisMetadata;
 import com.qaai.artifacts.NormalizedTranscript;
 import com.qaai.artifacts.RunMetadata;
+import com.qaai.artifacts.RuntimeReproducibilityMetadata;
 import com.qaai.artifacts.TranscriptTurn;
 import com.qaai.scenario.Scenario;
 import com.qaai.scenario.ScenarioLoader;
@@ -171,7 +172,8 @@ public class AnalysisService {
 				metadata.endedAt(),
 				"analysis_completed",
 				artifactPaths,
-				new AnalysisMetadata(analysisClient.provider(), analysisClient.model())
+				new AnalysisMetadata(analysisClient.provider(), analysisClient.model()),
+				RuntimeReproducibilityMetadata.forCommand("analyze-call")
 		);
 	}
 

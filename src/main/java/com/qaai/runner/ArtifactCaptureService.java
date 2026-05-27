@@ -5,6 +5,7 @@ import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
 import com.qaai.artifacts.NormalizedTranscript;
 import com.qaai.artifacts.RunMetadata;
+import com.qaai.artifacts.RuntimeReproducibilityMetadata;
 import com.qaai.artifacts.TranscriptTurn;
 import com.qaai.retell.RetellApiException;
 import com.qaai.retell.RetellCallDetailsResponse;
@@ -193,7 +194,9 @@ public class ArtifactCaptureService {
 				existingMetadata.startedAt(),
 				OffsetDateTime.now(clock),
 				captureStatus(callDetails, transcript, audioCapture),
-				artifactPaths
+				artifactPaths,
+				existingMetadata.analysis(),
+				RuntimeReproducibilityMetadata.forCommand("capture-artifacts")
 		);
 	}
 

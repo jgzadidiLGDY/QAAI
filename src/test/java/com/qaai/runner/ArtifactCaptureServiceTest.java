@@ -75,7 +75,9 @@ class ArtifactCaptureServiceTest {
 				"\"status\" : \"artifacts_captured\"",
 				"\"transcript_json\"",
 				"\"audio\"",
-				"\"manifest\""
+				"\"manifest\"",
+				"\"command\" : \"capture-artifacts\"",
+				"\"app_version\" : \"0.0.1-SNAPSHOT\""
 		);
 	}
 
