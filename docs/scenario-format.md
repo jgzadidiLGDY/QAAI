@@ -118,6 +118,23 @@ The generated `patient_simulation_prompt` is also written to
 - `clarification`: how the patient handles unclear questions
 - `expected_risks`: known conversation-quality issues to watch for later
 
+## Coverage Fields
+
+Phase 14 adds `coverage` metadata so scenario growth stays intentional and
+reviewable.
+
+- `workflow_area`: workflow or operational area under review
+- `edge_cases`: known coverage tags such as `happy_path`, `missing_fact`,
+  `clarification`, `transfer_or_hold`, `ambiguous_next_step`,
+  `unavailable_information`, `workflow_recovery`, or `workflow_mismatch`
+- `risk_focus`: short reviewer-facing statement of the risk the scenario
+  exercises
+
+Coverage metadata is not sent to the patient prompt as separate test mechanics.
+It exists to help operators choose scenarios and interpret artifacts.
+
+See [Scenario Coverage](scenario-coverage.md) for the current scenario map.
+
 ## Retell Agent Prompt
 
 The Retell agent should use a stable prompt and let this project supply the

@@ -505,9 +505,9 @@ Planned deliverables:
 
 - scenario coverage taxonomy for workflow breadth and edge-case depth
 - curated new scenarios for missing or partial facts, clarification, transfers,
-  hold/silence, ambiguous next steps, unavailable information, and workflow
-  recovery
-- scenario validation/tests so new scenarios remain deterministic and reviewable
+  hold/silence, ambiguous next steps, unavailable information, workflow
+  mismatch, and workflow recovery
+- scenario validation/tests so scenarios remain deterministic and reviewable
 - docs mapping each scenario to the risk it is intended to exercise
 
 Out of scope:
@@ -515,6 +515,17 @@ Out of scope:
 - broad scenario generation without review intent
 - real patient data
 - AI-owned scenario pass/fail decisions
+
+Current Phase 14 implementation:
+
+- scenario YAML includes reviewer-facing `coverage` metadata
+- scenario validation rejects missing or unsupported coverage metadata
+- scenario tests dynamically discover and validate every `scenarios/*.yaml`
+- the scenario library includes curated edge cases for missing details,
+  transfer/hold recovery, ambiguous insurance next steps, and referral workflow
+  mismatch
+- [Scenario Coverage](docs/scenario-coverage.md) maps each scenario to its
+  workflow area, edge-case tags, and risk focus
 
 ### Current Phase 13 Implementation
 

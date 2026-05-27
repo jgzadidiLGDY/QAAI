@@ -76,6 +76,11 @@ should state the workflow or edge case they exercise, remain synthetic, avoid
 real patient data, and stay deterministic enough for validation and repeated
 runs.
 
+Phase 14 implements the first version of that taxonomy through reviewer-facing
+scenario `coverage` metadata. The current library maps each scenario to a
+workflow area, edge-case tags, and a risk focus in
+[Scenario Coverage](scenario-coverage.md).
+
 ## Non-Goals
 
 This project is not:
