@@ -149,6 +149,19 @@ Candidate invariant:
 - Root cause: conversation-quality review cited transcript turns for pacing and workflow movement, but did not persist provider duration or summarize depth milestones.
 - Why it may be Silver-relevant: the task crosses Retell artifact capture, metadata schema compatibility, transcript review, scenario goal interpretation, deterministic heuristic output, and focused tests without adding AI-owned pass/fail behavior.
 
+## Phase 14 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Scenario coverage metadata | `215a7f6` | `7ed0ce9` | Scenario files should declare explicit coverage metadata describing workflow area, edge-case tags, and review risk focus, and invalid or missing coverage should fail deterministic scenario validation. | Existing scenario YAML files load with required coverage metadata; validation rejects missing coverage, blank coverage fields, and unsupported edge-case tags; scenario discovery validates every YAML file in `scenarios/`. |
+
+Candidate invariant:
+
+- Invariant: every runnable scenario should explain the workflow area and edge-case risk it is intended to exercise.
+- Symptom: before this phase, scenarios carried conversation-quality risks but no structured coverage metadata, making scenario growth hard to audit.
+- Root cause: the scenario schema was designed around patient behavior before curated coverage planning became the priority.
+- Why it may be Silver-relevant: the task crosses YAML fixtures, schema parsing, validation rules, scenario discovery tests, and downstream test fixtures while preserving deterministic local execution.
+
 ## Test Expectations
 
 Silver-oriented tests should:
