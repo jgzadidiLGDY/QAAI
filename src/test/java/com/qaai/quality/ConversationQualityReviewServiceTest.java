@@ -71,6 +71,10 @@ class ConversationQualityReviewServiceTest {
 				"## Clarification And Confusion Recovery",
 				"## Workflow Movement",
 				"Late-call evidence: turn 5 [receptionist] I can offer next Tuesday morning.",
+				"## Conversation Depth Signals",
+				"Duration: 4 seconds (short).",
+				"Patient stated goal: observed; turn 1 [patient] Hi, I need to reschedule my appointment.",
+				"Confirmation or next step reached: observed; turn 5 [receptionist] I can offer next Tuesday morning.",
 				"Do not treat this artifact as an automated pass/fail decision."
 		);
 		assertThat(Files.readString(outputs.resolve("index.jsonl"))).contains(
@@ -103,7 +107,55 @@ class ConversationQualityReviewServiceTest {
 		assertThat(Files.readString(result.observationsMarkdown())).contains(
 				"Transcript evidence: not available",
 				"Human reviewer should not infer conversation quality without transcript evidence.",
+				"Duration: unknown; no captured duration or transcript timestamps were available.",
 				"Pending human review."
+		);
+	}
+
+	@Test
+	void usesCapturedDurationForTypicalAppointmentDepthSignal() throws Exception {
+		Path outputs = tempDir.resolve("outputs");
+		String callId = "call_20260523_130000_test1234";
+		Path runDirectory = outputs.resolve(callId);
+		Path sourceScenario = writeScenario(tempDir.resolve("scenario.yaml"));
+		ArtifactWriter writer = new ArtifactWriter(new ObjectMapper(), outputs);
+		writer.writeCallStartedArtifacts(
+				callId,
+				sourceScenario,
+				retellMetadataWithDuration(callId, runDirectory, 75L),
+				"# Patient Simulation Scenario%n".formatted(),
+				"# Previous Observations%n".formatted()
+		);
+		new ObjectMapper().findAndRegisterModules().writerWithDefaultPrettyPrinter().writeValue(
+				runDirectory.resolve("transcript.json").toFile(),
+				new NormalizedTranscript(
+						callId,
+						"appointment_reschedule_001",
+						"retell",
+						List.of(
+								new TranscriptTurn(1, "patient", "Hi, I need to reschedule my appointment.", 0.5),
+								new TranscriptTurn(2, "receptionist", "What date works for your appointment?", 10.0),
+								new TranscriptTurn(3, "patient", "Next Tuesday morning works.", 20.0),
+								new TranscriptTurn(4, "receptionist", "What is your date of birth?", 30.0),
+								new TranscriptTurn(5, "patient", "April 19th, 1982.", 40.0),
+								new TranscriptTurn(6, "receptionist", "Confirmed, your appointment is next Tuesday morning.", 50.0)
+						)
+				)
+		);
+		ConversationQualityReviewService service = new ConversationQualityReviewService(
+				writer,
+				new ScenarioLoader(),
+				new ScenarioValidator()
+		);
+
+		ConversationQualityReviewResult result = service.review(callId);
+
+		assertThat(Files.readString(result.observationsMarkdown())).contains(
+				"Duration: 75 seconds (typical).",
+				"This is within the 1 to 4 minute review band for a typical appointment call.",
+				"Depth concern: not observed from turn counts.",
+				"Receptionist asked workflow-specific question: observed; turn 2 [receptionist] What date works for your appointment?",
+				"Confirmation or next step reached: observed; turn 6 [receptionist] Confirmed, your appointment is next Tuesday morning."
 		);
 	}
 
@@ -180,6 +232,24 @@ class ConversationQualityReviewServiceTest {
 						null,
 						runDirectory.resolve("observations.md").toString()
 				)
+		);
+	}
+
+	private RunMetadata retellMetadataWithDuration(String callId, Path runDirectory, Long durationSeconds) {
+		RunMetadata metadata = retellMetadata(callId, runDirectory);
+		return new RunMetadata(
+				metadata.callId(),
+				metadata.scenarioId(),
+				metadata.runMode(),
+				metadata.targetPhoneNumber(),
+				metadata.retellCallId(),
+				metadata.startedAt(),
+				metadata.endedAt(),
+				durationSeconds,
+				metadata.status(),
+				metadata.artifactPaths(),
+				metadata.analysis(),
+				metadata.reproducibility()
 		);
 	}
 }

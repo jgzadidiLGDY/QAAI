@@ -193,6 +193,7 @@ public class ArtifactCaptureService {
 				existingMetadata.retellCallId(),
 				existingMetadata.startedAt(),
 				OffsetDateTime.now(clock),
+				durationSeconds(callDetails),
 				captureStatus(callDetails, transcript, audioCapture),
 				artifactPaths,
 				existingMetadata.analysis(),
@@ -310,6 +311,13 @@ public class ArtifactCaptureService {
 
 	private String recordingUrl(RetellCallDetailsResponse callDetails) {
 		return callDetails == null ? null : callDetails.recordingUrl();
+	}
+
+	private Long durationSeconds(RetellCallDetailsResponse callDetails) {
+		if (callDetails == null || callDetails.durationMs() == null) {
+			return null;
+		}
+		return Math.round(Math.ceil(callDetails.durationMs() / 1000.0));
 	}
 
 	private <T> List<T> nullToEmpty(List<T> values) {

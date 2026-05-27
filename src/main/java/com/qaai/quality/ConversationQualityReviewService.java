@@ -21,16 +21,27 @@ public class ConversationQualityReviewService {
 	private final ArtifactWriter artifactWriter;
 	private final ScenarioLoader scenarioLoader;
 	private final ScenarioValidator scenarioValidator;
+	private final ConversationDepthReviewService conversationDepthReviewService;
 
 	@Autowired
 	public ConversationQualityReviewService(
 			ArtifactWriter artifactWriter,
 			ScenarioLoader scenarioLoader,
-			ScenarioValidator scenarioValidator
+			ScenarioValidator scenarioValidator,
+			ConversationDepthReviewService conversationDepthReviewService
 	) {
 		this.artifactWriter = artifactWriter;
 		this.scenarioLoader = scenarioLoader;
 		this.scenarioValidator = scenarioValidator;
+		this.conversationDepthReviewService = conversationDepthReviewService;
+	}
+
+	public ConversationQualityReviewService(
+			ArtifactWriter artifactWriter,
+			ScenarioLoader scenarioLoader,
+			ScenarioValidator scenarioValidator
+	) {
+		this(artifactWriter, scenarioLoader, scenarioValidator, new ConversationDepthReviewService());
 	}
 
 	public ConversationQualityReviewResult review(String callId) {
@@ -85,6 +96,7 @@ public class ConversationQualityReviewService {
 					.append(System.lineSeparator());
 			observations.append("- Human reviewer should not infer conversation quality without transcript evidence.")
 					.append(System.lineSeparator());
+			appendConversationDepth(observations, metadata, scenario, transcript);
 			appendReviewerNotes(observations);
 			return observations.toString();
 		}
@@ -94,8 +106,21 @@ public class ConversationQualityReviewService {
 		appendPacing(observations, transcript.turns());
 		appendClarification(observations, transcript.turns());
 		appendWorkflowMovement(observations, scenario, transcript.turns());
+		appendConversationDepth(observations, metadata, scenario, transcript);
 		appendReviewerNotes(observations);
 		return observations.toString();
+	}
+
+	private void appendConversationDepth(
+			StringBuilder observations,
+			RunMetadata metadata,
+			Scenario scenario,
+			NormalizedTranscript transcript
+	) {
+		observations.append(System.lineSeparator());
+		for (String line : conversationDepthReviewService.review(metadata, scenario, transcript).markdownLines()) {
+			observations.append(line).append(System.lineSeparator());
+		}
 	}
 
 	private void appendWelcome(StringBuilder observations, List<TranscriptTurn> turns) {

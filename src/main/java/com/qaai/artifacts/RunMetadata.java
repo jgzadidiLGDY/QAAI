@@ -18,6 +18,8 @@ public record RunMetadata(
 		OffsetDateTime startedAt,
 		@JsonProperty("ended_at")
 		OffsetDateTime endedAt,
+		@JsonProperty("call_duration_seconds")
+		Long callDurationSeconds,
 		String status,
 		@JsonProperty("artifact_paths")
 		ArtifactPaths artifactPaths,
@@ -54,5 +56,22 @@ public record RunMetadata(
 	) {
 		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
 				analysis, null);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String runMode,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			String status,
+			ArtifactPaths artifactPaths,
+			AnalysisMetadata analysis,
+			ReproducibilityMetadata reproducibility
+	) {
+		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, null, status,
+				artifactPaths, analysis, reproducibility);
 	}
 }

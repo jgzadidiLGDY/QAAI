@@ -54,6 +54,7 @@ class ArtifactCaptureServiceTest {
 		ArtifactCaptureResult result = service.capture(callId);
 
 		assertThat(result.metadata().status()).isEqualTo("artifacts_captured");
+		assertThat(result.metadata().callDurationSeconds()).isEqualTo(10L);
 		assertThat(result.transcriptJson()).exists();
 		assertThat(result.transcriptText()).exists();
 		assertThat(result.audio()).exists();
@@ -73,6 +74,7 @@ class ArtifactCaptureServiceTest {
 		);
 		assertThat(Files.readString(runDirectory.resolve("metadata.json"))).contains(
 				"\"status\" : \"artifacts_captured\"",
+				"\"call_duration_seconds\" : 10",
 				"\"transcript_json\"",
 				"\"audio\"",
 				"\"manifest\"",
