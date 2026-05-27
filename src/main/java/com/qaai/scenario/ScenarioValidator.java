@@ -1,11 +1,23 @@
 package com.qaai.scenario;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ScenarioValidator {
+
+	private static final Set<String> ALLOWED_EDGE_CASES = Set.of(
+			"happy_path",
+			"missing_fact",
+			"clarification",
+			"transfer_or_hold",
+			"ambiguous_next_step",
+			"unavailable_information",
+			"workflow_recovery",
+			"workflow_mismatch"
+	);
 
 	public void validate(Scenario scenario) {
 		List<String> errors = new ArrayList<>();
@@ -37,6 +49,15 @@ public class ScenarioValidator {
 		} else {
 			requireNonEmpty(errors, "constraints.allowed_facts", scenario.constraints().allowedFacts());
 			requireNonEmpty(errors, "constraints.disallowed_behavior", scenario.constraints().disallowedBehavior());
+		}
+
+		if (scenario.coverage() == null) {
+			errors.add("coverage is required");
+		} else {
+			requireText(errors, "coverage.workflow_area", scenario.coverage().workflowArea());
+			requireNonEmpty(errors, "coverage.edge_cases", scenario.coverage().edgeCases());
+			requireText(errors, "coverage.risk_focus", scenario.coverage().riskFocus());
+			validateEdgeCases(errors, scenario.coverage().edgeCases());
 		}
 
 		if (scenario.conversationQuality() == null) {
@@ -80,6 +101,20 @@ public class ScenarioValidator {
 	private static void requireNonEmpty(List<String> errors, String field, List<String> values) {
 		if (values == null || values.isEmpty()) {
 			errors.add(field + " must include at least one item");
+		}
+	}
+
+	private static void validateEdgeCases(List<String> errors, List<String> edgeCases) {
+		if (edgeCases == null) {
+			return;
+		}
+		for (int index = 0; index < edgeCases.size(); index++) {
+			String edgeCase = edgeCases.get(index);
+			if (edgeCase == null || edgeCase.isBlank()) {
+				errors.add("coverage.edge_cases[" + index + "] is required");
+			} else if (!ALLOWED_EDGE_CASES.contains(edgeCase)) {
+				errors.add("coverage.edge_cases[" + index + "] must be one of " + ALLOWED_EDGE_CASES);
+			}
 		}
 	}
 }

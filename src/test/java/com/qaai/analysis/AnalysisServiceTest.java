@@ -230,6 +230,11 @@ class AnalysisServiceTest {
 				    - Patient has an appointment.
 				  disallowed_behavior:
 				    - Do not invent insurance details.
+				coverage:
+				  workflow_area: appointment_rescheduling
+				  edge_cases:
+				    - happy_path
+				  risk_focus: Confirm a new appointment time.
 				conversation_quality:
 				  welcome_behavior: Open clearly.
 				  initiative: Ask a follow-up if needed.

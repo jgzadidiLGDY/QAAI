@@ -22,6 +22,12 @@ constraints:
     - Do not provide financial or payment information.
     - Do not provide real patient data.
 
+coverage:
+  workflow_area: insurance_verification
+  edge_cases:
+    - unavailable_information
+  risk_focus: Exercise the office response when the patient cannot provide insurance identifiers during the call.
+
 conversation_quality:
   welcome_behavior: Start with the configured welcome message and clearly ask about verifying insurance.
   initiative: If asked for insurance details, explain they are not available and ask what information is needed later.

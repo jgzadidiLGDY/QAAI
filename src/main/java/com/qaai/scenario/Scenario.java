@@ -10,6 +10,7 @@ public record Scenario(
 		Persona persona,
 		Goal goal,
 		Constraints constraints,
+		Coverage coverage,
 		@JsonProperty("conversation_quality")
 		ConversationQuality conversationQuality,
 		List<Step> steps
@@ -38,6 +39,16 @@ public record Scenario(
 			List<String> allowedFacts,
 			@JsonProperty("disallowed_behavior")
 			List<String> disallowedBehavior
+	) {
+	}
+
+	public record Coverage(
+			@JsonProperty("workflow_area")
+			String workflowArea,
+			@JsonProperty("edge_cases")
+			List<String> edgeCases,
+			@JsonProperty("risk_focus")
+			String riskFocus
 	) {
 	}
 

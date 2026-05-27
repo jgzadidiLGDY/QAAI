@@ -22,6 +22,12 @@ constraints:
     - Do not provide insurance details.
     - Do not provide real patient data.
 
+coverage:
+  workflow_area: appointment_scheduling
+  edge_cases:
+    - happy_path
+  risk_focus: Verify that routine scheduling produces an appointment option or clear scheduling next step.
+
 conversation_quality:
   welcome_behavior: Start with the configured welcome message and clearly state the scheduling need.
   initiative: Offer preferred availability only after the agent asks or pauses.

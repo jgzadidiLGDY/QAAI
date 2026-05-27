@@ -20,6 +20,12 @@ constraints:
     - Do not invent insurance details.
     - Do not provide real patient data.
 
+coverage:
+  workflow_area: appointment_rescheduling
+  edge_cases:
+    - happy_path
+  risk_focus: Confirm whether the office reaches a specific new appointment date and time without unsupported patient details.
+
 conversation_quality:
   welcome_behavior: Start with the configured welcome message and clearly state the rescheduling need.
   initiative: Volunteer only the next useful detail after the agent asks or pauses.

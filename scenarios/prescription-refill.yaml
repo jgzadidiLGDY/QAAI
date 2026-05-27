@@ -22,6 +22,12 @@ constraints:
     - Do not claim an emergency or active symptoms.
     - Do not provide real patient data.
 
+coverage:
+  workflow_area: prescription_refill
+  edge_cases:
+    - missing_fact
+  risk_focus: Confirm that refill guidance remains useful when the patient cannot supply medication details.
+
 conversation_quality:
   welcome_behavior: Start with the configured welcome message and clearly ask about getting a prescription refill.
   initiative: Do not volunteer medication details because they are not available in the scenario.

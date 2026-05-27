@@ -25,6 +25,11 @@ class PatientSimulationPromptBuilderTest {
 						List.of("Patient has an existing appointment."),
 						List.of("Do not invent insurance details.")
 				),
+				new Scenario.Coverage(
+						"appointment_rescheduling",
+						List.of("happy_path"),
+						"Confirm a new appointment time."
+				),
 				new Scenario.ConversationQuality(
 						"Wait briefly for the greeting.",
 						"Volunteer one useful detail at a time.",

@@ -49,6 +49,11 @@ class AnalysisPromptBuilderTest {
 						"Agent confirms a new appointment date and time."
 				),
 				new Scenario.Constraints(List.of("Patient has an appointment."), List.of("Do not invent insurance details.")),
+				new Scenario.Coverage(
+						"appointment_rescheduling",
+						List.of("happy_path"),
+						"Confirm a new appointment time."
+				),
 				new Scenario.ConversationQuality(
 						"Open clearly.",
 						"Ask a follow-up if needed.",

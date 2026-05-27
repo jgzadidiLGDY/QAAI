@@ -22,6 +22,12 @@ constraints:
     - Do not provide payment information.
     - Do not provide real patient data.
 
+coverage:
+  workflow_area: billing_question
+  edge_cases:
+    - workflow_recovery
+  risk_focus: Check whether a general front desk response can still route the patient to billing support.
+
 conversation_quality:
   welcome_behavior: Start with the configured welcome message and clearly state the billing question.
   initiative: Ask for the right department or next step if the agent response is generic.

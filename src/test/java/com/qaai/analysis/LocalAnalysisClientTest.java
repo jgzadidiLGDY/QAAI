@@ -48,6 +48,7 @@ class LocalAnalysisClientTest {
 				null,
 				null,
 				null,
+				null,
 				List.of()
 		);
 	}
