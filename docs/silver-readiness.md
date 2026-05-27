@@ -121,6 +121,7 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Reproducibility metadata | `6cda895` | `52d0353` | Run metadata should record reproducibility context for the command that last produced or updated the artifact bundle, including command name, app version, and optional Git commit, without breaking older metadata that lacks these fields. | Dry-run, artifact capture, and analysis flows write `metadata.json` with `reproducibility.command` and `reproducibility.app_version`; analysis still records provider/model metadata; older metadata fixtures without reproducibility fields still deserialize. |
+| MVP+ operator docs | `a5f55f0` | `ef1b249` | Weak/docs-only candidate: the local QA workflow documentation should explain setup, command order, status lifecycle, artifact completeness, troubleshooting, and privacy boundaries for authorized test calls. | Documentation-only change; useful for reviewers and operators, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 
 Candidate invariant:
 
