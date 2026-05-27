@@ -1,0 +1,48 @@
+id: referral_status_workflow_mismatch_001
+name: Referral status workflow mismatch
+workflow: referral_status
+
+persona:
+  name: Grace Wilson
+  date_of_birth: "1965-07-09"
+  phone_number: "+15555550131"
+
+goal:
+  call_reason: checking on a referral
+  summary: Ask about referral status when the front desk may route the request to another workflow or department.
+  expected_outcome: Agent identifies who handles referral status or provides a clear callback or transfer next step.
+
+constraints:
+  allowed_facts:
+    - Patient is checking whether a referral was received.
+    - Patient can confirm name and date of birth.
+    - Patient does not know the referring provider's fax timestamp.
+  disallowed_behavior:
+    - Do not invent diagnosis, clinical details, referral numbers, provider names, or insurance details.
+    - Do not provide real patient data.
+
+coverage:
+  workflow_area: referral_status
+  edge_cases:
+    - workflow_mismatch
+    - workflow_recovery
+  risk_focus: Check whether the office can recover when the request does not fit scheduling, billing, refill, or insurance flows.
+
+conversation_quality:
+  welcome_behavior: Start with the configured welcome message and clearly ask about referral status.
+  initiative: If the receptionist routes toward scheduling, restate that the patient is only checking whether the referral was received.
+  pacing: Keep answers short and avoid adding clinical details.
+  clarification: If the office needs unavailable referral details, say they are not available and ask what information would help later.
+  expected_risks:
+    - Patient may invent referral or clinical details.
+    - Agent may treat the referral status request as a scheduling request without a clear handoff.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I am calling to check whether a referral was received.
+  - intent: identity_verification
+    patient_says: My date of birth is July 9th, 1965.
+  - intent: workflow_clarification
+    patient_says: I am not trying to schedule yet. I just want to know if the referral is on file.
+  - intent: unavailable_referral_detail
+    patient_says: I do not know when it was faxed. What should I ask my referring office for?

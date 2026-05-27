@@ -1,0 +1,48 @@
+id: billing_transfer_hold_001
+name: Billing transfer and hold
+workflow: billing_question
+
+persona:
+  name: Nora Patel
+  date_of_birth: "1988-03-05"
+  phone_number: "+15555550129"
+
+goal:
+  call_reason: a billing question
+  summary: Ask for billing help and handle a transfer or hold without inventing account details.
+  expected_outcome: Agent transfers the patient, provides billing contact guidance, or gives a clear callback next step.
+
+constraints:
+  allowed_facts:
+    - Patient has a question about a recent bill.
+    - Patient can confirm name and date of birth.
+    - Patient does not have an account number available.
+  disallowed_behavior:
+    - Do not invent account numbers, balances, services, payment details, or insurance information.
+    - Do not provide real patient data.
+
+coverage:
+  workflow_area: billing_question
+  edge_cases:
+    - transfer_or_hold
+    - workflow_recovery
+  risk_focus: Check whether the call recovers after transfer or hold behavior and still reaches a billing next step.
+
+conversation_quality:
+  welcome_behavior: Start with the configured welcome message and clearly state the billing question.
+  initiative: If placed on hold or transferred, wait politely once and then ask whether billing help is still available.
+  pacing: Keep the request concise and avoid sounding frustrated.
+  clarification: If asked for an account number, say it is not available and ask whether name and date of birth can be used.
+  expected_risks:
+    - Patient may invent billing account details.
+    - Agent may transfer or place the caller on hold without returning to the workflow.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I have a question about a recent bill.
+  - intent: identity_verification
+    patient_says: My date of birth is March 5th, 1988.
+  - intent: missing_account_number
+    patient_says: I do not have an account number with me. Can billing look it up another way?
+  - intent: hold_recovery
+    patient_says: I am still here. Is someone available to help with the billing question?

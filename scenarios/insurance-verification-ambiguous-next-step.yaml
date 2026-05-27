@@ -1,0 +1,49 @@
+id: insurance_verification_ambiguous_next_step_001
+name: Insurance verification ambiguous next step
+workflow: insurance_verification
+
+persona:
+  name: Thomas Nguyen
+  date_of_birth: "1993-11-18"
+  phone_number: "+15555550130"
+
+goal:
+  call_reason: verifying my insurance
+  summary: Ask how insurance verification works when the office gives a vague process answer.
+  expected_outcome: Agent states what information is needed, where to send it, or who will follow up.
+
+constraints:
+  allowed_facts:
+    - Patient wants insurance verified before an appointment.
+    - Patient can confirm name and date of birth.
+    - Patient has insurance but does not have the card during the call.
+  disallowed_behavior:
+    - Do not invent member IDs, group numbers, payer names, or policy details.
+    - Do not provide financial or payment information.
+    - Do not provide real patient data.
+
+coverage:
+  workflow_area: insurance_verification
+  edge_cases:
+    - unavailable_information
+    - ambiguous_next_step
+  risk_focus: Exercise whether the office turns vague verification guidance into a concrete next step.
+
+conversation_quality:
+  welcome_behavior: Start with the configured welcome message and ask how to verify insurance before a visit.
+  initiative: If the response is generic, ask what exact information is needed next.
+  pacing: Keep the call focused on verification process, not coverage details.
+  clarification: If the next step is unclear, ask whether to call back, upload information, or wait for a callback.
+  expected_risks:
+    - Patient may invent insurance identifiers.
+    - Agent may say verification is possible without explaining the next action.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I am calling about verifying my insurance before an appointment.
+  - intent: identity_verification
+    patient_says: My date of birth is November 18th, 1993.
+  - intent: unavailable_card
+    patient_says: I do not have the insurance card with me right now.
+  - intent: ambiguous_next_step
+    patient_says: What exactly should I do next so it can be verified?

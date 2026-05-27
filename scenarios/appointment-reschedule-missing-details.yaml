@@ -1,0 +1,50 @@
+id: appointment_reschedule_missing_details_001
+name: Appointment reschedule with missing details
+workflow: appointment_rescheduling
+
+persona:
+  name: Elena Garcia
+  date_of_birth: "1974-09-22"
+  phone_number: "+15555550128"
+
+goal:
+  call_reason: rescheduling my appointment
+  summary: Reschedule an existing appointment, but the patient does not know the current appointment date.
+  expected_outcome: Agent explains how to identify the existing appointment or provides a clear next step.
+
+constraints:
+  allowed_facts:
+    - Patient has an existing appointment.
+    - Patient does not know the current appointment date.
+    - Patient can attend Monday afternoon or Wednesday morning.
+    - Patient can confirm name and date of birth.
+  disallowed_behavior:
+    - Do not invent the current appointment date.
+    - Do not invent insurance details.
+    - Do not provide real patient data.
+
+coverage:
+  workflow_area: appointment_rescheduling
+  edge_cases:
+    - missing_fact
+    - clarification
+  risk_focus: Exercise whether rescheduling still moves forward when a requested appointment detail is unavailable.
+
+conversation_quality:
+  welcome_behavior: Start with the configured welcome message and clearly state the rescheduling need.
+  initiative: Explain the missing current appointment date only if asked or if the call stalls.
+  pacing: Keep turns short and avoid giving multiple facts before the receptionist asks.
+  clarification: If the receptionist asks for the appointment date, say it is not available and ask what else can be used.
+  expected_risks:
+    - Patient may invent the current appointment date.
+    - Agent may stop the workflow instead of offering another lookup path.
+
+steps:
+  - intent: greeting
+    patient_says: Hi, I need to reschedule my appointment.
+  - intent: identity_verification
+    patient_says: My date of birth is September 22nd, 1974.
+  - intent: missing_current_appointment
+    patient_says: I do not have the current appointment date with me. Is there another way to look it up?
+  - intent: availability
+    patient_says: Monday afternoon or Wednesday morning would work if you find it.
