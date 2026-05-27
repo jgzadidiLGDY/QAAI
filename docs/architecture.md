@@ -21,6 +21,7 @@ scenario YAML
   -> dry-run or Retell outbound call
   -> artifact writer
   -> transcript and recording capture
+  -> conversation-depth review signals
   -> AI-assisted analysis
   -> human-reviewable report
 ```
@@ -215,3 +216,14 @@ status-aware command validation, and clearer help output.
 Phase 12 consolidates MVP+ documentation and artifact trust by updating
 operator docs, status lifecycle documentation, artifact completeness guidance,
 and reproducibility metadata.
+
+Phase 13 should add conversation-depth and short-call review signals. The
+signals should read captured metadata and normalized transcripts, then surface
+advisory observations such as low turn count, short duration, no stated goal, no
+workflow-specific target response, or no confirmation/next step. They should not
+score the call or decide pass/fail.
+
+Phase 14 should expand scenarios through a curated coverage model. Scenario
+growth should be tied to workflow breadth and explicit edge-case risks rather
+than volume alone. New scenarios should remain synthetic, deterministic, and
+reviewable through existing artifact and validation flows.

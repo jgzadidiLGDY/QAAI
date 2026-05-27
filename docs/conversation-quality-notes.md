@@ -11,6 +11,8 @@ artifacts without making pass/fail decisions.
 - Pacing: whether each turn stays short and natural.
 - Clarification: how the patient responds to unclear questions.
 - Expected risks: known issues a reviewer should watch for in later real calls.
+- Conversation depth: whether the call lasted long enough and included enough
+  workflow movement to support meaningful QA review.
 
 ## Scenario Ownership
 
@@ -71,3 +73,25 @@ does not infer conversation quality.
 The review command is deterministic and evidence-oriented. It may cite transcript
 turns and highlight review questions, but it does not score the call, decide
 pass/fail, or replace human judgment.
+
+## Phase 13 Direction
+
+Phase 13 should make very short or shallow calls visible before reviewers rely
+on analysis output. Useful advisory signals may include:
+
+- call duration is unusually short
+- transcript has too few turns
+- patient never states the scenario goal
+- target side never asks a workflow-specific question
+- conversation ends without a confirmation, next step, or clear blocker
+
+These signals should be grounded in captured metadata and transcript turns. They
+should guide human review rather than create automatic pass/fail decisions.
+
+## Phase 14 Direction
+
+Phase 14 should expand scenarios with a coverage taxonomy. Scenario additions
+should identify the risk they exercise, such as missing facts, clarification,
+hold/silence behavior, transfer behavior, ambiguous next steps, unavailable
+information, or workflow mismatch. More scenarios are useful only when each one
+adds reviewable coverage.

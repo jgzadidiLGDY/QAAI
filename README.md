@@ -459,6 +459,63 @@ New metadata shape:
 }
 ```
 
+## Conversation Depth and Scenario Coverage Expansion
+
+After Phase 12, the next product concern is whether real calls are long and rich
+enough to exercise the target workflow. A very short call can still produce
+valid artifacts, but it may not provide enough evidence for meaningful QA.
+
+The next mini-scope expansion keeps the system local-first and human-reviewed:
+
+- short call duration should become an advisory review signal, not an automatic failure
+- conversation depth should be judged from transcript and metadata evidence
+- scenarios should expand through a curated coverage model instead of a large unstructured YAML dump
+- edge cases should be explicit about the risk they are meant to exercise
+
+### Phase 13: Conversation Depth and Short-Call Signals
+
+Goal:
+
+Make short or shallow conversations visible to reviewers before deeper analysis
+or scenario expansion.
+
+Planned deliverables:
+
+- duration and turn-count review signals from captured metadata/transcripts
+- advisory observations when a call ends before the patient states the goal,
+  before the target side asks workflow-specific questions, or before any next
+  step or confirmation is reached
+- documentation for interpreting short-call signals
+- tests using deterministic transcript fixtures
+
+Out of scope:
+
+- automatic pass/fail decisions
+- provider-specific retry automation
+- judging clinical quality
+
+### Phase 14: Scenario Coverage and Edge-Case Expansion
+
+Goal:
+
+Expand scenario coverage with a small, intentional scenario library that covers
+core workflows and meaningful edge cases.
+
+Planned deliverables:
+
+- scenario coverage taxonomy for workflow breadth and edge-case depth
+- curated new scenarios for missing or partial facts, clarification, transfers,
+  hold/silence, ambiguous next steps, unavailable information, and workflow
+  recovery
+- scenario validation/tests so new scenarios remain deterministic and reviewable
+- docs mapping each scenario to the risk it is intended to exercise
+
+Out of scope:
+
+- broad scenario generation without review intent
+- real patient data
+- AI-owned scenario pass/fail decisions
+
 ## Proposed Folder Structure
 
 ```text
@@ -568,11 +625,11 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 12 should consolidate the MVP+ operator docs and artifact trust model:
+Phase 13 should make shallow or very short conversations visible to reviewers:
 
 ```text
-Document setup, dry runs, real calls, capture, review, analysis, run statuses,
-artifact completeness rules, and troubleshooting paths.
+Add advisory duration and conversation-depth signals grounded in captured
+metadata and transcript evidence.
 ```
 
 This should keep the system local-first, human-reviewed, and explicit about

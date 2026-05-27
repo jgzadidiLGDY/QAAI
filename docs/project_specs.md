@@ -57,6 +57,26 @@ human reviewer. The system should:
 MVP+ should not add broad orchestration, autonomous pass/fail decisions, or a
 database unless a later milestone proves they are necessary.
 
+## Mini-Scope Expansion After MVP+
+
+After Phase 12, two product risks become important:
+
+- calls may be too short or shallow to produce meaningful workflow evidence
+- the initial scenario set may not cover enough workflows or edge cases
+
+The next expansion should address these risks in small reviewable phases.
+
+Phase 13 should add conversation-depth and short-call review signals. These
+signals should be advisory and evidence-based. They can highlight calls with too
+few transcript turns, very short duration, no stated goal, no workflow-specific
+question, or no confirmation/next step, but they must not own pass/fail
+decisions.
+
+Phase 14 should expand scenario coverage with a curated taxonomy. New scenarios
+should state the workflow or edge case they exercise, remain synthetic, avoid
+real patient data, and stay deterministic enough for validation and repeated
+runs.
+
 ## Non-Goals
 
 This project is not:
@@ -90,6 +110,16 @@ Initial scenario workflows:
 - billing question
 - insurance verification
 
+Future scenario coverage should add intentionally selected edge cases, such as:
+
+- missing or partial patient facts
+- unavailable insurance or demographic information
+- unclear names, dates, or callback details
+- transfers, hold behavior, silence, or dead air
+- ambiguous next steps or incomplete confirmations
+- target-side misunderstanding and patient clarification
+- wrong department or workflow mismatch
+
 ## Success Criteria
 
 A phase is successful when:
@@ -108,6 +138,13 @@ An MVP+ milestone is successful when:
 - analysis remains advisory, evidence-linked, and replaceable
 - run inspection helps a reviewer understand current state without reading every file manually
 - setup, run, capture, review, analyze, and test commands are documented accurately
+
+The post-MVP+ depth and coverage expansion is successful when:
+
+- short or shallow calls are surfaced as advisory review concerns
+- scenario coverage is documented by workflow and edge-case intent
+- new scenarios remain deterministic, synthetic, and easy to inspect
+- expanded coverage improves evidence quality without adding hidden automation
 
 ## AI Boundary
 
