@@ -154,6 +154,7 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Scenario coverage metadata | `215a7f6` | `7ed0ce9` | Scenario files should declare explicit coverage metadata describing workflow area, edge-case tags, and review risk focus, and invalid or missing coverage should fail deterministic scenario validation. | Existing scenario YAML files load with required coverage metadata; validation rejects missing coverage, blank coverage fields, and unsupported edge-case tags; scenario discovery validates every YAML file in `scenarios/`. |
+| Curated edge-case scenarios | `39c6d0a` | `4a704d9` | The scenario library should include a small curated set of synthetic edge-case workflows for missing facts, unavailable information, transfer or hold recovery, ambiguous next steps, and workflow mismatch. | Dynamic scenario discovery loads and validates the new scenario YAML files, each with coverage metadata, allowed facts, disallowed behavior, conversation-quality guidance, and deterministic patient turns. |
 
 Candidate invariant:
 
@@ -161,6 +162,13 @@ Candidate invariant:
 - Symptom: before this phase, scenarios carried conversation-quality risks but no structured coverage metadata, making scenario growth hard to audit.
 - Root cause: the scenario schema was designed around patient behavior before curated coverage planning became the priority.
 - Why it may be Silver-relevant: the task crosses YAML fixtures, schema parsing, validation rules, scenario discovery tests, and downstream test fixtures while preserving deterministic local execution.
+
+Candidate invariant:
+
+- Invariant: scenario expansion should add reviewable coverage for explicit workflow risks rather than unstructured scenario volume.
+- Symptom: before this phase, the scenario library covered core happy paths and a few unavailable-detail cases, but did not exercise transfer or hold recovery, workflow mismatch, or ambiguous next-step behavior.
+- Root cause: earlier phases prioritized end-to-end artifact flow before breadth and edge-case depth.
+- Why it may be Silver-relevant: the task is mostly fixture-driven, so it is weaker than runtime logic changes, but dynamic scenario validation gives it deterministic fail-to-pass behavior when required scenario metadata or fields are absent.
 
 ## Test Expectations
 
