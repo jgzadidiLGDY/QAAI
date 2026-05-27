@@ -137,6 +137,7 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Conversation-depth and short-call review signals | `379cdd2` | `fcd2b7a` | Conversation review should surface advisory depth signals from captured metadata and transcript evidence, distinguishing unknown duration from short, typical, and long calls without making pass/fail decisions. | Captured Retell duration is persisted as seconds; review observations include unknown and typical duration cases, turn-count depth concerns, goal-statement evidence, workflow-question evidence, and confirmation or next-step evidence. |
+| Phase 13 depth-review documentation | `fcd2b7a` | `9795ac9` | Weak/docs-only candidate: project docs should explain conversation-depth signals, live calibration, duration interpretation, and the Phase 13 scope boundary. | Documentation-only change; useful for reviewers and operators, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 
 Candidate invariant:
 
