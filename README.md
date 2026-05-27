@@ -516,6 +516,23 @@ Out of scope:
 - real patient data
 - AI-owned scenario pass/fail decisions
 
+### Current Phase 13 Implementation
+
+Phase 13 adds advisory depth signals to conversation review. After captured
+artifacts exist, run:
+
+```powershell
+.\gradlew bootRun --args="--review-conversation --call-id=<local_call_id>"
+```
+
+The refreshed `observations.md` now reports whether duration is unknown, short,
+typical, or long; the total patient and receptionist turn counts; whether the
+patient stated the goal; whether the receptionist asked a workflow-specific
+question; and whether the conversation reached a confirmation or next step.
+
+The expected duration band for a typical medical appointment phone call is 1 to
+4 minutes. These signals remain advisory and human-reviewed.
+
 ## Proposed Folder Structure
 
 ```text

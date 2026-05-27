@@ -70,6 +70,16 @@ If capture is partial, read `manifest.json`. Audio gaps are often expected;
 missing transcript turns usually mean Retell has not finished processing or the
 call produced no transcript content.
 
+If conversation review reports duration as `unknown`, capture may have happened
+before Retell finalized the call, or the provider may not have returned duration
+or timestamp data. Retry capture after the call finishes before treating the run
+as shallow.
+
+If conversation review reports a `short` duration, use the cited transcript
+turns to decide whether the call ended before the patient goal, workflow-specific
+question, or confirmation/next-step evidence appeared. A short duration is an
+advisory review signal, not an automated failure.
+
 If analysis fails, confirm `transcript.json` exists and contains at least one
 turn. The analyzer will reject unsupported evidence instead of writing a report.
 

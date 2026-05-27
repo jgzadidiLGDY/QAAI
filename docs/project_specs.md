@@ -66,11 +66,10 @@ After Phase 12, two product risks become important:
 
 The next expansion should address these risks in small reviewable phases.
 
-Phase 13 should add conversation-depth and short-call review signals. These
-signals should be advisory and evidence-based. They can highlight calls with too
-few transcript turns, very short duration, no stated goal, no workflow-specific
-question, or no confirmation/next step, but they must not own pass/fail
-decisions.
+Phase 13 adds conversation-depth and short-call review signals. These signals
+are advisory and evidence-based. They highlight calls with too few transcript
+turns, very short or unknown duration, no stated goal, no workflow-specific
+question, or no confirmation/next step, but they do not own pass/fail decisions.
 
 Phase 14 should expand scenario coverage with a curated taxonomy. New scenarios
 should state the workflow or edge case they exercise, remain synthetic, avoid

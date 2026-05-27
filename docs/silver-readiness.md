@@ -132,6 +132,19 @@ Candidate invariant:
 - Root cause: artifact metadata evolved around run artifacts first, before repeated MVP+ operation made provenance and review trust more important.
 - Why it may be Silver-relevant: the task crosses metadata schema compatibility, dry-run creation, Retell capture updates, analysis updates, optional local Git context, and deterministic artifact tests.
 
+## Phase 13 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Conversation-depth and short-call review signals | `379cdd2` | `fcd2b7a` | Conversation review should surface advisory depth signals from captured metadata and transcript evidence, distinguishing unknown duration from short, typical, and long calls without making pass/fail decisions. | Captured Retell duration is persisted as seconds; review observations include unknown and typical duration cases, turn-count depth concerns, goal-statement evidence, workflow-question evidence, and confirmation or next-step evidence. |
+
+Candidate invariant:
+
+- Invariant: conversation-depth concerns must be grounded in captured duration or transcript evidence and remain advisory.
+- Symptom: before this phase, a captured call could have valid artifacts and analysis inputs while still being too short or shallow for meaningful QA, with no deterministic signal calling that out.
+- Root cause: conversation-quality review cited transcript turns for pacing and workflow movement, but did not persist provider duration or summarize depth milestones.
+- Why it may be Silver-relevant: the task crosses Retell artifact capture, metadata schema compatibility, transcript review, scenario goal interpretation, deterministic heuristic output, and focused tests without adding AI-owned pass/fail behavior.
+
 ## Test Expectations
 
 Silver-oriented tests should:

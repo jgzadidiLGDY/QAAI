@@ -1,8 +1,10 @@
 # Conversation Quality Notes
 
 Phase 2 kept conversation-quality iteration local and deterministic. Phase 8
-adds a transcript-aware review command that refreshes observations from captured
-artifacts without making pass/fail decisions.
+added a transcript-aware review command that refreshes observations from
+captured artifacts without making pass/fail decisions. Phase 13 adds advisory
+conversation-depth signals so short or shallow calls are visible before deeper
+analysis.
 
 ## Current Focus
 
@@ -63,10 +65,46 @@ The generated observations include:
 - pacing evidence
 - clarification and confusion-recovery evidence
 - workflow movement evidence
+- duration, turn-count, goal-statement, workflow-question, and confirmation or
+  next-step depth signals
 - a human reviewer notes placeholder
 
 When transcript evidence is unavailable, the artifact says so explicitly and
 does not infer conversation quality.
+
+## Phase 13 Depth Signals
+
+The review command now adds a `Conversation Depth Signals` section to
+`observations.md`.
+
+Duration is interpreted as:
+
+- `unknown`: no Retell duration and no transcript timestamps are available.
+- `short`: less than 60 seconds.
+- `typical`: 60 to 240 seconds, matching the expected 1 to 4 minute range for a
+  typical medical appointment phone call.
+- `long`: more than 240 seconds.
+
+Depth signals also summarize:
+
+- total, patient, and receptionist turn counts
+- whether the patient stated the scenario goal
+- whether the receptionist asked a workflow-specific question
+- whether the conversation reached confirmation, a next step, or a clear
+  workflow movement cue
+
+These checks are deterministic heuristics. They are meant to point the reviewer
+toward evidence, not to score the call.
+
+Live Phase 13 calibration:
+
+```text
+call_id: call_20260527_133343_cd7d9a47
+retell_call_id: call_cc84b5fabee359005c74e4f6b65
+call_duration_seconds: 131
+turn_count: 27 total, 13 patient, 14 receptionist
+duration_signal: typical
+```
 
 ## Review Boundary
 
@@ -76,8 +114,8 @@ pass/fail, or replace human judgment.
 
 ## Phase 13 Direction
 
-Phase 13 should make very short or shallow calls visible before reviewers rely
-on analysis output. Useful advisory signals may include:
+Phase 13 makes very short or shallow calls visible before reviewers rely on
+analysis output. Advisory signals include:
 
 - call duration is unusually short
 - transcript has too few turns
@@ -85,8 +123,8 @@ on analysis output. Useful advisory signals may include:
 - target side never asks a workflow-specific question
 - conversation ends without a confirmation, next step, or clear blocker
 
-These signals should be grounded in captured metadata and transcript turns. They
-should guide human review rather than create automatic pass/fail decisions.
+These signals are grounded in captured metadata and transcript turns. They guide
+human review rather than create automatic pass/fail decisions.
 
 ## Phase 14 Direction
 
