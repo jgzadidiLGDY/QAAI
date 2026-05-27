@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -159,7 +160,7 @@ public class ConversationDepthReviewService {
 
 	private String firstNextStepEvidence(List<TranscriptTurn> turns) {
 		return turns.stream()
-				.filter(turn -> containsAny(turn.text(), "confirm", "confirmed", "scheduled", "appointment is",
+				.filter(turn -> containsAnyPhrase(turn.text(), "confirm", "confirmed", "scheduled", "appointment is",
 						"next step", "call back", "follow up", "send", "sent", "transfer", "hold", "available",
 						"offer", "ready"))
 				.findFirst()
@@ -243,6 +244,22 @@ public class ConversationDepthReviewService {
 		String lowerText = text.toLowerCase(Locale.ROOT);
 		for (String value : values) {
 			if (lowerText.contains(value)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean containsAnyPhrase(String text, String... values) {
+		if (text == null) {
+			return false;
+		}
+		String lowerText = text.toLowerCase(Locale.ROOT);
+		for (String value : values) {
+			String lowerValue = value.toLowerCase(Locale.ROOT);
+			if (Pattern.compile("(^|[^a-z0-9])" + Pattern.quote(lowerValue) + "([^a-z0-9]|$)")
+					.matcher(lowerText)
+					.find()) {
 				return true;
 			}
 		}

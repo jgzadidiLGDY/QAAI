@@ -160,6 +160,48 @@ class ConversationQualityReviewServiceTest {
 	}
 
 	@Test
+	void doesNotTreatAlreadyAsNextStepEvidence() throws Exception {
+		Path outputs = tempDir.resolve("outputs");
+		String callId = "call_20260523_130000_test1234";
+		Path runDirectory = outputs.resolve(callId);
+		Path sourceScenario = writeScenario(tempDir.resolve("scenario.yaml"));
+		ArtifactWriter writer = new ArtifactWriter(new ObjectMapper(), outputs);
+		writer.writeCallStartedArtifacts(
+				callId,
+				sourceScenario,
+				retellMetadataWithDuration(callId, runDirectory, 52L),
+				"# Patient Simulation Scenario%n".formatted(),
+				"# Previous Observations%n".formatted()
+		);
+		new ObjectMapper().findAndRegisterModules().writerWithDefaultPrettyPrinter().writeValue(
+				runDirectory.resolve("transcript.json").toFile(),
+				new NormalizedTranscript(
+						callId,
+						"appointment_reschedule_001",
+						"retell",
+						List.of(
+								new TranscriptTurn(1, "patient", "Hi, I need to reschedule my appointment.", 0.5),
+								new TranscriptTurn(2, "receptionist", "What day works best for you?", 10.0),
+								new TranscriptTurn(3, "patient", "I already have an appointment next Tuesday.", 20.0),
+								new TranscriptTurn(4, "receptionist", "What is your date of birth?", 30.0)
+						)
+				)
+		);
+		ConversationQualityReviewService service = new ConversationQualityReviewService(
+				writer,
+				new ScenarioLoader(),
+				new ScenarioValidator()
+		);
+
+		ConversationQualityReviewResult result = service.review(callId);
+
+		assertThat(Files.readString(result.observationsMarkdown())).contains(
+				"Duration: 52 seconds (short).",
+				"Confirmation or next step reached: not observed."
+		);
+	}
+
+	@Test
 	void rejectsMissingCallId() {
 		ConversationQualityReviewService service = new ConversationQualityReviewService(
 				new ArtifactWriter(new ObjectMapper(), tempDir.resolve("outputs")),
