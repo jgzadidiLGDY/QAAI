@@ -25,6 +25,8 @@ Additional project docs:
 - [Architecture](docs/architecture.md)
 - [Artifacts Model](docs/artifacts_model.md)
 - [Result Contracts](docs/result_contracts.md)
+- [Operator Guide](docs/operator-guide.md)
+- [Run Lifecycle](docs/run-lifecycle.md)
 
 ## Working Principles
 
@@ -432,13 +434,30 @@ Goal:
 Turn the accumulated phase history into a practical operator guide and make
 artifact completeness easier to trust.
 
-Planned deliverables:
+Current Phase 12 implementation:
 
 - operator-focused README sections for setup, dry runs, real calls, capture, review, and analysis
 - documented run status lifecycle
 - documented artifact completeness rules and troubleshooting paths
 - security and privacy notes for authorized test calls and no real patient data
-- metadata refinements for reproducibility, such as command context, analyzer provider/model, and app or git version where practical
+- additive reproducibility metadata in newly written `metadata.json`
+
+New docs:
+
+- [Operator Guide](docs/operator-guide.md)
+- [Run Lifecycle](docs/run-lifecycle.md)
+
+New metadata shape:
+
+```json
+{
+  "reproducibility": {
+    "command": "capture-artifacts",
+    "app_version": "0.0.1-SNAPSHOT",
+    "git_commit": "optional"
+  }
+}
+```
 
 ## Proposed Folder Structure
 

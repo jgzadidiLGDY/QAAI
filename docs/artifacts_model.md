@@ -141,6 +141,8 @@ Expected fields over time:
 - `status`
 - `artifact_paths`
 - `analysis` after successful analysis, including analyzer provider and model
+- `reproducibility` for newly written metadata, including command, app version,
+  and optional Git commit
 
 ### `transcript.txt`
 
@@ -387,3 +389,22 @@ Expected additions should remain local-first and additive:
 
 The artifact model should continue avoiding committed run outputs, credentials,
 recordings, and real patient data.
+
+## Phase 12 Reproducibility Metadata
+
+Phase 12 adds an optional `reproducibility` object to newly written
+`metadata.json` files:
+
+```json
+{
+  "reproducibility": {
+    "command": "analyze-call",
+    "app_version": "0.0.1-SNAPSHOT",
+    "git_commit": "optional"
+  }
+}
+```
+
+The command names the local workflow step that produced the current metadata
+state. `git_commit` is best-effort and may be `null` when the app is not running
+from a Git checkout. Older metadata without this object remains readable.

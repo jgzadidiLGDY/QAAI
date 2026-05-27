@@ -385,19 +385,20 @@ Phase 12 consolidates MVP+ documentation and artifact trust:
 - status lifecycle documentation should explain valid run states and command order
 - artifact completeness rules should be documented with troubleshooting guidance
 - security and privacy notes should reinforce authorized test calls and no real patient data
-- reproducibility metadata should be expanded where practical
+- reproducibility metadata is additive and optional for older artifacts
 
-Potential metadata additions include:
+Newly written metadata may include:
 
 ```json
 {
-  "command": "analyze-call",
-  "app_version": "0.0.1-SNAPSHOT",
-  "git_commit": "optional",
-  "analysis_provider": "openai",
-  "analysis_model": "gpt-4.1-mini"
+  "reproducibility": {
+    "command": "analyze-call",
+    "app_version": "0.0.1-SNAPSHOT",
+    "git_commit": "optional"
+  }
 }
 ```
 
-These fields are directional for MVP+ and should be introduced only when they
-are useful, tested, and documented.
+Analysis provider and model remain under the existing `analysis` object after
+successful analysis. Reproducibility fields help operators understand artifact
+provenance, but they do not drive workflow control.
