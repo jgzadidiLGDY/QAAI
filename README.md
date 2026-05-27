@@ -408,13 +408,22 @@ Goal:
 
 Make local runs easier to inspect, filter, and recover from during real QA work.
 
-Planned deliverables:
+Current Phase 11 implementation:
 
-- `--show-run --call-id=<local_call_id>` for one-run inspection
-- filtered run listing by scenario, status, or run mode
-- clearer command validation when capture, review, or analysis is requested too early
-- concise help output when no command is provided
-- optional convenience affordances for local iteration, such as latest-run inspection
+- `--show-run --call-id=<local_call_id>` summarizes one run from local artifacts
+- `--list-runs` supports filters by scenario, status, and run mode
+- running without a command prints concise local workflow help
+- run inspection remains read-only and derives completeness from artifact paths
+- next-step hints point operators toward capture, review, or analysis when useful
+
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--show-run --call-id=<local_call_id>"
+.\gradlew bootRun --args="--list-runs --scenario=appointment_reschedule_001"
+.\gradlew bootRun --args="--list-runs --status=artifacts_partially_captured"
+.\gradlew bootRun --args="--list-runs --run-mode=retell"
+```
 
 ### Phase 12: MVP+ Documentation and Artifact Trust
 
@@ -540,13 +549,12 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 11 should make repeated local QA work easier to inspect and recover from:
+Phase 12 should consolidate the MVP+ operator docs and artifact trust model:
 
 ```text
-Add one-run inspection, useful run filters, clearer command validation, and
-concise help output for the local workflow.
+Document setup, dry runs, real calls, capture, review, analysis, run statuses,
+artifact completeness rules, and troubleshooting paths.
 ```
 
-This should build on the existing artifact capture, analysis, run index,
-conversation-quality review, and analyzer selection behavior without changing
-the human-owned pass/fail boundary.
+This should keep the system local-first, human-reviewed, and explicit about
+authorized test calls, generated artifacts, and unavailable evidence.

@@ -103,6 +103,19 @@ Candidate invariant:
 - Root cause: the analysis client interface accepted only a prompt string and exposed no provider identity or deterministic local implementation.
 - Why it may be Silver-relevant: the task crosses configuration binding, Spring provider selection, artifact metadata, analysis service validation, and deterministic tests without letting AI own pass/fail decisions.
 
+## Phase 11 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Local run inspection UX | `79e2a0d` | `38cdd1a` | Local QA runs should be inspectable by `call_id`, and the run index should be filterable by scenario, status, and run mode without turning the index into workflow control state. | A run with `metadata.json` can be summarized with completeness, artifact paths, warnings, and next-step hints; `--list-runs` filters deterministic index entries; running with no command prints supported workflow help. |
+
+Candidate invariant:
+
+- Invariant: local inspection commands must summarize existing artifacts without creating new workflow state or owning pass/fail decisions.
+- Symptom: before this phase, operators could list the raw run index but could not inspect one run, filter noisy run history, or discover the command workflow from the CLI.
+- Root cause: run history existed as append-only JSONL entries, but command routing had only a broad list view and no read-only inspection service over metadata and completeness checks.
+- Why it may be Silver-relevant: the task crosses CLI routing, artifact metadata loading, index filtering, completeness checks, and deterministic filesystem tests while preserving the artifact and human-review boundaries.
+
 ## Test Expectations
 
 Silver-oriented tests should:

@@ -349,6 +349,29 @@ All successful providers still write `analysis.json` and `analysis.md` through
 the same service-level validation. Findings remain advisory, evidence-linked,
 and human-reviewed.
 
+## Phase 11 Inspection Commands
+
+Phase 11 adds read-only local inspection commands. They do not write new run
+artifacts and do not change `metadata.status`.
+
+Inspect one run:
+
+```powershell
+.\gradlew bootRun --args="--show-run --call-id=<local_call_id>"
+```
+
+Filter the append-only run index:
+
+```powershell
+.\gradlew bootRun --args="--list-runs --scenario=appointment_reschedule_001"
+.\gradlew bootRun --args="--list-runs --status=artifacts_partially_captured"
+.\gradlew bootRun --args="--list-runs --run-mode=retell"
+```
+
+The one-run view reads `metadata.json`, checks artifact paths on disk, and uses
+the run index only as an inspection aid. It reports completeness, missing
+required artifacts, warnings, artifact paths, and suggested next local commands.
+
 ## MVP+ Artifact Trust Direction
 
 Phases 9 through 12 should make artifact bundles easier to trust during repeated

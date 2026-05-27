@@ -368,14 +368,14 @@ The `disabled` provider does not write analysis artifacts. It fails clearly when
 
 Phase 11 improves run inspection and workflow UX:
 
-- `--show-run --call-id=<local_call_id>` should summarize one local run
-- run listing should support useful filters such as scenario, status, or run mode
-- commands should fail clearly when requested before required artifacts exist
-- help output should make the supported local workflow discoverable
+- `--show-run --call-id=<local_call_id>` summarizes one local run
+- `--list-runs` supports filters by scenario, status, and run mode
+- help output makes the supported local workflow discoverable when no command is provided
+- one-run inspection includes completeness, warnings, artifact paths, and next-step hints
 
 Run inspection output is an operator convenience. It should read existing
-metadata, index, and manifest artifacts rather than becoming a second source of
-truth.
+metadata and index artifacts, then derive completeness from artifact paths on
+disk rather than becoming a second source of truth.
 
 ## Phase 12 Contract Direction
 

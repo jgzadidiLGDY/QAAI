@@ -50,12 +50,14 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 8 Closeout](docs/phase-8-closeout.md)
 - [Phase 9 Closeout](docs/phase-9-closeout.md)
 - [Phase 10 Closeout](docs/phase-10-closeout.md)
+- [Phase 11 Closeout](docs/phase-11-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 10 added analyzer provider selection. `--analyze-call` can now use OpenAI,
-a deterministic local analyzer, or a disabled mode while preserving shared
-report validation, evidence requirements, and human-owned review.
+Phase 11 added local run inspection UX. Operators can now inspect one run by
+`call_id`, filter the run index by scenario, status, or run mode, and see concise
+help when no command is provided while preserving artifact-owned evidence and
+human-owned review.
 
 ## MVP+ Direction
 
