@@ -106,6 +106,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("retell_call_id: " + result.metadata().retellCallId());
 			System.out.println("status: " + result.metadata().status());
 			System.out.println("artifacts: " + result.runDirectory());
+			System.out.println("next_step: --review-conversation --call-id=" + result.metadata().callId());
 			return;
 		}
 
