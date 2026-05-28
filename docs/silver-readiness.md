@@ -201,6 +201,19 @@ Candidate invariant:
 - Root cause: record configuration properties should expose the canonical constructor shape expected by Spring instead of adding a shortcut constructor with a different argument list.
 - Why it may be Silver-relevant: this is a small hardening candidate with deterministic context-load and configuration-binding tests, but it is narrower than the artifact workflow candidate.
 
+## Phase 16 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Static QA report generation | `ad0955d` | `904c3c6` | Local QA runs should be summarizable through a generated static report that reads existing run, analysis, evaluation, and scenario coverage artifacts without mutating run state or creating pass/fail decisions. | `--generate-report` writes `report.json`, `report.md`, and `index.html` under `outputs/reports/{report_id}`; the report deduplicates latest runs from the run index, summarizes evaluation scores and insufficient-evidence counts, counts analysis severities, includes scenario coverage metadata, and links back to raw artifacts. |
+
+Candidate invariant:
+
+- Invariant: report generation must summarize existing trusted artifacts without becoming a source of truth for run status or reviewer judgment.
+- Symptom: before this phase, operators could inspect single runs and list the run index, but there was no local artifact-level view across run history, evaluations, analysis findings, and scenario coverage.
+- Root cause: Phase 15 produced durable evaluation outputs, but no deterministic aggregation layer existed to make those outputs reviewable across a local corpus.
+- Why it may be Silver-relevant: the task crosses CLI routing, index reading, metadata loading, analysis/evaluation parsing, scenario coverage parsing, static artifact writing, and deterministic filesystem tests while preserving human-owned pass/fail decisions.
+
 ## Test Expectations
 
 Silver-oriented tests should:
