@@ -109,8 +109,8 @@ distribution, scenario coverage, and links to raw artifacts.
 ## Scenario Generation Expansion
 
 After evaluation and reporting exist, scenario coverage becomes the next major
-input-quality bottleneck. Phase 17 should add AI-assisted scenario draft
-generation from an agent-under-test description, such as:
+input-quality bottleneck. Phase 17 adds AI-assisted scenario draft generation
+from an agent-under-test description, such as:
 
 ```text
 medical office scheduling agent

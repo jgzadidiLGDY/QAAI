@@ -490,8 +490,8 @@ outputs/reports/{report_id}/index.html
 
 ## Phase 17 Contract Direction
 
-Phase 17 should add AI-assisted scenario draft generation over an
-agent-under-test description.
+Phase 17 adds AI-assisted scenario draft generation over an agent-under-test
+description.
 
 Generated outputs should live under:
 
@@ -521,6 +521,10 @@ outputs/scenario-generation/{generation_id}/drafts/*.yaml
 - validation results for each draft
 - coverage summary by workflow area and edge-case tag
 - warnings for unsupported tags, missing required fields, or review concerns
+
+Current implementation supports `QAAI_SCENARIO_GENERATOR_PROVIDER=openai|disabled`.
+OpenAI generation uses `OPENAI_SCENARIO_GENERATION_MODEL` and writes provider
+metadata to the report.
 
 Scenario generation must not automatically promote drafts into `scenarios/`,
 start calls, or claim pass/fail ownership. Drafts become canonical scenarios

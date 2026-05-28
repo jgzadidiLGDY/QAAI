@@ -482,7 +482,7 @@ source of truth for run state or final pass/fail decisions.
 
 ## Phase 17 Scenario Generation Draft Artifacts
 
-Phase 17 should add AI-assisted scenario draft artifacts. These outputs are
+Phase 17 adds AI-assisted scenario draft artifacts. These outputs are
 review artifacts, not canonical scenario-library files.
 
 Expected bundle:

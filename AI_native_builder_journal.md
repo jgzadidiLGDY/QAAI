@@ -56,15 +56,15 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 14 Closeout](docs/phase-14-closeout.md)
 - [Phase 15 Closeout](docs/phase-15-closeout.md)
 - [Phase 16 Closeout](docs/phase-16-closeout.md)
+- [Phase 17 Closeout](docs/phase-17-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 16 added a local static report generator over trusted artifacts. The
-report command reads run history, metadata, analysis artifacts, evaluation
-artifacts, and scenario coverage metadata, then writes JSON, Markdown, and HTML
-report artifacts without mutating run state or creating pass/fail decisions.
-Phase 17 should move upstream to AI-assisted scenario draft generation while
-keeping generated scenarios as review artifacts until a human promotes them.
+Phase 17 added AI-assisted scenario draft generation. The generator accepts an
+agent-under-test description, uses the configured scenario-generation provider,
+writes review artifacts under `outputs/scenario-generation/{generation_id}/`,
+validates drafts deterministically, and keeps generated scenarios out of
+`scenarios/` until human promotion.
 
 ## MVP+ Direction
 

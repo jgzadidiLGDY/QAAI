@@ -636,6 +636,23 @@ Planned deliverables:
   results
 - human review boundary before any draft becomes part of `scenarios/`
 
+Current Phase 17 implementation:
+
+- adds `--generate-scenarios --agent-description=<description>`
+- uses `QAAI_SCENARIO_GENERATOR_PROVIDER=openai|disabled`
+- defaults to OpenAI-backed scenario generation
+- writes draft artifacts under `outputs/scenario-generation/{generation_id}/`
+- validates every generated draft with existing scenario validation rules
+- records valid and invalid drafts in the generation report
+- records provider/model metadata and `human_review_required = true`
+- keeps generated drafts out of the committed `scenarios/` library
+
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--generate-scenarios --agent-description=""medical office scheduling agent"""
+```
+
 Expected draft artifacts:
 
 ```text
@@ -765,7 +782,9 @@ Likely environment variables:
 OPENAI_API_KEY=
 QAAI_ANALYZER_PROVIDER=
 QAAI_EVALUATOR_PROVIDER=
+QAAI_SCENARIO_GENERATOR_PROVIDER=
 OPENAI_ANALYSIS_MODEL=
+OPENAI_SCENARIO_GENERATION_MODEL=
 ```
 
 ### Local Development

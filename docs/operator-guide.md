@@ -23,8 +23,11 @@ TARGET_AGENT_PHONE_NUMBER=+18054398008
 OPENAI_API_KEY=
 QAAI_ANALYZER_PROVIDER=openai
 QAAI_EVALUATOR_PROVIDER=local
+QAAI_SCENARIO_GENERATOR_PROVIDER=openai
 OPENAI_ANALYSIS_MODEL=gpt-4.1-mini
 OPENAI_ANALYSIS_TIMEOUT=60s
+OPENAI_SCENARIO_GENERATION_MODEL=gpt-4.1-mini
+OPENAI_SCENARIO_GENERATION_TIMEOUT=60s
 
 QAAI_OUTPUTS_BASE_DIR=outputs
 QAAI_APP_VERSION=0.0.1-SNAPSHOT
@@ -34,6 +37,8 @@ Use `QAAI_ANALYZER_PROVIDER=local` for deterministic offline analysis artifacts.
 Use `disabled` when analysis should fail clearly instead of calling a provider.
 Use `QAAI_EVALUATOR_PROVIDER=local` for deterministic evidence-linked
 evaluation artifacts, or `disabled` when evaluation should fail clearly.
+Use `QAAI_SCENARIO_GENERATOR_PROVIDER=openai` for AI-assisted scenario drafting,
+or `disabled` when draft generation should fail clearly.
 
 ## Dry Run
 
@@ -149,6 +154,27 @@ outputs/reports/{report_id}/index.html
 The report reads existing metadata, analysis, evaluation, run-index, and
 scenario coverage artifacts. It does not change run status and does not own
 pass/fail decisions.
+
+## Generate Scenario Drafts
+
+Generate review-only scenario drafts from an agent-under-test description:
+
+```powershell
+.\gradlew bootRun --args="--generate-scenarios --agent-description=""medical office scheduling agent"""
+```
+
+Inspect:
+
+```text
+outputs/scenario-generation/{generation_id}/agent-description.md
+outputs/scenario-generation/{generation_id}/coverage-plan.md
+outputs/scenario-generation/{generation_id}/generation-report.json
+outputs/scenario-generation/{generation_id}/generation-report.md
+outputs/scenario-generation/{generation_id}/drafts/*.yaml
+```
+
+Drafts are not copied into `scenarios/` automatically. Review the generation
+report and each draft before promoting any scenario into actual use.
 
 ## Test
 

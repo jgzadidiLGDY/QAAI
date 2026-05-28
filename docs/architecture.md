@@ -143,7 +143,7 @@ change status, or own pass/fail decisions.
 
 Drafts scenario libraries from an agent-under-test description.
 
-Planned package:
+Package:
 
 ```text
 com.qaai.scenariogeneration
@@ -291,8 +291,8 @@ Phase 16 adds a local static report view over existing artifacts. It visualizes
 call history, evaluation score summaries, bug severity distribution, and
 scenario coverage without becoming workflow control state.
 
-Phase 17 should add AI-assisted scenario draft generation. It should accept an
-agent-under-test description, write draft scenario artifacts and a coverage
-plan under `outputs/`, validate the drafts deterministically, and preserve
+Phase 17 adds AI-assisted scenario draft generation. It accepts an
+agent-under-test description, writes draft scenario artifacts and a coverage
+plan under `outputs/`, validates the drafts deterministically, and preserves
 human review before any generated scenario becomes part of the committed
 scenario library.
