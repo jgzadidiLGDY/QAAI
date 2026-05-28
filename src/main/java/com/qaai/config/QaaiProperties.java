@@ -7,10 +7,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record QaaiProperties(
 		Retell retell,
 		Analysis analysis,
+		Evaluation evaluation,
 		OpenAi openai,
 		Target target,
 		Outputs outputs
 ) {
+
+	public QaaiProperties(Retell retell, Analysis analysis, OpenAi openai, Target target, Outputs outputs) {
+		this(retell, analysis, null, openai, target, outputs);
+	}
 
 	public QaaiProperties {
 		if (retell == null) {
@@ -19,6 +24,9 @@ public record QaaiProperties(
 		}
 		if (analysis == null) {
 			analysis = new Analysis("openai");
+		}
+		if (evaluation == null) {
+			evaluation = new Evaluation("local");
 		}
 		if (openai == null) {
 			openai = new OpenAi(null, "gpt-4.1-mini", Duration.ofSeconds(60));
@@ -36,6 +44,15 @@ public record QaaiProperties(
 		public Analysis {
 			if (provider == null || provider.isBlank()) {
 				provider = "openai";
+			}
+		}
+	}
+
+	public record Evaluation(String provider) {
+
+		public Evaluation {
+			if (provider == null || provider.isBlank()) {
+				provider = "local";
 			}
 		}
 	}

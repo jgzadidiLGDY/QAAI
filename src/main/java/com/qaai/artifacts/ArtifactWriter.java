@@ -3,6 +3,7 @@ package com.qaai.artifacts;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qaai.analysis.AnalysisReport;
 import com.qaai.config.QaaiProperties;
+import com.qaai.evaluation.EvaluationReport;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -168,6 +169,29 @@ public class ArtifactWriter {
 		}
 	}
 
+	public void writeEvaluationArtifacts(
+			String callId,
+			RunMetadata metadata,
+			EvaluationReport evaluationReport,
+			String evaluationMarkdown
+	) {
+		Path runDirectory = runDirectory(callId);
+		Path metadataPath = runDirectory.resolve("metadata.json");
+		Path evaluationJsonPath = runDirectory.resolve("evaluation.json");
+		Path evaluationMarkdownPath = runDirectory.resolve("evaluation.md");
+
+		try {
+			Files.createDirectories(runDirectory);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(evaluationJsonPath.toFile(), evaluationReport);
+			Files.writeString(evaluationMarkdownPath, evaluationMarkdown);
+			updateManifestWithEvaluation(runDirectory, metadata);
+			runIndexWriter.append(metadata);
+		} catch (IOException exception) {
+			throw new ArtifactWriteException("Unable to write evaluation artifacts for call_id: " + callId, exception);
+		}
+	}
+
 	public Path writeConversationQualityReview(
 			String callId,
 			RunMetadata metadata,
@@ -260,6 +284,39 @@ public class ArtifactWriter {
 				runDirectory.resolve("analysis.md").toString(),
 				true,
 				"Generated during Phase 6 AI-assisted analysis."
+		));
+		ArtifactManifest updatedManifest = new ArtifactManifest(
+				existingManifest.callId(),
+				existingManifest.scenarioId(),
+				existingManifest.retellCallId(),
+				existingManifest.capturedAt(),
+				existingManifest.retellStatus(),
+				existingManifest.recordingUrl(),
+				entries
+		);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(manifestPath.toFile(), updatedManifest);
+	}
+
+	private void updateManifestWithEvaluation(Path runDirectory, RunMetadata metadata) throws IOException {
+		if (metadata.artifactPaths().manifest() == null || !Files.exists(Path.of(metadata.artifactPaths().manifest()))) {
+			return;
+		}
+
+		Path manifestPath = Path.of(metadata.artifactPaths().manifest());
+		ArtifactManifest existingManifest = objectMapper.readValue(manifestPath.toFile(), ArtifactManifest.class);
+		List<ArtifactManifest.ArtifactEntry> entries = new ArrayList<>(existingManifest.artifacts());
+		entries.removeIf(entry -> "evaluation_json".equals(entry.name()) || "evaluation_markdown".equals(entry.name()));
+		entries.add(new ArtifactManifest.ArtifactEntry(
+				"evaluation_json",
+				runDirectory.resolve("evaluation.json").toString(),
+				true,
+				"Generated during Phase 15 evidence-linked evaluation."
+		));
+		entries.add(new ArtifactManifest.ArtifactEntry(
+				"evaluation_markdown",
+				runDirectory.resolve("evaluation.md").toString(),
+				true,
+				"Generated during Phase 15 evidence-linked evaluation."
 		));
 		ArtifactManifest updatedManifest = new ArtifactManifest(
 				existingManifest.callId(),

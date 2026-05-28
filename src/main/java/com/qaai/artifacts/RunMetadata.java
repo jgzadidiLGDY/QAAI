@@ -24,6 +24,7 @@ public record RunMetadata(
 		@JsonProperty("artifact_paths")
 		ArtifactPaths artifactPaths,
 		AnalysisMetadata analysis,
+		EvaluationMetadata evaluation,
 		ReproducibilityMetadata reproducibility
 ) {
 
@@ -39,7 +40,7 @@ public record RunMetadata(
 			ArtifactPaths artifactPaths
 	) {
 		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
-				null, null);
+				null, null, null);
 	}
 
 	public RunMetadata(
@@ -55,7 +56,7 @@ public record RunMetadata(
 			AnalysisMetadata analysis
 	) {
 		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
-				analysis, null);
+				analysis, null, null);
 	}
 
 	public RunMetadata(
@@ -71,7 +72,43 @@ public record RunMetadata(
 			AnalysisMetadata analysis,
 			ReproducibilityMetadata reproducibility
 	) {
+		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
+				analysis, null, reproducibility);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String runMode,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			Long callDurationSeconds,
+			String status,
+			ArtifactPaths artifactPaths,
+			AnalysisMetadata analysis,
+			ReproducibilityMetadata reproducibility
+	) {
+		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, callDurationSeconds,
+				status, artifactPaths, analysis, null, reproducibility);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String runMode,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			String status,
+			ArtifactPaths artifactPaths,
+			AnalysisMetadata analysis,
+			EvaluationMetadata evaluation,
+			ReproducibilityMetadata reproducibility
+	) {
 		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, null, status,
-				artifactPaths, analysis, reproducibility);
+				artifactPaths, analysis, evaluation, reproducibility);
 	}
 }

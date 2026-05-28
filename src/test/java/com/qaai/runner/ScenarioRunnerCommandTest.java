@@ -17,7 +17,7 @@ class ScenarioRunnerCommandTest {
 
 	@Test
 	void reviewConversationRequiresCallId() {
-		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null);
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments("--review-conversation"));
 
@@ -73,6 +73,7 @@ class ScenarioRunnerCommandTest {
 				null,
 				null,
 				null,
+				null,
 				null
 		);
 
@@ -84,12 +85,13 @@ class ScenarioRunnerCommandTest {
 
 	@Test
 	void printsHelpWhenNoCommandIsProvided(CapturedOutput output) {
-		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null);
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments());
 
 		assertThat(command.getExitCode()).isZero();
 		assertThat(output).contains("--show-run --call-id=<local_call_id>");
 		assertThat(output).contains("--list-runs [--scenario=<scenario_id>]");
+		assertThat(output).contains("--evaluate-call --call-id=<local_call_id>");
 	}
 }

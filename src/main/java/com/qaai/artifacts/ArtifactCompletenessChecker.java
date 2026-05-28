@@ -38,6 +38,10 @@ public class ArtifactCompletenessChecker {
 				metadata.artifactPaths().analysisJson());
 		addStatus(artifactStatuses, missingRequiredArtifacts, required, "analysis_markdown",
 				metadata.artifactPaths().analysisMarkdown());
+		addStatus(artifactStatuses, missingRequiredArtifacts, required, "evaluation_json",
+				metadata.artifactPaths().evaluationJson());
+		addStatus(artifactStatuses, missingRequiredArtifacts, required, "evaluation_markdown",
+				metadata.artifactPaths().evaluationMarkdown());
 		addStatus(artifactStatuses, missingRequiredArtifacts, required, "observations_markdown",
 				metadata.artifactPaths().observationsMarkdown());
 
@@ -67,6 +71,13 @@ public class ArtifactCompletenessChecker {
 		if ("analysis_completed".equals(metadata.status())) {
 			required.add("analysis_json");
 			required.add("analysis_markdown");
+		}
+		if ("evaluation_completed".equals(metadata.status())) {
+			required.add("transcript_text");
+			required.add("transcript_json");
+			required.add("manifest");
+			required.add("evaluation_json");
+			required.add("evaluation_markdown");
 		}
 		return required;
 	}
@@ -110,7 +121,9 @@ public class ArtifactCompletenessChecker {
 	}
 
 	private boolean expectsCapturedArtifacts(RunMetadata metadata) {
-		return isCaptureStatus(metadata.status()) || "analysis_completed".equals(metadata.status());
+		return isCaptureStatus(metadata.status())
+				|| "analysis_completed".equals(metadata.status())
+				|| "evaluation_completed".equals(metadata.status());
 	}
 
 	private boolean exists(String path) {

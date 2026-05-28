@@ -8,6 +8,8 @@ qaai:
     recording-download-timeout: ${RETELL_RECORDING_DOWNLOAD_TIMEOUT:60s}
   analysis:
     provider: ${QAAI_ANALYZER_PROVIDER:openai}
+  evaluation:
+    provider: ${QAAI_EVALUATOR_PROVIDER:local}
   openai:
     api-key: ${OPENAI_API_KEY:}
     analysis-model: ${OPENAI_ANALYSIS_MODEL:gpt-4.1-mini}

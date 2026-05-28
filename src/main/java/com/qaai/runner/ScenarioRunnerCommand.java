@@ -8,6 +8,8 @@ import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.RunIndexEntry;
 import com.qaai.artifacts.RunIndexWriter;
 import com.qaai.artifacts.RunMetadata;
+import com.qaai.evaluation.EvaluationResult;
+import com.qaai.evaluation.EvaluationService;
 import com.qaai.quality.ConversationQualityReviewResult;
 import com.qaai.quality.ConversationQualityReviewService;
 import java.nio.file.Path;
@@ -28,6 +30,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final RetellCallRunner retellCallRunner;
 	private final ArtifactCaptureService artifactCaptureService;
 	private final AnalysisService analysisService;
+	private final EvaluationService evaluationService;
 	private final RunIndexWriter runIndexWriter;
 	private final ConversationQualityReviewService conversationQualityReviewService;
 	private final RunInspectionService runInspectionService;
@@ -38,6 +41,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			RetellCallRunner retellCallRunner,
 			ArtifactCaptureService artifactCaptureService,
 			AnalysisService analysisService,
+			EvaluationService evaluationService,
 			RunIndexWriter runIndexWriter,
 			ConversationQualityReviewService conversationQualityReviewService,
 			RunInspectionService runInspectionService
@@ -46,6 +50,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		this.retellCallRunner = retellCallRunner;
 		this.artifactCaptureService = artifactCaptureService;
 		this.analysisService = analysisService;
+		this.evaluationService = evaluationService;
 		this.runIndexWriter = runIndexWriter;
 		this.conversationQualityReviewService = conversationQualityReviewService;
 		this.runInspectionService = runInspectionService;
@@ -85,6 +90,16 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("status: " + result.metadata().status());
 			System.out.println("analysis_json: " + result.analysisJson());
 			System.out.println("analysis_markdown: " + result.analysisMarkdown());
+			return;
+		}
+
+		if (args.containsOption("evaluate-call")) {
+			EvaluationResult result = evaluationService.evaluate(callId(args, "--evaluate-call"));
+			System.out.println("Evaluation completed");
+			System.out.println("call_id: " + result.metadata().callId());
+			System.out.println("status: " + result.metadata().status());
+			System.out.println("evaluation_json: " + result.evaluationJson());
+			System.out.println("evaluation_markdown: " + result.evaluationMarkdown());
 			return;
 		}
 
@@ -215,6 +230,10 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("analysis_provider: " + metadata.analysis().provider());
 			System.out.println("analysis_model: " + metadata.analysis().model());
 		}
+		if (metadata.evaluation() != null) {
+			System.out.println("evaluation_provider: " + metadata.evaluation().provider());
+			System.out.println("evaluation_model: " + metadata.evaluation().model());
+		}
 		System.out.println("complete: " + completeness.complete());
 		if (!completeness.missingRequiredArtifacts().isEmpty()) {
 			System.out.println("missing_required_artifacts: "
@@ -244,6 +263,8 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		printPath("manifest", paths.manifest());
 		printPath("analysis_json", paths.analysisJson());
 		printPath("analysis_markdown", paths.analysisMarkdown());
+		printPath("evaluation_json", paths.evaluationJson());
+		printPath("evaluation_markdown", paths.evaluationMarkdown());
 		printPath("observations_markdown", paths.observationsMarkdown());
 	}
 
@@ -260,6 +281,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 		if (hasArtifact(completeness, "transcript_json") && isBlank(metadata.artifactPaths().analysisJson())) {
 			return List.of("Analyze captured transcript with --analyze-call --call-id=" + metadata.callId());
+		}
+		if (hasArtifact(completeness, "transcript_json") && isBlank(metadata.artifactPaths().evaluationJson())) {
+			return List.of("Evaluate captured transcript with --evaluate-call --call-id=" + metadata.callId());
 		}
 		return List.of("Inspect artifacts under " + metadata.artifactPaths().metadata());
 	}
@@ -280,6 +304,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("- --capture-artifacts --call-id=<local_call_id>");
 		System.out.println("- --review-conversation --call-id=<local_call_id>");
 		System.out.println("- --analyze-call --call-id=<local_call_id>");
+		System.out.println("- --evaluate-call --call-id=<local_call_id>");
 		System.out.println("- --show-run --call-id=<local_call_id>");
 		System.out.println("- --list-runs [--scenario=<scenario_id>] [--status=<status>] [--run-mode=dry-run|retell]");
 	}
@@ -329,6 +354,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 		if (args.containsOption("analyze-call")) {
 			return "analyze-call";
+		}
+		if (args.containsOption("evaluate-call")) {
+			return "evaluate-call";
 		}
 		if (args.containsOption("review-conversation")) {
 			return "review-conversation";
