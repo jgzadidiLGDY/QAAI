@@ -12,6 +12,8 @@ import com.qaai.evaluation.EvaluationResult;
 import com.qaai.evaluation.EvaluationService;
 import com.qaai.quality.ConversationQualityReviewResult;
 import com.qaai.quality.ConversationQualityReviewService;
+import com.qaai.reporting.ReportGenerationService;
+import com.qaai.reporting.ReportResult;
 import java.nio.file.Path;
 import java.util.List;
 import org.slf4j.Logger;
@@ -31,6 +33,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final ArtifactCaptureService artifactCaptureService;
 	private final AnalysisService analysisService;
 	private final EvaluationService evaluationService;
+	private final ReportGenerationService reportGenerationService;
 	private final RunIndexWriter runIndexWriter;
 	private final ConversationQualityReviewService conversationQualityReviewService;
 	private final RunInspectionService runInspectionService;
@@ -42,6 +45,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			ArtifactCaptureService artifactCaptureService,
 			AnalysisService analysisService,
 			EvaluationService evaluationService,
+			ReportGenerationService reportGenerationService,
 			RunIndexWriter runIndexWriter,
 			ConversationQualityReviewService conversationQualityReviewService,
 			RunInspectionService runInspectionService
@@ -51,6 +55,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		this.artifactCaptureService = artifactCaptureService;
 		this.analysisService = analysisService;
 		this.evaluationService = evaluationService;
+		this.reportGenerationService = reportGenerationService;
 		this.runIndexWriter = runIndexWriter;
 		this.conversationQualityReviewService = conversationQualityReviewService;
 		this.runInspectionService = runInspectionService;
@@ -100,6 +105,17 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("status: " + result.metadata().status());
 			System.out.println("evaluation_json: " + result.evaluationJson());
 			System.out.println("evaluation_markdown: " + result.evaluationMarkdown());
+			return;
+		}
+
+		if (args.containsOption("generate-report")) {
+			ReportResult result = reportGenerationService.generate();
+			System.out.println("Report generated");
+			System.out.println("report_id: " + result.reportId());
+			System.out.println("report_directory: " + result.reportDirectory());
+			System.out.println("report_json: " + result.reportJson());
+			System.out.println("report_markdown: " + result.reportMarkdown());
+			System.out.println("report_html: " + result.reportHtml());
 			return;
 		}
 
@@ -305,6 +321,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("- --review-conversation --call-id=<local_call_id>");
 		System.out.println("- --analyze-call --call-id=<local_call_id>");
 		System.out.println("- --evaluate-call --call-id=<local_call_id>");
+		System.out.println("- --generate-report");
 		System.out.println("- --show-run --call-id=<local_call_id>");
 		System.out.println("- --list-runs [--scenario=<scenario_id>] [--status=<status>] [--run-mode=dry-run|retell]");
 	}
@@ -357,6 +374,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 		if (args.containsOption("evaluate-call")) {
 			return "evaluate-call";
+		}
+		if (args.containsOption("generate-report")) {
+			return "generate-report";
 		}
 		if (args.containsOption("review-conversation")) {
 			return "review-conversation";

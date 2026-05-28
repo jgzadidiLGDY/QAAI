@@ -2,9 +2,17 @@ package com.qaai.runner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qaai.artifacts.ArtifactCompletenessChecker;
 import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.RunMetadata;
+import com.qaai.artifacts.RunIndexWriter;
+import com.qaai.reporting.ReportGenerationService;
+import com.qaai.reporting.ReportResult;
+import com.qaai.reporting.StaticReportRenderer;
+import com.qaai.scenario.ScenarioLoader;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +25,7 @@ class ScenarioRunnerCommandTest {
 
 	@Test
 	void reviewConversationRequiresCallId() {
-		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null);
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments("--review-conversation"));
 
@@ -74,6 +82,7 @@ class ScenarioRunnerCommandTest {
 				null,
 				null,
 				null,
+				null,
 				null
 		);
 
@@ -85,7 +94,7 @@ class ScenarioRunnerCommandTest {
 
 	@Test
 	void printsHelpWhenNoCommandIsProvided(CapturedOutput output) {
-		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null);
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments());
 
@@ -93,5 +102,50 @@ class ScenarioRunnerCommandTest {
 		assertThat(output).contains("--show-run --call-id=<local_call_id>");
 		assertThat(output).contains("--list-runs [--scenario=<scenario_id>]");
 		assertThat(output).contains("--evaluate-call --call-id=<local_call_id>");
+		assertThat(output).contains("--generate-report");
+	}
+
+	@Test
+	void generateReportPrintsReportArtifacts(CapturedOutput output) {
+		ReportGenerationService reportGenerationService = new ReportGenerationService(
+				new ObjectMapper(),
+				Path.of("outputs"),
+				Path.of("scenarios"),
+				new RunIndexWriter(new ObjectMapper(), Path.of("outputs"), new ArtifactCompletenessChecker()),
+				new ArtifactCompletenessChecker(),
+				new ScenarioLoader(),
+				new StaticReportRenderer(),
+				Clock.systemDefaultZone()
+		) {
+			@Override
+			public ReportResult generate() {
+				Path reportDirectory = Path.of("outputs", "reports", "report_20260528_120000");
+				return new ReportResult(
+						"report_20260528_120000",
+						reportDirectory,
+						reportDirectory.resolve("report.json"),
+						reportDirectory.resolve("report.md"),
+						reportDirectory.resolve("index.html")
+				);
+			}
+		};
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
+				null,
+				null,
+				null,
+				null,
+				reportGenerationService,
+				null,
+				null,
+				null
+		);
+
+		command.run(new DefaultApplicationArguments("--generate-report"));
+
+		assertThat(command.getExitCode()).isZero();
+		assertThat(output).contains("Report generated");
+		assertThat(output).contains("report_id: report_20260528_120000");
+		assertThat(output).contains("report_html: outputs\\reports\\report_20260528_120000\\index.html");
 	}
 }
