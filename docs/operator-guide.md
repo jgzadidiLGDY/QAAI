@@ -160,7 +160,7 @@ pass/fail decisions.
 Generate review-only scenario drafts from an agent-under-test description:
 
 ```powershell
-.\gradlew bootRun --args="--generate-scenarios --agent-description=""medical office scheduling agent"""
+.\gradlew bootRun --args='--generate-scenarios --agent-description=medical-office-scheduling-agent'
 ```
 
 Inspect:

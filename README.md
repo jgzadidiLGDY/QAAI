@@ -650,7 +650,7 @@ Current Phase 17 implementation:
 Local usage:
 
 ```powershell
-.\gradlew bootRun --args="--generate-scenarios --agent-description=""medical office scheduling agent"""
+.\gradlew bootRun --args='--generate-scenarios --agent-description=medical-office-scheduling-agent'
 ```
 
 Expected draft artifacts:

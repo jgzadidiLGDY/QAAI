@@ -21,7 +21,7 @@ Phase 17 added AI-assisted scenario draft generation.
 ## Local Usage
 
 ```powershell
-.\gradlew bootRun --args="--generate-scenarios --agent-description=""medical office scheduling agent"""
+.\gradlew bootRun --args='--generate-scenarios --agent-description=medical-office-scheduling-agent'
 ```
 
 Expected artifacts:
