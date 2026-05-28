@@ -459,12 +459,31 @@ evaluation mode through `QAAI_EVALUATOR_PROVIDER=local|disabled`.
 
 ## Phase 16 Contract Direction
 
-Phase 16 adds dashboard or static report outputs over existing artifacts:
+Phase 16 adds static report outputs over existing artifacts:
 
 - reports should read run metadata, transcripts, analyses, evaluations, and
   scenario coverage metadata
-- useful views include call history, evaluation score trends, bug severity
+- useful views include call history, evaluation score summaries, bug severity
   distribution, and scenario coverage
-- report generation may write a static HTML or Markdown artifact
+- report generation writes static JSON, Markdown, and HTML artifacts under
+  `outputs/reports/{report_id}/`
 - reporting must not create authoritative pass/fail decisions
 - reporting must not become the source of truth for run state
+
+Current report bundle:
+
+```text
+outputs/reports/{report_id}/report.json
+outputs/reports/{report_id}/report.md
+outputs/reports/{report_id}/index.html
+```
+
+`report.json` includes:
+
+- `report_id`
+- `generated_at`
+- `human_review_required = true`
+- run summaries
+- evaluation score summaries and insufficient-evidence counts
+- analysis severity counts
+- scenario coverage summaries

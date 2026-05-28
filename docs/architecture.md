@@ -123,6 +123,22 @@ uncertainty or insufficient-evidence handling, and
 Evaluation scores are review aids, not pass/fail decisions. Workflow control
 must not depend on AI-generated scores.
 
+### Reporting
+
+Generates local static report artifacts from existing run outputs.
+
+Package:
+
+```text
+com.qaai.reporting
+```
+
+The reporting layer reads the run index, run metadata, optional analysis and
+evaluation artifacts, and scenario coverage metadata. It writes
+`report.json`, `report.md`, and `index.html` under `outputs/reports/{report_id}/`.
+Reports are derived views for human review; they do not mutate run metadata,
+change status, or own pass/fail decisions.
+
 ### Config
 
 Owns typed application settings, environment variable binding, and local defaults that are safe for tests.
@@ -255,6 +271,6 @@ workflow completion, each grounded in transcript evidence or explicitly marked
 as insufficient evidence. The first provider is deterministic local evaluation,
 with disabled mode available for clear operator failure.
 
-Phase 16 should add a local dashboard or static report view over existing
-artifacts. It should visualize call history, score trends, bug severity
-distribution, and scenario coverage without becoming workflow control state.
+Phase 16 adds a local static report view over existing artifacts. It visualizes
+call history, evaluation score summaries, bug severity distribution, and
+scenario coverage without becoming workflow control state.

@@ -101,10 +101,10 @@ must remain advisory and set `human_review_required = true`. Missing evidence
 should produce an explicit unavailable or insufficient-evidence result rather
 than a guessed score.
 
-Phase 16 should visualize evaluation and artifact data through a local dashboard
-or static report. The dashboard should read existing artifacts rather than
-creating hidden workflow state. Useful views include call history, score trends,
-bug severity distribution, and scenario coverage.
+Phase 16 visualizes evaluation and artifact data through a local static report.
+The report reads existing artifacts rather than creating hidden workflow state.
+Useful views include call history, evaluation score summaries, bug severity
+distribution, scenario coverage, and links to raw artifacts.
 
 ## Non-Goals
 

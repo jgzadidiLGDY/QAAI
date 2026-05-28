@@ -55,14 +55,14 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 13 Closeout](docs/phase-13-closeout.md)
 - [Phase 14 Closeout](docs/phase-14-closeout.md)
 - [Phase 15 Closeout](docs/phase-15-closeout.md)
+- [Phase 16 Closeout](docs/phase-16-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 15 added an evidence-linked evaluation layer for captured transcripts.
-The local evaluator produces deterministic advisory rubrics for safety,
-accuracy, empathy, policy, and workflow completion, writes evaluation artifacts,
-and validates scored evidence against normalized transcript turns. Phase 16
-should visualize trusted artifacts through a local dashboard or static report.
+Phase 16 added a local static report generator over trusted artifacts. The
+report command reads run history, metadata, analysis artifacts, evaluation
+artifacts, and scenario coverage metadata, then writes JSON, Markdown, and HTML
+report artifacts without mutating run state or creating pass/fail decisions.
 
 ## MVP+ Direction
 

@@ -579,16 +579,33 @@ Goal:
 Visualize trusted artifacts from runs, analyses, evaluations, and scenario
 coverage after Phase 15 has produced durable evaluation outputs.
 
-Planned deliverables:
+Current Phase 16 implementation:
 
-- call history view
-- score distributions and trends by evaluation dimension
-- bug severity distribution
-- scenario coverage map
-- links to raw artifacts
+- adds `--generate-report`
+- writes a local static report bundle under `outputs/reports/{report_id}/`
+- summarizes latest run history from `outputs/index.jsonl`
+- summarizes evaluation dimension averages and insufficient-evidence counts
+- summarizes analysis finding severities
+- includes scenario coverage metadata from `scenarios/*.yaml`
+- links back to raw run artifacts when paths are available
+- keeps reporting read-only over existing run artifacts
 
-The first implementation should prefer a local static HTML or Markdown report
-unless interactive workflow needs justify a web app.
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--generate-report"
+```
+
+Expected artifacts:
+
+```text
+outputs/reports/{report_id}/report.json
+outputs/reports/{report_id}/report.md
+outputs/reports/{report_id}/index.html
+```
+
+The report is advisory and human-reviewed. It does not mutate run metadata,
+change run status, or create authoritative pass/fail decisions.
 
 ### Current Phase 13 Implementation
 
@@ -630,7 +647,8 @@ The expected duration band for a typical medical appointment phone call is 1 to
 |   |   |           |-- artifacts
 |   |   |           |-- retell
 |   |   |           |-- analysis
-|   |   |           `-- evaluation
+|   |   |           |-- evaluation
+|   |   |           `-- reporting
 |   |   `-- resources
 |   |       `-- application.yml
 |   `-- test
@@ -719,7 +737,7 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 16 should add a local report view over trusted artifacts:
+Phase 16 adds a local report view over trusted artifacts:
 
 ```text
 Visualize run history, evaluation score distributions, bug severity, scenario

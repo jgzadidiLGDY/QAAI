@@ -459,14 +459,23 @@ The local command is:
 
 ## Phase 16 Reporting Artifacts
 
-Phase 16 should add local dashboard or static report artifacts derived from
-existing run outputs. Reports may live under a campaign or report directory, for
-example:
+Phase 16 adds local static report artifacts derived from existing run outputs:
 
 ```text
 outputs/reports/{report_id}/index.html
 outputs/reports/{report_id}/report.md
+outputs/reports/{report_id}/report.json
 ```
 
-Reports should link back to raw artifacts and summarize existing evidence. They
-should not become a source of truth for run state or final pass/fail decisions.
+Generate them with:
+
+```powershell
+.\gradlew bootRun --args="--generate-report"
+```
+
+The report reads `outputs/index.jsonl`, per-run metadata, optional
+`analysis.json`, optional `evaluation.json`, and scenario coverage metadata.
+It summarizes latest run history, evaluation scores and insufficient-evidence
+counts, analysis severity counts, and scenario coverage. Reports should link
+back to raw artifacts and summarize existing evidence. They should not become a
+source of truth for run state or final pass/fail decisions.

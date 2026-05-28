@@ -130,6 +130,26 @@ List or filter the run index:
 Run inspection is read-only. It derives completeness from `metadata.json` and
 files on disk.
 
+## Generate Static Report
+
+Generate a local report bundle across existing runs:
+
+```powershell
+.\gradlew bootRun --args="--generate-report"
+```
+
+Inspect:
+
+```text
+outputs/reports/{report_id}/report.json
+outputs/reports/{report_id}/report.md
+outputs/reports/{report_id}/index.html
+```
+
+The report reads existing metadata, analysis, evaluation, run-index, and
+scenario coverage artifacts. It does not change run status and does not own
+pass/fail decisions.
+
 ## Test
 
 Run focused tests while changing one workflow area:
