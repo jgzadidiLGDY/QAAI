@@ -206,6 +206,7 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Static QA report generation | `ad0955d` | `904c3c6` | Local QA runs should be summarizable through a generated static report that reads existing run, analysis, evaluation, and scenario coverage artifacts without mutating run state or creating pass/fail decisions. | `--generate-report` writes `report.json`, `report.md`, and `index.html` under `outputs/reports/{report_id}`; the report deduplicates latest runs from the run index, summarizes evaluation scores and insufficient-evidence counts, counts analysis severities, includes scenario coverage metadata, and links back to raw artifacts. |
+| Phase 16 report workflow docs | `8d3b619` | `5ac8ab3` | Weak/docs-only candidate: project docs should explain static report generation, report artifacts, operator usage, contracts, architecture, and Phase 16 closeout boundaries. | Documentation-only change; useful for operators and reviewers, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 
 Candidate invariant:
 
