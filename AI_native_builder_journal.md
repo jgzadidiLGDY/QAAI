@@ -63,6 +63,8 @@ Phase 16 added a local static report generator over trusted artifacts. The
 report command reads run history, metadata, analysis artifacts, evaluation
 artifacts, and scenario coverage metadata, then writes JSON, Markdown, and HTML
 report artifacts without mutating run state or creating pass/fail decisions.
+Phase 17 should move upstream to AI-assisted scenario draft generation while
+keeping generated scenarios as review artifacts until a human promotes them.
 
 ## MVP+ Direction
 
@@ -78,6 +80,7 @@ real-world repeatability:
 - Phase 14: scenario coverage and edge-case expansion
 - Phase 15: evidence-linked evaluation layer
 - Phase 16: QA dashboard or static report view
+- Phase 17: AI-assisted scenario draft generation
 
 This expansion does not change the core boundary: deterministic workflow code
 owns orchestration, artifacts provide evidence, AI assists with analysis, and

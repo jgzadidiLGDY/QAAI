@@ -607,6 +607,58 @@ outputs/reports/{report_id}/index.html
 The report is advisory and human-reviewed. It does not mutate run metadata,
 change run status, or create authoritative pass/fail decisions.
 
+## Scenario Generation Direction
+
+After Phases 15 and 16, the system can evaluate and report on captured runs.
+The next bottleneck is scenario coverage: scenarios are still mostly manual,
+even though the project now benefits from diverse, risk-focused inputs.
+
+### Phase 17: AI-Assisted Scenario Draft Generation
+
+Goal:
+
+Given a short description of the agent under test, generate a reviewable draft
+scenario library across workflow areas and edge-case categories.
+
+Example agent description:
+
+```text
+medical office scheduling agent
+```
+
+Planned deliverables:
+
+- agent-under-test description input
+- coverage plan artifact
+- AI-generated scenario YAML drafts
+- deterministic validation of generated drafts
+- generation report summarizing workflows, edge cases, risks, and validation
+  results
+- human review boundary before any draft becomes part of `scenarios/`
+
+Expected draft artifacts:
+
+```text
+outputs/scenario-generation/{generation_id}/agent-description.md
+outputs/scenario-generation/{generation_id}/coverage-plan.md
+outputs/scenario-generation/{generation_id}/generation-report.json
+outputs/scenario-generation/{generation_id}/generation-report.md
+outputs/scenario-generation/{generation_id}/drafts/*.yaml
+```
+
+Generated scenarios should remain review artifacts first. They should not be
+automatically promoted into the committed scenario library, should not trigger
+real calls, and should not claim complete behavioral coverage.
+
+Out of scope:
+
+- automatic promotion into `scenarios/`
+- automatic live-call execution
+- AI-owned coverage completeness claims
+- AI-owned pass/fail decisions
+- real patient data
+- unbounded scenario generation
+
 ### Current Phase 13 Implementation
 
 Phase 13 adds advisory depth signals to conversation review. After captured
@@ -737,13 +789,14 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 16 adds a local report view over trusted artifacts:
+Phase 17 should add AI-assisted scenario draft generation:
 
 ```text
-Visualize run history, evaluation score distributions, bug severity, scenario
-coverage, and links to raw artifacts without becoming workflow control.
+Given an agent-under-test description, generate a bounded draft scenario library
+and coverage plan as review artifacts under outputs/ without automatically
+promoting drafts into the committed scenario library.
 ```
 
 This keeps the system local-first, human-reviewed, and explicit about
-authorized test calls, generated artifacts, unavailable evidence, and advisory
-AI output.
+authorized test calls, generated artifacts, unavailable evidence, advisory AI
+output, and human-owned scenario approval.

@@ -106,6 +106,31 @@ The report reads existing artifacts rather than creating hidden workflow state.
 Useful views include call history, evaluation score summaries, bug severity
 distribution, scenario coverage, and links to raw artifacts.
 
+## Scenario Generation Expansion
+
+After evaluation and reporting exist, scenario coverage becomes the next major
+input-quality bottleneck. Phase 17 should add AI-assisted scenario draft
+generation from an agent-under-test description, such as:
+
+```text
+medical office scheduling agent
+```
+
+Generated scenarios should be draft artifacts first. The system may use AI to
+propose workflow areas, edge cases, patient goals, allowed facts, disallowed
+behavior, and conversation-quality risks, but deterministic validation and
+human review must decide whether any draft is promoted into `scenarios/`.
+
+The first implementation should write draft outputs under:
+
+```text
+outputs/scenario-generation/{generation_id}/
+```
+
+The goal is diverse, reviewable coverage across declared workflow areas and
+known edge-case categories. The system should not claim full behavioral-space
+coverage.
+
 ## Non-Goals
 
 This project is not:
@@ -185,6 +210,14 @@ The evaluation and reporting expansion is successful when:
   native QAAI runs
 - reporting summarizes existing artifacts without owning pass/fail decisions
 
+The scenario generation expansion is successful when:
+
+- an agent-under-test description produces a bounded draft scenario set
+- generated drafts pass deterministic scenario validation
+- coverage plans explain intended workflow and edge-case breadth
+- generated drafts remain review artifacts until a human promotes them
+- no generated draft contains real patient data
+
 ## AI Boundary
 
 AI may assist with:
@@ -194,6 +227,8 @@ AI may assist with:
 - issue clustering
 - report generation
 - rubric-specific advisory evaluation
+- scenario draft generation
+- coverage-plan drafting
 
 AI must not:
 

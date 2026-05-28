@@ -139,6 +139,22 @@ evaluation artifacts, and scenario coverage metadata. It writes
 Reports are derived views for human review; they do not mutate run metadata,
 change status, or own pass/fail decisions.
 
+### Scenario Generation
+
+Drafts scenario libraries from an agent-under-test description.
+
+Planned package:
+
+```text
+com.qaai.scenariogeneration
+```
+
+The scenario generation layer should create review artifacts under
+`outputs/scenario-generation/{generation_id}/`. It may use AI to draft a
+coverage plan and scenario YAML files, but deterministic validation should check
+the generated drafts before they are considered usable. Drafts should not be
+promoted into `scenarios/` automatically and should not trigger live calls.
+
 ### Config
 
 Owns typed application settings, environment variable binding, and local defaults that are safe for tests.
@@ -274,3 +290,9 @@ with disabled mode available for clear operator failure.
 Phase 16 adds a local static report view over existing artifacts. It visualizes
 call history, evaluation score summaries, bug severity distribution, and
 scenario coverage without becoming workflow control state.
+
+Phase 17 should add AI-assisted scenario draft generation. It should accept an
+agent-under-test description, write draft scenario artifacts and a coverage
+plan under `outputs/`, validate the drafts deterministically, and preserve
+human review before any generated scenario becomes part of the committed
+scenario library.

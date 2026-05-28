@@ -479,3 +479,29 @@ It summarizes latest run history, evaluation scores and insufficient-evidence
 counts, analysis severity counts, and scenario coverage. Reports should link
 back to raw artifacts and summarize existing evidence. They should not become a
 source of truth for run state or final pass/fail decisions.
+
+## Phase 17 Scenario Generation Draft Artifacts
+
+Phase 17 should add AI-assisted scenario draft artifacts. These outputs are
+review artifacts, not canonical scenario-library files.
+
+Expected bundle:
+
+```text
+outputs/scenario-generation/{generation_id}/
+|-- agent-description.md
+|-- coverage-plan.md
+|-- generation-report.json
+|-- generation-report.md
+`-- drafts/
+    |-- draft-001.yaml
+    |-- draft-002.yaml
+    `-- draft-003.yaml
+```
+
+Draft YAML files should use the same scenario schema and coverage metadata as
+committed scenarios. The generation report should record validation results,
+coverage intent, provider/model metadata, and `human_review_required = true`.
+
+Generated drafts should not be copied into `scenarios/` automatically and
+should not trigger outbound calls without a separate human-reviewed step.

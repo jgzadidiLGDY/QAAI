@@ -487,3 +487,41 @@ outputs/reports/{report_id}/index.html
 - evaluation score summaries and insufficient-evidence counts
 - analysis severity counts
 - scenario coverage summaries
+
+## Phase 17 Contract Direction
+
+Phase 17 should add AI-assisted scenario draft generation over an
+agent-under-test description.
+
+Generated outputs should live under:
+
+```text
+outputs/scenario-generation/{generation_id}/
+```
+
+Expected artifact bundle:
+
+```text
+outputs/scenario-generation/{generation_id}/agent-description.md
+outputs/scenario-generation/{generation_id}/coverage-plan.md
+outputs/scenario-generation/{generation_id}/generation-report.json
+outputs/scenario-generation/{generation_id}/generation-report.md
+outputs/scenario-generation/{generation_id}/drafts/*.yaml
+```
+
+`generation-report.json` should include:
+
+- `generation_id`
+- `generated_at`
+- `agent_description`
+- `provider`
+- `model`
+- `human_review_required = true`
+- generated draft paths
+- validation results for each draft
+- coverage summary by workflow area and edge-case tag
+- warnings for unsupported tags, missing required fields, or review concerns
+
+Scenario generation must not automatically promote drafts into `scenarios/`,
+start calls, or claim pass/fail ownership. Drafts become canonical scenarios
+only after human review and a separate explicit promotion step.
