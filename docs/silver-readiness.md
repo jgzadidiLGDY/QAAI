@@ -215,6 +215,12 @@ Candidate invariant:
 - Root cause: Phase 15 produced durable evaluation outputs, but no deterministic aggregation layer existed to make those outputs reviewable across a local corpus.
 - Why it may be Silver-relevant: the task crosses CLI routing, index reading, metadata loading, analysis/evaluation parsing, scenario coverage parsing, static artifact writing, and deterministic filesystem tests while preserving human-owned pass/fail decisions.
 
+## Phase 17 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Scenario generation planning docs | `d6f138b` | `19eb196` | Weak/docs-only candidate: project docs should describe AI-assisted scenario draft generation, review-artifact boundaries, expected outputs, contracts, and human promotion requirements. | Documentation-only change; useful for phase planning, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+
 ## Test Expectations
 
 Silver-oriented tests should:
