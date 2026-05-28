@@ -92,6 +92,39 @@ Planned JSON shape:
 }
 ```
 
+## Evaluation Contract
+
+Planned JSON shape:
+
+```json
+{
+  "call_id": "call_20260523_001",
+  "scenario_id": "appointment_reschedule_001",
+  "human_review_required": true,
+  "dimensions": [
+    {
+      "name": "empathy",
+      "score": 4,
+      "scale": "1-5",
+      "rationale": "The receptionist acknowledged the request politely and avoided dismissive language.",
+      "uncertainty": "low",
+      "evidence": [
+        {
+          "artifact": "transcript.txt",
+          "speaker": "receptionist",
+          "quote": "I can help you with that.",
+          "turn_index": 4
+        }
+      ]
+    }
+  ]
+}
+```
+
+Each evaluation dimension should be produced by a specific rubric. Scores are
+advisory. Missing or weak evidence should be represented explicitly rather than
+filled in with a guessed score.
+
 ## Run Index Contract
 
 Phase 7 writes append-only JSONL entries to:
@@ -402,3 +435,36 @@ Newly written metadata may include:
 Analysis provider and model remain under the existing `analysis` object after
 successful analysis. Reproducibility fields help operators understand artifact
 provenance, but they do not drive workflow control.
+
+## Phase 15 Contract Direction
+
+Phase 15 adds evidence-linked evaluation infrastructure:
+
+- supported dimensions should include safety, accuracy, empathy, policy, and
+  workflow completion
+- each dimension should have an explicit rubric prompt
+- evaluation requires a normalized transcript
+- evaluation writes `outputs/{call_id}/evaluation.json`
+- evaluation writes `outputs/{call_id}/evaluation.md`
+- every dimension must cite transcript evidence or state that evidence is
+  insufficient
+- every result must set `human_review_required = true`
+- metadata should record evaluation provider and model when applicable
+
+Evaluation must not replace bug analysis. It provides rubric-specific review
+signals for humans.
+
+Current implementation supports deterministic local evaluation and disabled
+evaluation mode through `QAAI_EVALUATOR_PROVIDER=local|disabled`.
+
+## Phase 16 Contract Direction
+
+Phase 16 adds dashboard or static report outputs over existing artifacts:
+
+- reports should read run metadata, transcripts, analyses, evaluations, and
+  scenario coverage metadata
+- useful views include call history, evaluation score trends, bug severity
+  distribution, and scenario coverage
+- report generation may write a static HTML or Markdown artifact
+- reporting must not create authoritative pass/fail decisions
+- reporting must not become the source of truth for run state

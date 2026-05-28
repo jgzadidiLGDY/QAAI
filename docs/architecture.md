@@ -23,6 +23,7 @@ scenario YAML
   -> transcript and recording capture
   -> conversation-depth review signals
   -> AI-assisted analysis
+  -> evidence-linked evaluation
   -> human-reviewable report
 ```
 
@@ -102,6 +103,25 @@ make provider selection explicit and support at least:
 Analysis output remains advisory. The service layer should continue validating
 `call_id`, `scenario_id`, `human_review_required`, and exact transcript
 evidence before writing analysis artifacts.
+
+### Evaluation
+
+Runs rubric-specific advisory evaluation after transcript evidence exists.
+
+Package:
+
+```text
+com.qaai.evaluation
+```
+
+The evaluation layer should be separate from bug analysis. It should evaluate
+dimensions such as safety, accuracy, empathy, policy, and workflow completion
+through independent rubrics. Each result should include transcript evidence,
+uncertainty or insufficient-evidence handling, and
+`human_review_required = true`.
+
+Evaluation scores are review aids, not pass/fail decisions. Workflow control
+must not depend on AI-generated scores.
 
 ### Config
 
@@ -228,3 +248,13 @@ tied to workflow breadth and explicit edge-case risks rather than volume alone.
 Scenario YAML now includes reviewer-facing coverage metadata, validation
 enforces supported edge-case tags, and scenario tests dynamically validate every
 scenario file.
+
+Phase 15 adds an evidence-linked evaluation layer. It creates
+dimension-specific advisory outputs for safety, accuracy, empathy, policy, and
+workflow completion, each grounded in transcript evidence or explicitly marked
+as insufficient evidence. The first provider is deterministic local evaluation,
+with disabled mode available for clear operator failure.
+
+Phase 16 should add a local dashboard or static report view over existing
+artifacts. It should visualize call history, score trends, bug severity
+distribution, and scenario coverage without becoming workflow control state.

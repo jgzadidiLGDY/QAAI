@@ -177,6 +177,8 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Deterministic evaluation model | `9ac8061` | `8b243d5` | Captured-call evaluation should expose advisory rubric dimensions for safety, accuracy, empathy, policy, and workflow completion, and the local evaluator should produce deterministic human-reviewed results without guessing when transcript evidence is insufficient. | Local evaluation over a transcript with receptionist evidence produces five scored advisory dimensions with cited transcript evidence; local evaluation without receptionist evidence records insufficient evidence and no score; rubric prompts require human review and reject authoritative pass/fail framing. |
+| Evaluate-call artifact workflow | `ef642b5` | `b2f5048` | Captured calls should be evaluable by local `call_id`, producing advisory evaluation JSON and Markdown artifacts only when scored dimensions cite transcript evidence or explicitly mark insufficient evidence. | `--evaluate-call` requires `transcript.json`, writes `evaluation.json` and `evaluation.md`, updates metadata with evaluation paths/provider/model and reproducibility, appends manifest/index entries, rejects fabricated evidence quotes, and preserves human review. |
+| Evaluation config binding | `b2f5048` | `3b747fc` | Evaluation provider configuration should bind through the canonical application properties record so the Spring context loads while tests and callers pass the explicit evaluator slot. | Spring context and configuration binding tests load with `qaai.evaluation.provider`; runner tests construct `QaaiProperties` with the explicit evaluation argument instead of relying on a noncanonical compatibility constructor. |
 
 Candidate invariant:
 
@@ -184,6 +186,20 @@ Candidate invariant:
 - Symptom: before this phase, the project had AI-assisted bug analysis but no separate evaluation contract for consistent safety, accuracy, empathy, policy, and workflow-completion review signals.
 - Root cause: the workflow ended at analysis and conversation-quality observations, before a distinct evaluation layer existed.
 - Why it may be Silver-relevant: the task crosses result contracts, provider boundaries, deterministic local behavior, rubric prompt construction, and evidence-insufficiency handling without relying on external services.
+
+Candidate invariant:
+
+- Invariant: evaluation artifacts must be produced only from captured transcript evidence and must update run metadata without becoming pass/fail workflow control.
+- Symptom: before this phase, a captured call could be analyzed for suspected bugs, but there was no command that wrote rubric-specific evaluation artifacts linked to transcript evidence.
+- Root cause: artifact writing, metadata completeness, manifest updates, CLI routing, and run inspection did not yet know about evaluation outputs.
+- Why it may be Silver-relevant: the task requires tracing a local command through artifact loading, scenario loading, transcript validation, provider output validation, metadata updates, manifest/index writes, and CLI inspection tests.
+
+Candidate invariant:
+
+- Invariant: adding evaluator configuration must preserve Spring configuration-property binding and explicit test construction.
+- Symptom: an overloaded compatibility constructor let unit tests compile but caused the Spring context to fail with no default constructor during configuration binding.
+- Root cause: record configuration properties should expose the canonical constructor shape expected by Spring instead of adding a shortcut constructor with a different argument list.
+- Why it may be Silver-relevant: this is a small hardening candidate with deterministic context-load and configuration-binding tests, but it is narrower than the artifact workflow candidate.
 
 ## Test Expectations
 

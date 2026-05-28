@@ -26,6 +26,8 @@ outputs/{call_id}/
 |-- audio.wav
 |-- analysis.json
 |-- analysis.md
+|-- evaluation.json
+|-- evaluation.md
 |-- manifest.json
 `-- observations.md
 ```
@@ -173,6 +175,16 @@ Structured AI-assisted findings. Each finding must cite transcript evidence.
 ### `analysis.md`
 
 Human-readable analysis report derived from `analysis.json`.
+
+### `evaluation.json`
+
+Structured rubric-specific advisory evaluation. Each dimension should include a
+score or insufficient-evidence state, rationale, uncertainty, and transcript
+evidence.
+
+### `evaluation.md`
+
+Human-readable evaluation report derived from `evaluation.json`.
 
 ### `manifest.json`
 
@@ -408,3 +420,53 @@ Phase 12 adds an optional `reproducibility` object to newly written
 The command names the local workflow step that produced the current metadata
 state. `git_commit` is best-effort and may be `null` when the app is not running
 from a Git checkout. Older metadata without this object remains readable.
+
+## Phase 15 Evaluation Artifacts
+
+Phase 15 adds evidence-linked evaluation artifacts for runs with
+normalized transcripts:
+
+```text
+outputs/{call_id}/evaluation.json
+outputs/{call_id}/evaluation.md
+```
+
+The evaluation files are advisory and human-reviewed. They evaluate
+dimensions independently, such as safety, accuracy, empathy, policy, and
+workflow completion. Every score should be grounded in transcript evidence, and
+missing evidence should be recorded explicitly.
+
+If metadata is updated after evaluation, it may include:
+
+```json
+{
+  "artifact_paths": {
+    "evaluation_json": "outputs/call_20260523_001/evaluation.json",
+    "evaluation_markdown": "outputs/call_20260523_001/evaluation.md"
+  },
+  "evaluation": {
+    "provider": "local",
+    "model": "deterministic-v1"
+  }
+}
+```
+
+The local command is:
+
+```powershell
+.\gradlew bootRun --args="--evaluate-call --call-id=<local_call_id>"
+```
+
+## Phase 16 Reporting Artifacts
+
+Phase 16 should add local dashboard or static report artifacts derived from
+existing run outputs. Reports may live under a campaign or report directory, for
+example:
+
+```text
+outputs/reports/{report_id}/index.html
+outputs/reports/{report_id}/report.md
+```
+
+Reports should link back to raw artifacts and summarize existing evidence. They
+should not become a source of truth for run state or final pass/fail decisions.

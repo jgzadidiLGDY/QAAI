@@ -54,14 +54,15 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 12 Closeout](docs/phase-12-closeout.md)
 - [Phase 13 Closeout](docs/phase-13-closeout.md)
 - [Phase 14 Closeout](docs/phase-14-closeout.md)
+- [Phase 15 Closeout](docs/phase-15-closeout.md)
 
 ## Latest Phase Closeout Notes
 
-Phase 14 added reviewer-facing scenario coverage metadata, deterministic
-coverage validation, a curated set of edge-case scenarios, and coverage docs
-that map each scenario to its workflow area and review risk. One authorized
-live Retell call calibrated the new billing transfer/hold scenario without
-turning the result into an automated pass/fail decision.
+Phase 15 added an evidence-linked evaluation layer for captured transcripts.
+The local evaluator produces deterministic advisory rubrics for safety,
+accuracy, empathy, policy, and workflow completion, writes evaluation artifacts,
+and validates scored evidence against normalized transcript turns. Phase 16
+should visualize trusted artifacts through a local dashboard or static report.
 
 ## MVP+ Direction
 
@@ -75,6 +76,8 @@ real-world repeatability:
 - Phase 12: MVP+ documentation and artifact trust
 - Phase 13: conversation-depth and short-call review signals
 - Phase 14: scenario coverage and edge-case expansion
+- Phase 15: evidence-linked evaluation layer
+- Phase 16: QA dashboard or static report view
 
 This expansion does not change the core boundary: deterministic workflow code
 owns orchestration, artifacts provide evidence, AI assists with analysis, and

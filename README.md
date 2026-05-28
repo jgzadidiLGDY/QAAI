@@ -527,6 +527,69 @@ Current Phase 14 implementation:
 - [Scenario Coverage](docs/scenario-coverage.md) maps each scenario to its
   workflow area, edge-case tags, and risk focus
 
+## Post-MVP+ Evaluation and Reporting Direction
+
+After Phase 14, the next product concern is not more live-call volume by itself.
+The project now needs an evidence-linked evaluation layer that can review calls
+across consistent dimensions while preserving human judgment.
+
+### Phase 15: Evidence-Linked Evaluation Layer
+
+Goal:
+
+Add advisory evaluation infrastructure for captured and imported call
+transcripts.
+
+Planned deliverables:
+
+- separate evaluation dimensions such as safety, accuracy, empathy, policy, and
+  workflow completion
+- one rubric prompt per dimension
+- structured evaluation output with score, rationale, uncertainty, and transcript
+  evidence
+- `human_review_required = true` on every evaluation result
+
+Current Phase 15 implementation:
+
+- adds `--evaluate-call --call-id=<local_call_id>`
+- writes `evaluation.json` and `evaluation.md`
+- evaluates safety, accuracy, empathy, policy, and workflow completion
+- supports `QAAI_EVALUATOR_PROVIDER=local|disabled`
+- defaults to deterministic local evaluation for offline artifact flow checks
+- validates scored dimension evidence against normalized transcript turns
+- allows explicit insufficient-evidence dimensions without guessed scores
+- updates metadata with evaluation artifact paths, provider/model, and
+  reproducibility metadata
+- appends evaluation artifacts to `manifest.json` when present
+- keeps all evaluation scores advisory and human-reviewed
+
+Out of scope:
+
+- authoritative pass/fail decisions
+- clinical judgment
+- fabricated or unsupported scores
+- dashboard UI
+- high-volume live-call orchestration
+- aggregate evaluation summaries across a call corpus
+
+### Phase 16: QA Dashboard or Static Report View
+
+Goal:
+
+Visualize trusted artifacts from runs, analyses, evaluations, and scenario
+coverage after Phase 15 has produced durable evaluation outputs.
+
+Planned deliverables:
+
+- call history view
+- score distributions and trends by evaluation dimension
+- bug severity distribution
+- scenario coverage map
+- links to raw artifacts
+
+The first implementation should prefer a local static HTML or Markdown report
+unless interactive workflow needs justify a web app.
+
 ### Current Phase 13 Implementation
 
 Phase 13 adds advisory depth signals to conversation review. After captured
@@ -566,7 +629,8 @@ The expected duration band for a typical medical appointment phone call is 1 to
 |   |   |           |-- runner
 |   |   |           |-- artifacts
 |   |   |           |-- retell
-|   |   |           `-- analysis
+|   |   |           |-- analysis
+|   |   |           `-- evaluation
 |   |   `-- resources
 |   |       `-- application.yml
 |   `-- test
@@ -629,6 +693,8 @@ Likely environment variables:
 
 ```text
 OPENAI_API_KEY=
+QAAI_ANALYZER_PROVIDER=
+QAAI_EVALUATOR_PROVIDER=
 OPENAI_ANALYSIS_MODEL=
 ```
 
@@ -653,12 +719,13 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 13 should make shallow or very short conversations visible to reviewers:
+Phase 16 should add a local report view over trusted artifacts:
 
 ```text
-Add advisory duration and conversation-depth signals grounded in captured
-metadata and transcript evidence.
+Visualize run history, evaluation score distributions, bug severity, scenario
+coverage, and links to raw artifacts without becoming workflow control.
 ```
 
-This should keep the system local-first, human-reviewed, and explicit about
-authorized test calls, generated artifacts, and unavailable evidence.
+This keeps the system local-first, human-reviewed, and explicit about
+authorized test calls, generated artifacts, unavailable evidence, and advisory
+AI output.

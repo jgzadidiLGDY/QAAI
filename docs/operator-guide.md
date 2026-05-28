@@ -22,6 +22,7 @@ TARGET_AGENT_PHONE_NUMBER=+18054398008
 
 OPENAI_API_KEY=
 QAAI_ANALYZER_PROVIDER=openai
+QAAI_EVALUATOR_PROVIDER=local
 OPENAI_ANALYSIS_MODEL=gpt-4.1-mini
 OPENAI_ANALYSIS_TIMEOUT=60s
 
@@ -31,6 +32,8 @@ QAAI_APP_VERSION=0.0.1-SNAPSHOT
 
 Use `QAAI_ANALYZER_PROVIDER=local` for deterministic offline analysis artifacts.
 Use `disabled` when analysis should fail clearly instead of calling a provider.
+Use `QAAI_EVALUATOR_PROVIDER=local` for deterministic evidence-linked
+evaluation artifacts, or `disabled` when evaluation should fail clearly.
 
 ## Dry Run
 
@@ -95,6 +98,18 @@ Analyze a captured transcript:
 Analysis writes advisory `analysis.json` and `analysis.md`. Every finding must
 cite transcript evidence and `human_review_required` remains true.
 
+## Evaluate
+
+Evaluate a captured transcript with advisory rubrics:
+
+```powershell
+.\gradlew bootRun --args="--evaluate-call --call-id=<local_call_id>"
+```
+
+Evaluation writes `evaluation.json` and `evaluation.md`. Scored dimensions must
+cite transcript evidence; weak or missing evidence is recorded explicitly
+instead of guessed. Human review remains required.
+
 ## Inspect Runs
 
 Inspect one run:
@@ -120,7 +135,7 @@ files on disk.
 Run focused tests while changing one workflow area:
 
 ```powershell
-.\gradlew test --tests "*Artifact*" --tests "*ScenarioRunnerCommandTest" --tests "*AnalysisServiceTest"
+.\gradlew test --tests "*Evaluation*" --tests "*ScenarioRunnerCommandTest"
 ```
 
 Run the full suite before closing a shared behavior change:

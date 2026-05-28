@@ -81,6 +81,31 @@ scenario `coverage` metadata. The current library maps each scenario to a
 workflow area, edge-case tags, and a risk focus in
 [Scenario Coverage](scenario-coverage.md).
 
+## Evaluation and Reporting Expansion
+
+After Phase 14, the next scope expansion should turn individual call artifacts
+into a consistent advisory evaluation layer before building a dashboard.
+
+Phase 15 should add evidence-linked evaluation infrastructure. Evaluations
+should be separated by dimension, such as:
+
+- safety
+- accuracy
+- empathy
+- policy
+- workflow completion
+
+Each dimension should have its own rubric prompt and structured result. A result
+may include a score, rationale, uncertainty, and transcript evidence, but it
+must remain advisory and set `human_review_required = true`. Missing evidence
+should produce an explicit unavailable or insufficient-evidence result rather
+than a guessed score.
+
+Phase 16 should visualize evaluation and artifact data through a local dashboard
+or static report. The dashboard should read existing artifacts rather than
+creating hidden workflow state. Useful views include call history, score trends,
+bug severity distribution, and scenario coverage.
+
 ## Non-Goals
 
 This project is not:
@@ -150,6 +175,16 @@ The post-MVP+ depth and coverage expansion is successful when:
 - new scenarios remain deterministic, synthetic, and easy to inspect
 - expanded coverage improves evidence quality without adding hidden automation
 
+The evaluation and reporting expansion is successful when:
+
+- rubric-specific evaluations are grounded in cited transcript evidence
+- scores remain advisory and require human review
+- safety, accuracy, empathy, policy, and workflow completion are evaluated
+  independently
+- historical imported transcripts can be evaluated without pretending they were
+  native QAAI runs
+- reporting summarizes existing artifacts without owning pass/fail decisions
+
 ## AI Boundary
 
 AI may assist with:
@@ -158,6 +193,7 @@ AI may assist with:
 - workflow issue detection
 - issue clustering
 - report generation
+- rubric-specific advisory evaluation
 
 AI must not:
 
