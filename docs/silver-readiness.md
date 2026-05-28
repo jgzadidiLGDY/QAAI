@@ -172,6 +172,19 @@ Candidate invariant:
 - Root cause: earlier phases prioritized end-to-end artifact flow before breadth and edge-case depth.
 - Why it may be Silver-relevant: the task is mostly fixture-driven, so it is weaker than runtime logic changes, but dynamic scenario validation gives it deterministic fail-to-pass behavior when required scenario metadata or fields are absent.
 
+## Phase 15 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Deterministic evaluation model | `9ac8061` | `8b243d5` | Captured-call evaluation should expose advisory rubric dimensions for safety, accuracy, empathy, policy, and workflow completion, and the local evaluator should produce deterministic human-reviewed results without guessing when transcript evidence is insufficient. | Local evaluation over a transcript with receptionist evidence produces five scored advisory dimensions with cited transcript evidence; local evaluation without receptionist evidence records insufficient evidence and no score; rubric prompts require human review and reject authoritative pass/fail framing. |
+
+Candidate invariant:
+
+- Invariant: rubric-specific evaluation output must stay advisory, dimension-specific, and grounded in available transcript evidence.
+- Symptom: before this phase, the project had AI-assisted bug analysis but no separate evaluation contract for consistent safety, accuracy, empathy, policy, and workflow-completion review signals.
+- Root cause: the workflow ended at analysis and conversation-quality observations, before a distinct evaluation layer existed.
+- Why it may be Silver-relevant: the task crosses result contracts, provider boundaries, deterministic local behavior, rubric prompt construction, and evidence-insufficiency handling without relying on external services.
+
 ## Test Expectations
 
 Silver-oriented tests should:
