@@ -220,6 +220,14 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Scenario generation planning docs | `d6f138b` | `19eb196` | Weak/docs-only candidate: project docs should describe AI-assisted scenario draft generation, review-artifact boundaries, expected outputs, contracts, and human promotion requirements. | Documentation-only change; useful for phase planning, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+| Scenario draft generation workflow | `49f660f` | `b0e49f8` | Given an agent-under-test description, the CLI should generate review-only scenario draft artifacts using the configured scenario-generation provider, validate each draft deterministically, and avoid promoting generated YAML into the canonical `scenarios/` library. | `--generate-scenarios --agent-description=<description>` writes agent description, coverage plan, draft YAML files, and JSON/Markdown generation reports under `outputs/scenario-generation/{generation_id}`; reports include provider/model, human review requirement, per-draft validation results, coverage summaries, and warnings; no files are written to `scenarios/`; OpenAI provider errors are classified without leaking the prompt. |
+
+Candidate invariant:
+
+- Invariant: AI-generated scenarios must remain review artifacts until a human explicitly promotes them.
+- Symptom: before this phase, the project had scenario validation and coverage metadata, but no command for drafting a broader scenario set from an agent-under-test description.
+- Root cause: scenario coverage was curated manually, and the workflow had no provider boundary, generation report, or validation artifact for AI-assisted scenario drafting.
+- Why it may be Silver-relevant: the task crosses CLI routing, provider configuration, OpenAI response parsing, YAML artifact writing, deterministic scenario validation, report generation, and tests that prove generated drafts do not enter `scenarios/` automatically.
 
 ## Test Expectations
 
