@@ -13,6 +13,7 @@ import com.qaai.scenariogeneration.ScenarioGenerationResult;
 import com.qaai.scenariogeneration.ScenarioGenerationService;
 import com.qaai.reporting.StaticReportRenderer;
 import com.qaai.scenario.ScenarioLoader;
+import com.qaai.scenario.ScenarioValidator;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.time.OffsetDateTime;
@@ -213,5 +214,42 @@ class ScenarioRunnerCommandTest {
 		command.run(new DefaultApplicationArguments("--generate-scenarios"));
 
 		assertThat(command.getExitCode()).isEqualTo(1);
+	}
+
+	@Test
+	void generateScenariosReportsDisabledProvider(CapturedOutput output) {
+		ScenarioGenerationService scenarioGenerationService = new ScenarioGenerationService(
+				Path.of("outputs"),
+				new ObjectMapper(),
+				new com.fasterxml.jackson.databind.ObjectMapper(new com.fasterxml.jackson.dataformat.yaml.YAMLFactory()),
+				new com.qaai.scenariogeneration.ScenarioGenerationPromptBuilder(),
+				request -> {
+					throw new com.qaai.scenariogeneration.ScenarioGenerationException(
+							"Scenario generation is disabled"
+					);
+				},
+				new ScenarioValidator(),
+				Clock.systemDefaultZone()
+		);
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				scenarioGenerationService,
+				null,
+				null,
+				null
+		);
+
+		command.run(new DefaultApplicationArguments(
+				"--generate-scenarios",
+				"--agent-description=medical-office-scheduling-agent"
+		));
+
+		assertThat(command.getExitCode()).isEqualTo(1);
+		assertThat(output).contains("Scenario generation is disabled");
 	}
 }
