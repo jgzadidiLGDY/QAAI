@@ -8,6 +8,7 @@ public record QaaiProperties(
 		Retell retell,
 		Analysis analysis,
 		Evaluation evaluation,
+		ScenarioGeneration scenarioGeneration,
 		OpenAi openai,
 		Target target,
 		Outputs outputs
@@ -24,8 +25,12 @@ public record QaaiProperties(
 		if (evaluation == null) {
 			evaluation = new Evaluation("local");
 		}
+		if (scenarioGeneration == null) {
+			scenarioGeneration = new ScenarioGeneration("openai");
+		}
 		if (openai == null) {
-			openai = new OpenAi(null, "gpt-4.1-mini", Duration.ofSeconds(60));
+			openai = new OpenAi(null, "gpt-4.1-mini", Duration.ofSeconds(60),
+					"gpt-4.1-mini", Duration.ofSeconds(60));
 		}
 		if (target == null) {
 			target = new Target("+18054398008");
@@ -53,6 +58,15 @@ public record QaaiProperties(
 		}
 	}
 
+	public record ScenarioGeneration(String provider) {
+
+		public ScenarioGeneration {
+			if (provider == null || provider.isBlank()) {
+				provider = "openai";
+			}
+		}
+	}
+
 	public record Retell(String apiKey, String agentId, String fromNumber, String baseUrl, Duration apiTimeout,
 			Duration recordingDownloadTimeout) {
 
@@ -66,11 +80,23 @@ public record QaaiProperties(
 		}
 	}
 
-	public record OpenAi(String apiKey, String analysisModel, Duration analysisTimeout) {
+	public record OpenAi(
+			String apiKey,
+			String analysisModel,
+			Duration analysisTimeout,
+			String scenarioGenerationModel,
+			Duration scenarioGenerationTimeout
+	) {
 
 		public OpenAi {
 			if (analysisTimeout == null) {
 				analysisTimeout = Duration.ofSeconds(60);
+			}
+			if (scenarioGenerationModel == null || scenarioGenerationModel.isBlank()) {
+				scenarioGenerationModel = "gpt-4.1-mini";
+			}
+			if (scenarioGenerationTimeout == null) {
+				scenarioGenerationTimeout = Duration.ofSeconds(60);
 			}
 		}
 	}

@@ -9,6 +9,8 @@ import com.qaai.artifacts.RunMetadata;
 import com.qaai.artifacts.RunIndexWriter;
 import com.qaai.reporting.ReportGenerationService;
 import com.qaai.reporting.ReportResult;
+import com.qaai.scenariogeneration.ScenarioGenerationResult;
+import com.qaai.scenariogeneration.ScenarioGenerationService;
 import com.qaai.reporting.StaticReportRenderer;
 import com.qaai.scenario.ScenarioLoader;
 import java.nio.file.Path;
@@ -25,7 +27,8 @@ class ScenarioRunnerCommandTest {
 
 	@Test
 	void reviewConversationRequiresCallId() {
-		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null, null);
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments("--review-conversation"));
 
@@ -83,6 +86,7 @@ class ScenarioRunnerCommandTest {
 				null,
 				null,
 				null,
+				null,
 				null
 		);
 
@@ -94,7 +98,8 @@ class ScenarioRunnerCommandTest {
 
 	@Test
 	void printsHelpWhenNoCommandIsProvided(CapturedOutput output) {
-		ScenarioRunnerCommand command = new ScenarioRunnerCommand(null, null, null, null, null, null, null, null, null);
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments());
 
@@ -103,6 +108,7 @@ class ScenarioRunnerCommandTest {
 		assertThat(output).contains("--list-runs [--scenario=<scenario_id>]");
 		assertThat(output).contains("--evaluate-call --call-id=<local_call_id>");
 		assertThat(output).contains("--generate-report");
+		assertThat(output).contains("--generate-scenarios --agent-description=<description>");
 	}
 
 	@Test
@@ -138,6 +144,7 @@ class ScenarioRunnerCommandTest {
 				reportGenerationService,
 				null,
 				null,
+				null,
 				null
 		);
 
@@ -147,5 +154,64 @@ class ScenarioRunnerCommandTest {
 		assertThat(output).contains("Report generated");
 		assertThat(output).contains("report_id: report_20260528_120000");
 		assertThat(output).contains("report_html: outputs\\reports\\report_20260528_120000\\index.html");
+	}
+
+	@Test
+	void generateScenariosPrintsReviewArtifactPaths(CapturedOutput output) {
+		ScenarioGenerationService scenarioGenerationService = new ScenarioGenerationService(
+				Path.of("outputs"),
+				new ObjectMapper(),
+				new com.fasterxml.jackson.databind.ObjectMapper(new com.fasterxml.jackson.dataformat.yaml.YAMLFactory()),
+				null,
+				null,
+				null,
+				Clock.systemDefaultZone()
+		) {
+			@Override
+			public ScenarioGenerationResult generate(String agentDescription, Integer requestedScenarioCount) {
+				Path generationDirectory = Path.of("outputs", "scenario-generation", "scenario_generation_20260528_120000");
+				return new ScenarioGenerationResult(
+						"scenario_generation_20260528_120000",
+						generationDirectory,
+						generationDirectory.resolve("agent-description.md"),
+						generationDirectory.resolve("coverage-plan.md"),
+						generationDirectory.resolve("generation-report.json"),
+						generationDirectory.resolve("generation-report.md")
+				);
+			}
+		};
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				scenarioGenerationService,
+				null,
+				null,
+				null
+		);
+
+		command.run(new DefaultApplicationArguments(
+				"--generate-scenarios",
+				"--agent-description=medical office scheduling agent",
+				"--scenario-count=2"
+		));
+
+		assertThat(command.getExitCode()).isZero();
+		assertThat(output).contains("Scenario drafts generated");
+		assertThat(output).contains("generation_id: scenario_generation_20260528_120000");
+		assertThat(output).contains("review_required: true");
+	}
+
+	@Test
+	void generateScenariosRequiresAgentDescription() {
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null, null, null, null, null, null, null, null, null, null);
+
+		command.run(new DefaultApplicationArguments("--generate-scenarios"));
+
+		assertThat(command.getExitCode()).isEqualTo(1);
 	}
 }

@@ -14,6 +14,8 @@ import com.qaai.quality.ConversationQualityReviewResult;
 import com.qaai.quality.ConversationQualityReviewService;
 import com.qaai.reporting.ReportGenerationService;
 import com.qaai.reporting.ReportResult;
+import com.qaai.scenariogeneration.ScenarioGenerationResult;
+import com.qaai.scenariogeneration.ScenarioGenerationService;
 import java.nio.file.Path;
 import java.util.List;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final AnalysisService analysisService;
 	private final EvaluationService evaluationService;
 	private final ReportGenerationService reportGenerationService;
+	private final ScenarioGenerationService scenarioGenerationService;
 	private final RunIndexWriter runIndexWriter;
 	private final ConversationQualityReviewService conversationQualityReviewService;
 	private final RunInspectionService runInspectionService;
@@ -46,6 +49,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			AnalysisService analysisService,
 			EvaluationService evaluationService,
 			ReportGenerationService reportGenerationService,
+			ScenarioGenerationService scenarioGenerationService,
 			RunIndexWriter runIndexWriter,
 			ConversationQualityReviewService conversationQualityReviewService,
 			RunInspectionService runInspectionService
@@ -56,6 +60,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		this.analysisService = analysisService;
 		this.evaluationService = evaluationService;
 		this.reportGenerationService = reportGenerationService;
+		this.scenarioGenerationService = scenarioGenerationService;
 		this.runIndexWriter = runIndexWriter;
 		this.conversationQualityReviewService = conversationQualityReviewService;
 		this.runInspectionService = runInspectionService;
@@ -116,6 +121,22 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("report_json: " + result.reportJson());
 			System.out.println("report_markdown: " + result.reportMarkdown());
 			System.out.println("report_html: " + result.reportHtml());
+			return;
+		}
+
+		if (args.containsOption("generate-scenarios")) {
+			ScenarioGenerationResult result = scenarioGenerationService.generate(
+					agentDescription(args),
+					scenarioCount(args)
+			);
+			System.out.println("Scenario drafts generated");
+			System.out.println("generation_id: " + result.generationId());
+			System.out.println("generation_directory: " + result.generationDirectory());
+			System.out.println("agent_description: " + result.agentDescription());
+			System.out.println("coverage_plan: " + result.coveragePlan());
+			System.out.println("generation_report_json: " + result.generationReportJson());
+			System.out.println("generation_report_markdown: " + result.generationReportMarkdown());
+			System.out.println("review_required: true");
 			return;
 		}
 
@@ -322,8 +343,31 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("- --analyze-call --call-id=<local_call_id>");
 		System.out.println("- --evaluate-call --call-id=<local_call_id>");
 		System.out.println("- --generate-report");
+		System.out.println("- --generate-scenarios --agent-description=<description> [--scenario-count=<count>]");
 		System.out.println("- --show-run --call-id=<local_call_id>");
 		System.out.println("- --list-runs [--scenario=<scenario_id>] [--status=<status>] [--run-mode=dry-run|retell]");
+	}
+
+	private String agentDescription(ApplicationArguments args) {
+		String value = optionValue(args, "agent-description");
+		if (value == null || value.isBlank()) {
+			throw new IllegalArgumentException(
+					"Provide --agent-description=<description> with --generate-scenarios"
+			);
+		}
+		return value;
+	}
+
+	private Integer scenarioCount(ApplicationArguments args) {
+		String value = optionValue(args, "scenario-count");
+		if (value == null || value.isBlank()) {
+			return null;
+		}
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException exception) {
+			throw new IllegalArgumentException("scenario-count must be a number", exception);
+		}
 	}
 
 	private String optionValue(ApplicationArguments args, String optionName) {
@@ -377,6 +421,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 		if (args.containsOption("generate-report")) {
 			return "generate-report";
+		}
+		if (args.containsOption("generate-scenarios")) {
+			return "generate-scenarios";
 		}
 		if (args.containsOption("review-conversation")) {
 			return "review-conversation";

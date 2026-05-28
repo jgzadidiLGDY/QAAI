@@ -10,10 +10,14 @@ qaai:
     provider: ${QAAI_ANALYZER_PROVIDER:openai}
   evaluation:
     provider: ${QAAI_EVALUATOR_PROVIDER:local}
+  scenario-generation:
+    provider: ${QAAI_SCENARIO_GENERATOR_PROVIDER:openai}
   openai:
     api-key: ${OPENAI_API_KEY:}
     analysis-model: ${OPENAI_ANALYSIS_MODEL:gpt-4.1-mini}
     analysis-timeout: ${OPENAI_ANALYSIS_TIMEOUT:60s}
+    scenario-generation-model: ${OPENAI_SCENARIO_GENERATION_MODEL:gpt-4.1-mini}
+    scenario-generation-timeout: ${OPENAI_SCENARIO_GENERATION_TIMEOUT:60s}
   target:
     agent-phone-number: ${TARGET_AGENT_PHONE_NUMBER:+18054398008}
   outputs:
