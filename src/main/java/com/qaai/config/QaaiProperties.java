@@ -13,10 +13,6 @@ public record QaaiProperties(
 		Outputs outputs
 ) {
 
-	public QaaiProperties(Retell retell, Analysis analysis, OpenAi openai, Target target, Outputs outputs) {
-		this(retell, analysis, null, openai, target, outputs);
-	}
-
 	public QaaiProperties {
 		if (retell == null) {
 			retell = new Retell(null, null, null, "https://api.retellai.com", Duration.ofSeconds(30),

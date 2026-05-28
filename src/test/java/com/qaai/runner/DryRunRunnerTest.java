@@ -27,6 +27,7 @@ class DryRunRunnerTest {
 				null,
 				null,
 				null,
+				null,
 				new QaaiProperties.Target("+18054398008"),
 				new QaaiProperties.Outputs(tempDir.resolve("outputs").toString())
 		);
