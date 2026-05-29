@@ -103,8 +103,12 @@ public class TextChatRunner {
 				null,
 				startedAt,
 				OffsetDateTime.now(clock),
+				null,
 				"completed",
-				artifactPaths
+				artifactPaths,
+				null,
+				null,
+				RuntimeReproducibilityMetadata.forCommand("text-chat")
 		);
 		NormalizedTranscript transcript = buildTranscript(callId, scenario);
 

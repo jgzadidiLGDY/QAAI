@@ -53,6 +53,7 @@ class TextChatRunnerTest {
 		assertThat(result.metadata().channel()).isEqualTo("text");
 		assertThat(result.metadata().targetPhoneNumber()).isNull();
 		assertThat(result.metadata().retellCallId()).isNull();
+		assertThat(result.metadata().reproducibility().command()).isEqualTo("text-chat");
 		assertThat(result.artifacts().scenarioSnapshot()).exists();
 		assertThat(result.artifacts().metadata()).exists();
 		assertThat(result.artifacts().transcriptText()).exists();
