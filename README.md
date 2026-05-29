@@ -114,6 +114,7 @@ This creates a local dry-run artifact bundle. The run metadata explicitly marks:
 ```json
 {
   "run_mode": "dry_run",
+  "channel": "voice",
   "retell_call_id": null
 }
 ```
@@ -815,7 +816,33 @@ Goal:
 Prove the channel-neutral model by running the same scenario framework against a
 simple text-chat interaction channel.
 
-Phase 20 should come only after Phase 19 is reviewed and approved.
+Current implementation:
+
+- adds `--run-mode=text-chat`
+- writes `run_mode = text_chat`
+- writes `channel = text`
+- writes `transcript.txt` and normalized `transcript.json`
+- omits Retell ids, phone-number targets, audio, and manifest artifacts for the
+  local text prototype
+- keeps downstream review, analysis, evaluation, inspection, and reporting
+  artifact-compatible through the normalized transcript
+
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml --run-mode=text-chat"
+```
+
+Expected artifacts:
+
+```text
+outputs/{call_id}/scenario.yaml
+outputs/{call_id}/metadata.json
+outputs/{call_id}/patient_simulation.md
+outputs/{call_id}/transcript.txt
+outputs/{call_id}/transcript.json
+outputs/{call_id}/observations.md
+```
 
 ### Current Phase 13 Implementation
 

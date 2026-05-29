@@ -61,6 +61,8 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 18 Closeout](docs/phase-18-closeout.md)
 - [Phase 19 Plan](docs/phase-19-plan.md)
 - [Phase 19 Closeout](docs/phase-19-closeout.md)
+- [Phase 20 Plan](docs/phase-20-plan.md)
+- [Phase 20 Closeout](docs/phase-20-closeout.md)
 
 ## Latest Phase Closeout Notes
 
@@ -88,6 +90,11 @@ Phase 19 implemented the first runtime hook for that reframing: additive
 `channel` metadata. Current dry-run and Retell runs record `channel = voice`,
 older voice metadata remains readable, and inspection/reporting surfaces expose
 the channel without changing existing commands.
+
+Phase 20 added the first non-voice runtime channel. The local text chat runner
+uses the same scenario inputs and artifact pipeline, writes normalized text
+transcripts, records `channel = text`, and keeps Retell/audio details out of the
+text-channel artifact contract.
 
 ## MVP+ Direction
 

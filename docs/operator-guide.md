@@ -62,6 +62,30 @@ outputs/{call_id}/transcript.txt
 outputs/{call_id}/observations.md
 ```
 
+## Text Chat Run
+
+Text chat runs do not use Retell or place phone calls. They validate the same
+scenario input and write a local text-channel artifact bundle:
+
+```powershell
+.\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml --run-mode=text-chat"
+```
+
+Inspect:
+
+```text
+outputs/{call_id}/scenario.yaml
+outputs/{call_id}/metadata.json
+outputs/{call_id}/patient_simulation.md
+outputs/{call_id}/transcript.txt
+outputs/{call_id}/transcript.json
+outputs/{call_id}/observations.md
+```
+
+Text chat metadata records `run_mode = text_chat` and `channel = text`.
+Retell ids, phone-number targets, audio, and manifest artifacts are absent in
+this local prototype.
+
 ## Real Call Start
 
 Retell mode starts an outbound call and records the local-to-Retell id mapping:
@@ -146,6 +170,7 @@ List or filter the run index:
 .\gradlew bootRun --args="--list-runs --scenario=appointment_reschedule_001"
 .\gradlew bootRun --args="--list-runs --status=artifacts_partially_captured"
 .\gradlew bootRun --args="--list-runs --run-mode=retell"
+.\gradlew bootRun --args="--list-runs --run-mode=text_chat"
 ```
 
 Run inspection is read-only. It derives completeness from `metadata.json` and

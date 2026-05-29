@@ -9,6 +9,9 @@ artifacts under `outputs/{call_id}/`, and humans decide final QA outcomes.
 dry run:
   --scenario=<path>
 
+text chat:
+  --scenario=<path> --run-mode=text-chat
+
 real call:
   --scenario=<path> --run-mode=retell
   --capture-artifacts --call-id=<local_call_id>
@@ -23,6 +26,7 @@ real call:
 | Status | Meaning | Typical next step |
 | --- | --- | --- |
 | `completed` | Dry-run artifacts were written. | Inspect artifacts or start a Retell run. |
+| `completed` with `channel = text` | Local text chat artifacts were written. | Inspect artifacts, review conversation, analyze, evaluate, or report. |
 | `retell_*` | Retell accepted the outbound call request and returned a call id. | Capture artifacts after the call has produced details. |
 | `started` | Retell accepted the call but returned no specific call status. | Capture artifacts after the call has produced details. |
 | `artifacts_captured` | Transcript artifacts and audio were captured. | Review conversation or analyze transcript. |
@@ -37,6 +41,7 @@ Completeness is status-aware:
 | Run state | Required artifacts |
 | --- | --- |
 | Dry run | `scenario.yaml`, `metadata.json`, `patient_simulation.md`, `transcript.txt`, `observations.md` |
+| Text chat run | `scenario.yaml`, `metadata.json`, `patient_simulation.md`, `transcript.txt`, `transcript.json`, `observations.md` |
 | Retell call start | `scenario.yaml`, `metadata.json`, `patient_simulation.md`, `observations.md` |
 | Captured Retell run | call-start artifacts plus `transcript.json`, `transcript.txt`, `manifest.json` |
 | Analyzed run | captured-run artifacts plus `analysis.json`, `analysis.md` |
@@ -79,6 +84,10 @@ If conversation review reports a `short` duration, use the cited transcript
 turns to decide whether the call ended before the patient goal, workflow-specific
 question, or confirmation/next-step evidence appeared. A short duration is an
 advisory review signal, not an automated failure.
+
+For text chat runs, missing `audio.wav` and `manifest.json` are expected in the
+local prototype. The required evidence is the normalized `transcript.json` plus
+the human-readable `transcript.txt`.
 
 If analysis fails, confirm `transcript.json` exists and contains at least one
 turn. The analyzer will reject unsupported evidence instead of writing a report.

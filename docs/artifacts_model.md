@@ -586,3 +586,28 @@ Current implementation adds a `channel` metadata field. New dry-run and Retell
 runs write `channel = voice`; older metadata without the field is read as voice
 when `run_mode` is `dry_run` or `retell`. Run index entries and static reports
 also carry the channel value.
+
+## Phase 20 Text Chat Artifacts
+
+Phase 20 adds a deterministic local text chat run:
+
+```powershell
+.\gradlew bootRun --args="--scenario=scenarios/appointment-reschedule.yaml --run-mode=text-chat"
+```
+
+Expected bundle:
+
+```text
+outputs/{call_id}/
+|-- scenario.yaml
+|-- metadata.json
+|-- patient_simulation.md
+|-- transcript.txt
+|-- transcript.json
+`-- observations.md
+```
+
+The metadata records `run_mode = text_chat` and `channel = text`. Voice-specific
+fields such as `target_phone_number`, `retell_call_id`, `audio`, and `manifest`
+are absent for this local prototype. Completeness requires the normalized
+transcript artifacts and does not warn about missing audio.

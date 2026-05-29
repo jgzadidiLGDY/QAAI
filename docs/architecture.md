@@ -372,6 +372,8 @@ Current Phase 19 implementation adds additive channel metadata to run metadata,
 run index entries, Retell request metadata, inspection output, and static
 reports. Existing voice behavior remains the only real runtime channel.
 
-Phase 20 should add a small text chat runner prototype to prove the Phase 19
-boundary. It should reuse the same scenario inputs, normalized transcript model,
-artifact persistence, advisory reviews, and reporting surfaces where practical.
+Phase 20 adds a small text chat runner prototype to prove the Phase 19 boundary.
+It reuses the same scenario inputs, normalized transcript model, artifact
+persistence, advisory reviews, and reporting surfaces where practical. The
+prototype is local and deterministic; it does not add an external chat provider
+or live text UI.

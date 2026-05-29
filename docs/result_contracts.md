@@ -627,3 +627,36 @@ Current Phase 19 metadata extension:
 
 `channel` is additive. Existing voice metadata without `channel` remains
 readable and defaults to `voice` for `dry_run` and `retell` run modes.
+
+## Phase 20 Contract Extension
+
+Phase 20 adds deterministic local text chat execution:
+
+- command: `--scenario=<path> --run-mode=text-chat`
+- metadata `run_mode = text_chat`
+- metadata `channel = text`
+- `target_phone_number = null`
+- `retell_call_id = null`
+- writes `transcript.txt`
+- writes normalized `transcript.json`
+- writes `patient_simulation.md` and `observations.md`
+- does not require `audio.wav` or `manifest.json`
+
+Text chat runs reuse the same local artifact id convention:
+
+```json
+{
+  "call_id": "call_20260529_121500_chat1234",
+  "scenario_id": "appointment_reschedule_001",
+  "run_mode": "text_chat",
+  "channel": "text",
+  "target_phone_number": null,
+  "retell_call_id": null,
+  "status": "completed"
+}
+```
+
+Text chat transcript JSON uses the existing normalized transcript shape with
+`source = text_chat`. Downstream analysis, evaluation, multi-lens review,
+inspection, and reports should read the normalized transcript rather than
+special-casing Retell transcript details.
