@@ -316,3 +316,25 @@ Candidate invariant:
   backward compatibility, Retell request metadata, run indexing, CLI
   inspection, static reporting, and deterministic tests without adding a second
   runtime channel.
+
+## Phase 20 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Local text chat runner | `57f255a` | `0a38413` | Scenario runs should support a deterministic local text chat mode that writes inspectable channel-specific artifacts while reusing the existing scenario, transcript, artifact, inspection, review, evaluation, analysis, and reporting pipeline. | `--scenario=<path> --run-mode=text-chat` writes `metadata.json` with `run_mode = text_chat` and `channel = text`, writes `transcript.txt` and `transcript.json`, omits Retell/audio/manifest fields, routes through CLI run-mode handling, and reports complete artifacts without voice audio warnings. |
+
+Candidate invariant:
+
+- Invariant: a non-voice interaction channel must produce normalized transcript
+  evidence and local artifacts without depending on Retell or voice-specific
+  audio/manifest assumptions.
+- Symptom: after Phase 19, channel metadata existed, but all runnable paths were
+  still voice-oriented, so the channel boundary had not been proven by a second
+  execution mode.
+- Root cause: the runner and artifact completeness flow were originally built
+  around dry-run voice simulation and Retell capture before text interaction was
+  introduced.
+- Why it may be Silver-relevant: the task crosses CLI routing, scenario
+  validation, deterministic transcript generation, metadata serialization,
+  artifact writing, channel-aware completeness checks, and focused tests while
+  preserving human-owned review decisions.
