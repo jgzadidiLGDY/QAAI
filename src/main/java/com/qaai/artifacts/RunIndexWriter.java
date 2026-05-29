@@ -40,6 +40,7 @@ public class RunIndexWriter {
 				metadata.callId(),
 				metadata.scenarioId(),
 				metadata.runMode(),
+				metadata.channel(),
 				metadata.status(),
 				metadata.retellCallId(),
 				metadata.startedAt(),

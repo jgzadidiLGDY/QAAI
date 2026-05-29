@@ -49,6 +49,9 @@ class RunIndexWriterTest {
 		assertThat(writer.readAll())
 				.extracting(RunIndexEntry::status)
 				.containsExactly("retell_registered", "artifacts_partially_captured");
+		assertThat(writer.readAll())
+				.extracting(RunIndexEntry::channel)
+				.containsExactly("voice", "voice");
 		assertThat(writer.readAll().get(0).complete()).isTrue();
 		assertThat(writer.readAll().get(1).complete()).isTrue();
 		assertThat(writer.readAll().get(1).warnings()).containsExactly("audio missing or unavailable");
@@ -63,6 +66,32 @@ class RunIndexWriterTest {
 		);
 
 		assertThat(writer.readAll()).isEmpty();
+	}
+
+	@Test
+	void readsOlderMetadataWithoutChannelAsVoiceForExistingVoiceRunModes() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+
+		RunMetadata metadata = objectMapper.readValue("""
+				{
+				  "call_id" : "call_20260523_130000_test1234",
+				  "scenario_id" : "appointment_reschedule_001",
+				  "run_mode" : "retell",
+				  "target_phone_number" : "+18054398008",
+				  "retell_call_id" : "retell_call_123",
+				  "started_at" : "2026-05-23T13:00:00-04:00",
+				  "ended_at" : "2026-05-23T13:10:00-04:00",
+				  "status" : "retell_registered",
+				  "artifact_paths" : {
+				    "scenario" : "outputs/call_20260523_130000_test1234/scenario.yaml",
+				    "metadata" : "outputs/call_20260523_130000_test1234/metadata.json",
+				    "patient_simulation" : "outputs/call_20260523_130000_test1234/patient_simulation.md",
+				    "observations_markdown" : "outputs/call_20260523_130000_test1234/observations.md"
+				  }
+				}
+				""", RunMetadata.class);
+
+		assertThat(metadata.channel()).isEqualTo("voice");
 	}
 
 	private RunMetadata metadata(

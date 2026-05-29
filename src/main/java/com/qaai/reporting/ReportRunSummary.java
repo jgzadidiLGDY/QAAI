@@ -10,6 +10,7 @@ public record ReportRunSummary(
 		String scenarioId,
 		@JsonProperty("run_mode")
 		String runMode,
+		String channel,
 		String status,
 		boolean complete,
 		List<String> warnings,

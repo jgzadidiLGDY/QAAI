@@ -574,10 +574,15 @@ Expected direction:
 - keep `outputs/{call_id}/` as the current local artifact bundle convention
 - describe `call_id` as the local run identifier, even when a future channel is
   not a phone call
-- record channel type in metadata when code changes are introduced
+- record channel type in metadata
 - keep Retell ids, audio, and phone numbers as voice-channel metadata
 - allow future text chat artifacts to reuse `transcript.json`, `transcript.txt`,
   `metadata.json`, `manifest.json`, review outputs, and reports
 
 Phase 19 should not migrate existing artifacts or require old outputs to be
 rewritten.
+
+Current implementation adds a `channel` metadata field. New dry-run and Retell
+runs write `channel = voice`; older metadata without the field is read as voice
+when `run_mode` is `dry_run` or `retell`. Run index entries and static reports
+also carry the channel value.

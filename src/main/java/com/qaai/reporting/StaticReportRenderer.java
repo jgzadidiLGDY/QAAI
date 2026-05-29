@@ -19,13 +19,14 @@ public class StaticReportRenderer {
 		if (report.runs().isEmpty()) {
 			markdown.append("No runs found.%n%n".formatted());
 		} else {
-			markdown.append("| Call ID | Scenario | Mode | Status | Complete | Artifacts |%n".formatted());
-			markdown.append("| --- | --- | --- | --- | --- | --- |%n".formatted());
+			markdown.append("| Call ID | Scenario | Mode | Channel | Status | Complete | Artifacts |%n".formatted());
+			markdown.append("| --- | --- | --- | --- | --- | --- | --- |%n".formatted());
 			for (ReportRunSummary run : report.runs()) {
 				markdown.append("| ")
 						.append(escapeTable(run.callId())).append(" | ")
 						.append(escapeTable(run.scenarioId())).append(" | ")
 						.append(escapeTable(run.runMode())).append(" | ")
+						.append(escapeTable(run.channel())).append(" | ")
 						.append(escapeTable(run.status())).append(" | ")
 						.append(run.complete()).append(" | ")
 						.append(artifactLinks(run)).append(" |%n".formatted());

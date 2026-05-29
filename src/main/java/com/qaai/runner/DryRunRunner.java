@@ -128,6 +128,7 @@ public class DryRunRunner {
 		transcript.append("call_id: ").append(callId).append(System.lineSeparator());
 		transcript.append("scenario_id: ").append(scenario.id()).append(System.lineSeparator());
 		transcript.append("workflow: ").append(scenario.workflow()).append(System.lineSeparator());
+		transcript.append("channel: voice").append(System.lineSeparator());
 		transcript.append("source: dry_run").append(System.lineSeparator());
 		transcript.append(System.lineSeparator());
 		transcript.append("Conversation Quality Guidance").append(System.lineSeparator());
@@ -172,6 +173,7 @@ public class DryRunRunner {
 		observations.append("call_id: ").append(callId).append(System.lineSeparator());
 		observations.append("scenario_id: ").append(scenario.id()).append(System.lineSeparator());
 		observations.append("run_mode: dry_run").append(System.lineSeparator());
+		observations.append("channel: voice").append(System.lineSeparator());
 		observations.append(System.lineSeparator());
 		observations.append("## Before").append(System.lineSeparator());
 		observations.append("- Scenario includes deterministic patient turns from Phase 1.").append(System.lineSeparator());

@@ -139,6 +139,7 @@ public class ReportGenerationService {
 							run.callId(),
 							run.scenarioId(),
 							run.runMode(),
+							run.channel(),
 							run.status(),
 							completenessChecker.check(run).complete(),
 							completenessChecker.check(run).warnings(),

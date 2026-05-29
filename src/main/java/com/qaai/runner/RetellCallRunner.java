@@ -145,12 +145,14 @@ public class RetellCallRunner {
 		metadata.put("scenario_id", scenario.id());
 		metadata.put("workflow", scenario.workflow());
 		metadata.put("run_mode", "retell");
+		metadata.put("channel", "voice");
 
 		Map<String, String> dynamicVariables = new LinkedHashMap<>();
 		dynamicVariables.put("qaai_call_id", callId);
 		dynamicVariables.put("scenario_id", scenario.id());
 		dynamicVariables.put("scenario_name", scenario.name());
 		dynamicVariables.put("workflow", scenario.workflow());
+		dynamicVariables.put("channel", "voice");
 		dynamicVariables.put("patient_name", scenario.persona().name());
 		dynamicVariables.put("call_reason", scenario.goal().callReason());
 		dynamicVariables.put("patient_simulation_prompt", patientSimulationPrompt);
@@ -185,6 +187,7 @@ public class RetellCallRunner {
 		observations.append("retell_call_id: ").append(retellCallId).append(System.lineSeparator());
 		observations.append("scenario_id: ").append(scenario.id()).append(System.lineSeparator());
 		observations.append("run_mode: retell").append(System.lineSeparator());
+		observations.append("channel: voice").append(System.lineSeparator());
 		observations.append("retell_status: ").append(response.callStatus()).append(System.lineSeparator());
 		observations.append(System.lineSeparator());
 		observations.append("## Phase 3 Scope").append(System.lineSeparator());

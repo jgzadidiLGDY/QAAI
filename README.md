@@ -791,6 +791,16 @@ Planned deliverables:
 - preserve all current Retell and dry-run voice behavior
 - include tests only where documentation-driven terminology changes touch code
 
+Current Phase 19 implementation:
+
+- adds `channel` to newly written run metadata
+- defaults existing `dry_run` and `retell` metadata to `channel = voice`
+- records `channel` in run index entries
+- includes `channel` in Retell request metadata and dynamic variables
+- shows `channel` in run inspection, run listing, and static reports
+- keeps `call_id`, `run_mode`, `retell_call_id`, artifact paths, and commands
+  backward-compatible
+
 Out of scope:
 
 - adding a real text/chat runner

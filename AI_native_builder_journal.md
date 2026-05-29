@@ -60,6 +60,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 18 Plan](docs/phase-18-plan.md)
 - [Phase 18 Closeout](docs/phase-18-closeout.md)
 - [Phase 19 Plan](docs/phase-19-plan.md)
+- [Phase 19 Closeout](docs/phase-19-closeout.md)
 
 ## Latest Phase Closeout Notes
 
@@ -82,6 +83,11 @@ voice working as the first channel while separating reusable scenario,
 interaction, artifact, review, and reporting concepts from Retell-specific voice
 execution details. Phase 20 is the likely follow-up: a small text chat runner
 prototype that proves the abstraction with a second concrete channel.
+
+Phase 19 implemented the first runtime hook for that reframing: additive
+`channel` metadata. Current dry-run and Retell runs record `channel = voice`,
+older voice metadata remains readable, and inspection/reporting surfaces expose
+the channel without changing existing commands.
 
 ## MVP+ Direction
 

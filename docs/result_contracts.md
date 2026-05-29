@@ -602,7 +602,7 @@ current voice contracts.
 Expected direction:
 
 - keep `call_id` as the local artifact id for existing and near-term runs
-- document `channel` as an explicit concept when code-level changes are made
+- document `channel` as an explicit concept
 - keep `retell_call_id`, `target_phone_number`, recording metadata, and audio
   paths as voice-channel fields
 - allow future text chat runs to reuse scenario ids, normalized transcript
@@ -612,3 +612,18 @@ Expected direction:
 
 Phase 19 should prepare the contract for Phase 20 text chat execution, but it
 should not add that runner itself.
+
+Current Phase 19 metadata extension:
+
+```json
+{
+  "call_id": "call_20260523_001",
+  "scenario_id": "appointment_reschedule_001",
+  "run_mode": "retell",
+  "channel": "voice",
+  "retell_call_id": "retell_call_123"
+}
+```
+
+`channel` is additive. Existing voice metadata without `channel` remains
+readable and defaults to `voice` for `dry_run` and `retell` run modes.

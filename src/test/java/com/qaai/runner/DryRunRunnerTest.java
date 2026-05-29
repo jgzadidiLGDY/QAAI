@@ -47,6 +47,7 @@ class DryRunRunnerTest {
 
 		assertThat(result.metadata().callId()).isEqualTo("call_20260523_130000_test1234");
 		assertThat(result.metadata().runMode()).isEqualTo("dry_run");
+		assertThat(result.metadata().channel()).isEqualTo("voice");
 		assertThat(result.metadata().retellCallId()).isNull();
 		assertThat(result.metadata().targetPhoneNumber()).isEqualTo("+18054398008");
 		assertThat(result.artifacts().runDirectory()).exists();
@@ -70,6 +71,7 @@ class DryRunRunnerTest {
 		assertThat(observations).contains(
 				"# Conversation Quality Observations",
 				"call_id: call_20260523_130000_test1234",
+				"channel: voice",
 				"## Before",
 				"## After",
 				"Agent may skip confirmation of the new appointment time."
@@ -87,6 +89,7 @@ class DryRunRunnerTest {
 		String metadata = Files.readString(result.artifacts().metadata());
 		assertThat(metadata).contains(
 				"\"run_mode\" : \"dry_run\"",
+				"\"channel\" : \"voice\"",
 				"\"retell_call_id\" : null",
 				"\"transcript_text\"",
 				"\"patient_simulation\"",

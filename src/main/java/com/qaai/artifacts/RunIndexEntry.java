@@ -11,6 +11,7 @@ public record RunIndexEntry(
 		String scenarioId,
 		@JsonProperty("run_mode")
 		String runMode,
+		String channel,
 		String status,
 		@JsonProperty("retell_call_id")
 		String retellCallId,

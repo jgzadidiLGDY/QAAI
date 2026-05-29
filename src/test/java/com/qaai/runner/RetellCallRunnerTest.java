@@ -57,6 +57,7 @@ class RetellCallRunnerTest {
 
 		assertThat(result.metadata().callId()).isEqualTo("call_20260523_130000_test1234");
 		assertThat(result.metadata().runMode()).isEqualTo("retell");
+		assertThat(result.metadata().channel()).isEqualTo("voice");
 		assertThat(result.metadata().retellCallId()).isEqualTo("retell_call_123");
 		assertThat(result.metadata().status()).isEqualTo("retell_registered");
 		assertThat(result.artifacts().scenarioSnapshot()).exists();
@@ -70,8 +71,10 @@ class RetellCallRunnerTest {
 		assertThat(capturedRequest.get().overrideAgentId()).isEqualTo("agent_123");
 		assertThat(capturedRequest.get().metadata()).containsEntry("qaai_call_id", "call_20260523_130000_test1234");
 		assertThat(capturedRequest.get().metadata()).containsEntry("scenario_id", "appointment_reschedule_001");
+		assertThat(capturedRequest.get().metadata()).containsEntry("channel", "voice");
 		assertThat(capturedRequest.get().retellLlmDynamicVariables())
 				.containsEntry("workflow", "appointment_rescheduling")
+				.containsEntry("channel", "voice")
 				.containsEntry("patient_name", "Maria Lopez")
 				.containsEntry("call_reason", "rescheduling my appointment")
 				.containsEntry("welcome_behavior",
@@ -86,6 +89,7 @@ class RetellCallRunnerTest {
 		String metadata = Files.readString(result.artifacts().metadata());
 		assertThat(metadata).contains(
 				"\"run_mode\" : \"retell\"",
+				"\"channel\" : \"voice\"",
 				"\"retell_call_id\" : \"retell_call_123\"",
 				"\"status\" : \"retell_registered\"",
 				"\"transcript_text\" : null",
@@ -100,6 +104,7 @@ class RetellCallRunnerTest {
 		assertThat(observations).contains(
 				"# Retell Call Start Observations",
 				"retell_call_id: retell_call_123",
+				"channel: voice",
 				"Transcript and recording capture remain out of scope"
 		);
 	}

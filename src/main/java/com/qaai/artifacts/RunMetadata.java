@@ -10,6 +10,7 @@ public record RunMetadata(
 		String scenarioId,
 		@JsonProperty("run_mode")
 		String runMode,
+		String channel,
 		@JsonProperty("target_phone_number")
 		String targetPhoneNumber,
 		@JsonProperty("retell_call_id")
@@ -27,6 +28,9 @@ public record RunMetadata(
 		EvaluationMetadata evaluation,
 		ReproducibilityMetadata reproducibility
 ) {
+	public RunMetadata {
+		channel = normalizeChannel(channel, runMode);
+	}
 
 	public RunMetadata(
 			String callId,
@@ -39,8 +43,24 @@ public record RunMetadata(
 			String status,
 			ArtifactPaths artifactPaths
 	) {
-		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
-				null, null, null);
+		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
+				null, status, artifactPaths, null, null, null);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String runMode,
+			String channel,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			String status,
+			ArtifactPaths artifactPaths
+	) {
+		this(callId, scenarioId, runMode, channel, targetPhoneNumber, retellCallId, startedAt, endedAt, null,
+				status, artifactPaths, null, null, null);
 	}
 
 	public RunMetadata(
@@ -55,8 +75,8 @@ public record RunMetadata(
 			ArtifactPaths artifactPaths,
 			AnalysisMetadata analysis
 	) {
-		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
-				analysis, null, null);
+		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
+				null, status, artifactPaths, analysis, null, null);
 	}
 
 	public RunMetadata(
@@ -72,8 +92,8 @@ public record RunMetadata(
 			AnalysisMetadata analysis,
 			ReproducibilityMetadata reproducibility
 	) {
-		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, status, artifactPaths,
-				analysis, null, reproducibility);
+		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
+				null, status, artifactPaths, analysis, null, reproducibility);
 	}
 
 	public RunMetadata(
@@ -90,8 +110,27 @@ public record RunMetadata(
 			AnalysisMetadata analysis,
 			ReproducibilityMetadata reproducibility
 	) {
-		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, callDurationSeconds,
-				status, artifactPaths, analysis, null, reproducibility);
+		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
+				callDurationSeconds, status, artifactPaths, analysis, null, reproducibility);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String runMode,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			Long callDurationSeconds,
+			String status,
+			ArtifactPaths artifactPaths,
+			AnalysisMetadata analysis,
+			EvaluationMetadata evaluation,
+			ReproducibilityMetadata reproducibility
+	) {
+		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
+				callDurationSeconds, status, artifactPaths, analysis, evaluation, reproducibility);
 	}
 
 	public RunMetadata(
@@ -108,7 +147,22 @@ public record RunMetadata(
 			EvaluationMetadata evaluation,
 			ReproducibilityMetadata reproducibility
 	) {
-		this(callId, scenarioId, runMode, targetPhoneNumber, retellCallId, startedAt, endedAt, null, status,
+		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
+				null, status,
 				artifactPaths, analysis, evaluation, reproducibility);
+	}
+
+	private static String normalizeChannel(String channel, String runMode) {
+		if (channel != null && !channel.isBlank()) {
+			return channel;
+		}
+		return defaultChannel(runMode);
+	}
+
+	private static String defaultChannel(String runMode) {
+		if ("retell".equals(runMode) || "dry_run".equals(runMode)) {
+			return "voice";
+		}
+		return "unknown";
 	}
 }

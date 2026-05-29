@@ -254,12 +254,13 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			return;
 		}
 
-		System.out.println("call_id | scenario_id | run_mode | status | complete | warnings");
+		System.out.println("call_id | scenario_id | run_mode | channel | status | complete | warnings");
 		for (RunIndexEntry entry : entries) {
 			System.out.println(String.join(" | ",
 					entry.callId(),
 					entry.scenarioId(),
 					entry.runMode(),
+					valueOrNone(entry.channel()),
 					entry.status(),
 					Boolean.toString(entry.complete()),
 					String.join(", ", entry.warnings())
@@ -275,6 +276,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("call_id: " + metadata.callId());
 		System.out.println("scenario_id: " + metadata.scenarioId());
 		System.out.println("run_mode: " + metadata.runMode());
+		System.out.println("channel: " + valueOrNone(metadata.channel()));
 		System.out.println("status: " + metadata.status());
 		System.out.println("retell_call_id: " + valueOrNone(metadata.retellCallId()));
 		System.out.println("run_directory: " + inspection.runDirectory());

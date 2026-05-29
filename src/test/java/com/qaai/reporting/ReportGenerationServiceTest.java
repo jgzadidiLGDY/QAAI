@@ -123,7 +123,9 @@ class ReportGenerationServiceTest {
 		assertThat(Files.readString(result.reportMarkdown())).contains(
 				"# QA Static Report",
 				"human_review_required: true",
+				"| Call ID | Scenario | Mode | Channel | Status | Complete | Artifacts |",
 				"appointment_reschedule_001",
+				"voice",
 				"workflow_completion",
 				"2.00",
 				"safety",
@@ -131,6 +133,7 @@ class ReportGenerationServiceTest {
 		);
 		assertThat(Files.readString(result.reportJson())).contains(
 				"\"severity_counts\"",
+				"\"channel\" : \"voice\"",
 				"\"medium\" : 1",
 				"\"workflow_area\" : \"appointment_rescheduling\"",
 				"\"insufficient_evidence_count\" : 1"
