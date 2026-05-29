@@ -292,7 +292,7 @@ Potential candidate:
 
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
-| Channel-neutral scenario model planning docs | TBD | TBD | Weak/docs-only candidate: project docs should clarify that voice is the first channel adapter while the reusable QA framework should support future text, email, and web-agent channels through explicit channel boundaries. | Documentation-only change; useful for phase planning, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+| Channel-neutral scenario model planning docs | `3543550` | `a78500d` | Weak/docs-only candidate: project docs should clarify that voice is the first channel adapter while the reusable QA framework should support future text, email, and web-agent channels through explicit channel boundaries. | Documentation-only change; useful for phase planning, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 
 Likely stronger candidates should wait until Phase 19 or Phase 20 introduces
 testable runtime behavior, such as channel metadata propagation, a shared
