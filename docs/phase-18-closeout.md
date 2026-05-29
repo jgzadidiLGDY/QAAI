@@ -64,6 +64,9 @@ Behavior commit:
 - Structured multi-lens review workflow:
   - Base commit: `5a2447d`
   - Fix commit: `85d0b37`
+- Disabled multi-lens review CLI coverage:
+  - Base commit: `696a622`
+  - Fix commit: `8759f18`
 
 The strongest Phase 18 candidate is the structured multi-lens review workflow
 because it crosses CLI routing, provider configuration, artifact loading,

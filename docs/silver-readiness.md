@@ -245,6 +245,7 @@ Potential candidate:
 | --- | --- | --- | --- | --- |
 | Structured multi-lens review planning docs | `ddf2755` | `fd7fe6b` | Weak/docs-only candidate: project docs should describe structured multi-lens review scope, artifacts, contract direction, risks, and the boundary against autonomous multi-agent orchestration. | Documentation-only change; useful for phase planning, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 | Structured multi-lens review workflow | `5a2447d` | `85d0b37` | Captured calls should be reviewable through several stable advisory lenses over the same transcript evidence, producing JSON and Markdown artifacts without creating pass/fail decisions or autonomous orchestration. | `--multi-lens-review --call-id=<local_call_id>` requires `transcript.json`, writes `multi-lens-review.json` and `multi-lens-review.md`, includes safety, consistency, patient realism, adversarial robustness, and workflow risk lens results, validates transcript evidence for concrete findings, accepts explicit insufficient-evidence results, and links artifacts through metadata/manifest entries. |
+| Disabled multi-lens review CLI coverage | `696a622` | `8759f18` | Weak/test-only candidate: multi-lens review command coverage should verify that a disabled provider fails clearly through command routing. | `--multi-lens-review --call-id=<local_call_id>` exits nonzero and reports "Multi-lens review is disabled" when the review service rejects the request. |
 
 Candidate invariant:
 
