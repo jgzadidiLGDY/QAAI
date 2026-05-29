@@ -323,6 +323,7 @@ Candidate invariant:
 | --- | --- | --- | --- | --- |
 | Local text chat runner | `57f255a` | `0a38413` | Scenario runs should support a deterministic local text chat mode that writes inspectable channel-specific artifacts while reusing the existing scenario, transcript, artifact, inspection, review, evaluation, analysis, and reporting pipeline. | `--scenario=<path> --run-mode=text-chat` writes `metadata.json` with `run_mode = text_chat` and `channel = text`, writes `transcript.txt` and `transcript.json`, omits Retell/audio/manifest fields, routes through CLI run-mode handling, and reports complete artifacts without voice audio warnings. |
 | Phase 20 text chat runner docs | `d30c1c9` | `3c16fd9` | Weak/docs-only candidate: project docs should explain local text chat execution, artifact expectations, lifecycle status, contract boundaries, and closeout notes. | Documentation-only change; useful for operators and reviewers, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+| Text chat reproducibility metadata | `cd27491` | `a91b7b5` | Text chat runs should record reproducibility metadata for the local command that produced the artifact bundle, matching the provenance expectations of other artifact-producing run modes. | A text chat run records `reproducibility.command = text-chat` in metadata, and the focused runner test verifies the command provenance. |
 
 Candidate invariant:
 
