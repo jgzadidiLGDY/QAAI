@@ -1,6 +1,7 @@
 # Voice AI QA Agent
 
-This project builds a small, reproducible QA platform for testing healthcare voice agents through real outbound calls.
+This project builds a small, reproducible QA platform for testing healthcare
+AI agents, starting with healthcare voice agents through real outbound calls.
 
 The immediate goal is not to build a production healthcare voice platform. The goal is to build a disciplined QA workflow that can:
 
@@ -9,6 +10,11 @@ The immediate goal is not to build a production healthcare voice platform. The g
 - capture complete call artifacts
 - identify meaningful workflow and conversational failures
 - produce structured, reproducible bug findings for human review
+
+The first supported execution channel is voice. The long-term platform direction
+is a channel-neutral scenario and artifact framework that can later support
+voice, text chat, email, and web-agent testing through explicit channel
+adapters.
 
 The initial target healthcare voice agent is:
 
@@ -37,6 +43,8 @@ Additional project docs:
 - Let AI assist with analysis, but never own pass/fail decisions.
 - Prefer practical artifacts over hidden automation.
 - Keep each phase locally runnable before expanding scope.
+- Treat voice as the first channel implementation, not the permanent boundary of
+  the product.
 
 ## Proposed Tech Stack
 
@@ -748,6 +756,57 @@ Local usage after a captured transcript exists:
 .\gradlew bootRun --args="--multi-lens-review --call-id=<local_call_id>"
 ```
 
+## Channel-Neutral Platform Direction
+
+After Phase 18, the platform direction becomes broader than voice while staying
+grounded in the existing deterministic workflow. The same scenario, artifact,
+review, and report model should eventually support multiple interaction
+channels:
+
+- voice calls
+- text chat sessions
+- email threads
+- web-agent tasks
+
+The first step is not to add several channels at once. Phase 19 should introduce
+a channel-neutral abstraction while preserving existing voice behavior exactly.
+Voice and text should be used as the two concrete examples for naming,
+contracts, and future compatibility, but Phase 19 should not add a real text
+runner.
+
+### Phase 19: Channel-Neutral Scenario Model
+
+Goal:
+
+Separate what scenario is being tested from how the interaction is executed.
+
+Planned deliverables:
+
+- document channel-neutral terminology such as interaction, turn, participant,
+  channel, and external run id
+- identify voice-specific names that are core-platform concepts versus Retell
+  adapter details
+- add or update contracts so future text execution can share scenario,
+  transcript, artifact, review, and reporting infrastructure
+- preserve all current Retell and dry-run voice behavior
+- include tests only where documentation-driven terminology changes touch code
+
+Out of scope:
+
+- adding a real text/chat runner
+- renaming every historical artifact at once
+- changing existing artifact paths in a breaking way
+- broad refactors unrelated to channel boundaries
+
+### Phase 20: Text Chat Runner Prototype
+
+Goal:
+
+Prove the channel-neutral model by running the same scenario framework against a
+simple text-chat interaction channel.
+
+Phase 20 should come only after Phase 19 is reviewed and approved.
+
 ### Current Phase 13 Implementation
 
 Phase 13 adds advisory depth signals to conversation review. After captured
@@ -883,14 +942,13 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 18 should add structured multi-lens review:
+Phase 19 should introduce a channel-neutral scenario and interaction model:
 
 ```text
-Given one captured call artifact bundle, run bounded specialized review lenses
-over the same transcript and metadata, then write advisory JSON and Markdown
-review artifacts under outputs/{call_id}/.
+Keep voice working as the first channel, but clarify which concepts belong to
+the reusable QA platform and which belong to the Retell voice adapter.
 ```
 
-This keeps the system local-first, human-reviewed, and explicit about
-authorized test calls, existing artifacts, unavailable evidence, advisory AI
-output, and human-owned review decisions.
+This keeps the system local-first, human-reviewed, and explicit about scenario
+inputs, deterministic execution, inspectable artifacts, advisory AI output, and
+human-owned review decisions.

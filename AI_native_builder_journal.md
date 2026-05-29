@@ -59,6 +59,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 17 Closeout](docs/phase-17-closeout.md)
 - [Phase 18 Plan](docs/phase-18-plan.md)
 - [Phase 18 Closeout](docs/phase-18-closeout.md)
+- [Phase 19 Plan](docs/phase-19-plan.md)
 
 ## Latest Phase Closeout Notes
 
@@ -76,6 +77,12 @@ Phase 18 added the approved version of that layer. The local command runs fixed
 review lenses over captured transcript evidence, writes JSON and Markdown review
 artifacts, validates evidence references, and keeps results advisory.
 
+Phase 19 is proposed as the channel-neutral platform reframing. It should keep
+voice working as the first channel while separating reusable scenario,
+interaction, artifact, review, and reporting concepts from Retell-specific voice
+execution details. Phase 20 is the likely follow-up: a small text chat runner
+prototype that proves the abstraction with a second concrete channel.
+
 ## MVP+ Direction
 
 After the interim review, the project scope expands into an MVP+ stage. MVP+
@@ -92,6 +99,8 @@ real-world repeatability:
 - Phase 16: QA dashboard or static report view
 - Phase 17: AI-assisted scenario draft generation
 - Phase 18: structured multi-lens review
+- Phase 19: channel-neutral scenario model
+- Phase 20: text chat runner prototype
 
 This expansion does not change the core boundary: deterministic workflow code
 owns orchestration, artifacts provide evidence, AI assists with analysis, and

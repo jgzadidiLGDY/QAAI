@@ -9,7 +9,10 @@ This document describes the planned system shape. It will evolve as each phase a
 - Artifacts are written before analysis.
 - AI analysis runs after evidence exists.
 - Humans own final review and pass/fail decisions.
-- Retell owns low-level voice execution; this project owns QA workflow and artifacts.
+- Retell owns low-level voice execution for the first channel; this project owns
+  QA workflow, scenarios, artifacts, reviews, and reports.
+- Voice is the first channel implementation, not the permanent platform
+  boundary.
 
 ## Planned Flow
 
@@ -18,9 +21,10 @@ scenario YAML
   -> scenario loader and validator
   -> patient simulation prompt builder
   -> run coordinator
-  -> dry-run or Retell outbound call
+  -> channel runner
+  -> dry-run, Retell outbound call, or future text interaction
   -> artifact writer
-  -> transcript and recording capture
+  -> transcript and channel artifact capture
   -> conversation-depth review signals
   -> AI-assisted analysis
   -> evidence-linked evaluation
@@ -54,6 +58,29 @@ Package:
 com.qaai.runner
 ```
 
+Phase 19 should clarify which runner responsibilities are channel-neutral and
+which belong to channel adapters. Existing Retell execution should remain the
+first concrete channel path. A later text runner should fit behind the same
+high-level workflow without duplicating scenario loading, artifact writing,
+review, evaluation, or reporting.
+
+### Channel Adapters
+
+Channel adapters execute or import interactions through a specific medium while
+returning normalized artifacts to the shared QA workflow.
+
+Initial and planned examples:
+
+- voice via Retell outbound calls
+- local dry-run transcript generation
+- future text chat runner
+- later email or web-agent runners
+
+Adapters may own channel-specific details such as Retell call ids, audio
+recordings, chat session ids, email thread ids, browser screenshots, or DOM
+snapshots. They should not own scenario validation, final pass/fail decisions,
+analysis evidence validation, or report semantics.
+
 ### Artifacts
 
 Creates and manages files under `outputs/{call_id}/`. This component should avoid hidden state and should make artifact completeness easy to verify.
@@ -67,6 +94,11 @@ com.qaai.artifacts
 Phase 7 adds an append-only `outputs/index.jsonl` and status-aware artifact
 completeness checks. The index is derived from completed artifact writes; it
 does not drive workflow control.
+
+Phase 19 should define how existing `call_id` terminology maps into a broader
+interaction identifier model. The project may keep `call_id` for backward
+compatibility while documenting it as the local run identifier and adding
+channel-specific external identifiers as metadata.
 
 ### Retell
 
@@ -82,6 +114,10 @@ MVP+ hardening should give all Retell and recording-download HTTP calls explicit
 timeouts, provider-specific error messages, and tests for failed or malformed
 responses. Retell failures should be visible to the operator, but they should
 not corrupt existing run artifacts.
+
+Retell is the voice-channel adapter, not the general workflow layer. Shared
+scenario, artifact, review, evaluation, and reporting behavior should remain
+outside this package.
 
 ### Analysis
 
@@ -321,7 +357,17 @@ plan under `outputs/`, validates the drafts deterministically, and preserves
 human review before any generated scenario becomes part of the committed
 scenario library.
 
-Phase 18 should add structured multi-lens review. It should run a bounded set of
-specialized advisory lenses over existing call artifacts, validate transcript
-evidence for concrete findings, write JSON and Markdown review outputs, and keep
-all results human-reviewed.
+Phase 18 added structured multi-lens review. It runs a bounded set of
+specialized advisory lenses over existing call artifacts, validates transcript
+evidence for concrete findings, writes JSON and Markdown review outputs, and
+keeps all results human-reviewed.
+
+Phase 19 should introduce a channel-neutral scenario and interaction model
+without adding a second real channel. It should document and, where narrowly
+needed, code the boundary between core platform concepts and voice-specific
+adapter concepts. Existing voice commands and artifacts should remain
+compatible.
+
+Phase 20 should add a small text chat runner prototype to prove the Phase 19
+boundary. It should reuse the same scenario inputs, normalized transcript model,
+artifact persistence, advisory reviews, and reporting surfaces where practical.

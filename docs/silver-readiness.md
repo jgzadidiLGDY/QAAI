@@ -280,3 +280,21 @@ For repository upload:
 - Do not add `.git/` to `.dockerignore`
 - Keep Dockerfile guidance aligned with Project Silver rules
 - Keep dependency pinning or constraints guidance visible
+
+## Phase 19 Planning Record
+
+Phase 19 is proposed as channel-neutral scenario and interaction modeling.
+Project Silver extraction rules remain secondary: they can help identify clean
+future task boundaries, but they do not define this project's product direction
+or implementation scope.
+
+Potential candidate:
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Channel-neutral scenario model planning docs | TBD | TBD | Weak/docs-only candidate: project docs should clarify that voice is the first channel adapter while the reusable QA framework should support future text, email, and web-agent channels through explicit channel boundaries. | Documentation-only change; useful for phase planning, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+
+Likely stronger candidates should wait until Phase 19 or Phase 20 introduces
+testable runtime behavior, such as channel metadata propagation, a shared
+interaction abstraction, or a text chat runner that reuses the existing artifact
+and review pipeline.

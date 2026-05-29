@@ -4,7 +4,9 @@ This document describes what the Voice AI QA Agent is expected to become, what t
 
 ## Product Goal
 
-Build a reproducible QA platform for testing healthcare voice agents through real outbound calls and scenario-driven patient behavior.
+Build a reproducible QA platform for testing healthcare AI agents through
+scenario-driven behavior and inspectable artifacts, starting with healthcare
+voice agents through real outbound calls.
 
 The platform should help a human reviewer answer:
 
@@ -15,6 +17,11 @@ The platform should help a human reviewer answer:
 - Can the same scenario be rerun and compared later?
 
 ## Current Target
+
+Voice is the first supported execution channel. The platform should evolve so
+the scenario framework, artifact model, review layers, and reports are reusable
+across channels such as voice and text chat, with email and web-agent testing as
+later possibilities.
 
 The initial target healthcare voice agent is:
 
@@ -135,8 +142,7 @@ coverage.
 
 After scenario generation, the next platform step should evolve toward
 specialized review without adopting autonomous multi-agent orchestration.
-Phase 18 should add a bounded multi-lens review layer over existing call
-artifacts.
+Phase 18 adds a bounded multi-lens review layer over existing call artifacts.
 
 Each review lens should inspect the same fixed evidence bundle:
 
@@ -155,6 +161,36 @@ human reviewer to inspect.
 This is deliberately not a fleet of autonomous agents. The lenses should not
 control workflow, call each other dynamically, change run status, promote
 scenarios, trigger live calls, or decide pass/fail.
+
+## Channel-Neutral Platform Expansion
+
+After Phase 18, the next product step is to separate the reusable QA framework
+from the first voice channel implementation. The platform should keep the same
+deterministic flow:
+
+```text
+scenario input
+  -> explicit channel runner
+  -> interaction transcript and artifacts
+  -> advisory analysis, evaluation, multi-lens review, and reporting
+  -> human review
+```
+
+Phase 19 should introduce channel-neutral terminology and contracts without
+adding a second runtime channel. Voice and text should be used as the two
+examples while planning:
+
+- voice: outbound call execution, Retell ids, audio, call metadata
+- text: chat session execution, text-only transcript, session metadata
+
+The purpose of Phase 19 is to make the boundary explicit before implementation
+pressure from a text runner arrives. Existing voice behavior should continue to
+work exactly as before.
+
+Phase 20 should then prove the abstraction through a small text chat runner
+prototype. It should reuse the scenario, transcript, artifact, review, and
+reporting model where practical, rather than creating a separate parallel
+system.
 
 ## Non-Goals
 
@@ -253,6 +289,16 @@ The structured multi-lens review expansion is successful when:
 - the implementation preserves human-owned review and avoids autonomous
   orchestration
 
+The channel-neutral expansion is successful when:
+
+- voice remains fully runnable through the existing commands
+- core contracts describe interactions without assuming every run is a phone
+  call
+- Retell-specific fields remain available as voice-channel metadata
+- future text chat execution has a clear place to fit without duplicating the
+  review pipeline
+- no pass/fail ownership, hidden orchestration, or fabricated evidence is added
+
 ## AI Boundary
 
 AI may assist with:
@@ -265,6 +311,7 @@ AI may assist with:
 - scenario draft generation
 - coverage-plan drafting
 - specialized advisory review lenses
+- channel-neutral report generation over existing artifacts
 
 AI must not:
 

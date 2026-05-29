@@ -11,6 +11,8 @@ The contracts are intentionally lightweight at this stage. They will become stri
 - Results must be reproducible from stored inputs and artifacts where possible.
 - AI-generated findings must cite evidence.
 - Human review owns final judgment.
+- Channel-specific execution details must remain metadata, not hidden workflow
+  control.
 
 ## Run Metadata Contract
 
@@ -62,6 +64,10 @@ Retell `agent` turns become `patient`, and Retell `user` turns become
 `receptionist`.
 This reflects the project setup where Retell plays the simulated patient and
 calls the target healthcare front desk system.
+
+For future non-voice channels, the same normalized transcript shape should be
+reused where practical. Speaker labels should describe QA workflow roles rather
+than provider-specific API roles.
 
 ## Analysis Contract
 
@@ -532,7 +538,7 @@ only after human review and a separate explicit promotion step.
 
 ## Phase 18 Contract Direction
 
-Phase 18 should add structured multi-lens review over existing call artifacts.
+Phase 18 adds structured multi-lens review over existing call artifacts.
 
 Expected command:
 
@@ -587,3 +593,22 @@ Successful review updates `metadata.artifact_paths.multi_lens_review_json`,
 `metadata.artifact_paths.multi_lens_review_markdown`, `manifest.json`, and the
 run index. The `disabled` provider does not write review artifacts and fails
 clearly when review is requested.
+
+## Phase 19 Contract Direction
+
+Phase 19 should introduce channel-neutral contract language without breaking the
+current voice contracts.
+
+Expected direction:
+
+- keep `call_id` as the local artifact id for existing and near-term runs
+- document `channel` as an explicit concept when code-level changes are made
+- keep `retell_call_id`, `target_phone_number`, recording metadata, and audio
+  paths as voice-channel fields
+- allow future text chat runs to reuse scenario ids, normalized transcript
+  turns, analysis, evaluation, multi-lens review, reports, manifests, and run
+  index entries
+- avoid broad artifact migrations or mandatory schema breaks
+
+Phase 19 should prepare the contract for Phase 20 text chat execution, but it
+should not add that runner itself.

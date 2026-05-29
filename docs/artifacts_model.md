@@ -14,6 +14,11 @@ outputs/{call_id}/
 
 The `call_id` is the local project identifier. External identifiers, such as Retell call ids, should be recorded in metadata rather than replacing `call_id`.
 
+Phase 19 should preserve `call_id` for backward compatibility while documenting
+it as the local run or interaction artifact id. Channel-specific external ids,
+such as Retell call ids, future chat session ids, email thread ids, or browser
+task ids, should remain metadata fields rather than replacing the local id.
+
 ## Planned Artifact Bundle
 
 ```text
@@ -35,6 +40,11 @@ outputs/{call_id}/
 ```
 
 Not every phase produces every artifact. Each phase should document which artifacts are expected.
+
+As the platform generalizes beyond voice, artifacts should keep the same local
+bundle shape where practical. Voice-specific artifacts such as `audio.wav` may
+be absent for text channels, while future channel-specific artifacts should be
+recorded in `manifest.json` and metadata without breaking existing voice runs.
 
 ## Phase 1 Artifact Bundle
 
@@ -233,6 +243,11 @@ Bug findings must be grounded in artifacts:
 - recording evidence must reference the recording artifact when used
 - metadata claims must come from `metadata.json` or Retell source data
 - analysis must not invent facts absent from the artifacts
+
+These evidence rules apply across channels. A text chat run should cite text
+turns, an email run should cite thread messages, and a web-agent run should cite
+the transcript plus any captured browser evidence. The system should not infer
+evidence from a channel artifact that was not captured.
 
 ## Phase 5 Artifact Bundle
 
@@ -510,8 +525,8 @@ should not trigger outbound calls without a separate human-reviewed step.
 
 ## Phase 18 Multi-Lens Review Artifacts
 
-Phase 18 should add structured multi-lens review artifacts for one captured
-call. These outputs are advisory review artifacts, not pass/fail records.
+Phase 18 adds structured multi-lens review artifacts for one captured call.
+These outputs are advisory review artifacts, not pass/fail records.
 
 Expected files:
 
@@ -549,3 +564,20 @@ available, and appends a run-index entry.
 Multi-lens review artifacts should read existing evidence only. They should not
 mutate transcripts, scenarios, generated reports, call status, or the canonical
 scenario library.
+
+## Phase 19 Channel-Neutral Artifact Direction
+
+Phase 19 should clarify artifact terminology before a second channel is added.
+
+Expected direction:
+
+- keep `outputs/{call_id}/` as the current local artifact bundle convention
+- describe `call_id` as the local run identifier, even when a future channel is
+  not a phone call
+- record channel type in metadata when code changes are introduced
+- keep Retell ids, audio, and phone numbers as voice-channel metadata
+- allow future text chat artifacts to reuse `transcript.json`, `transcript.txt`,
+  `metadata.json`, `manifest.json`, review outputs, and reports
+
+Phase 19 should not migrate existing artifacts or require old outputs to be
+rewritten.
