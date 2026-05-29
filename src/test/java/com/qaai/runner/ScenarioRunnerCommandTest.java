@@ -120,6 +120,21 @@ class ScenarioRunnerCommandTest {
 	}
 
 	@Test
+	void runModeWithoutScenarioReportsScenarioRequirement(CapturedOutput output) {
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null, null, null, null, null, null, null, null, null, null, null, null);
+
+		command.run(new DefaultApplicationArguments("--run-mode=text-chat"));
+
+		assertThat(command.getExitCode()).isEqualTo(1);
+		assertThat(output).contains(
+				"Error: command=scenario: "
+						+ "Provide a scenario path with --scenario=scenarios/appointment-reschedule.yaml when using --run-mode",
+				"Provide a scenario path with --scenario=scenarios/appointment-reschedule.yaml when using --run-mode"
+		);
+	}
+
+	@Test
 	void routesTextChatRunModeToTextChatRunner(CapturedOutput output) {
 		TextChatRunner textChatRunner = new TextChatRunner(null, null, null, null, null) {
 			@Override

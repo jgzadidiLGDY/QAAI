@@ -80,7 +80,11 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			runCommand(args);
 		} catch (RuntimeException exception) {
 			exitCode = 1;
-			LOGGER.warn("Command failed: {}", failureContext(args), exception);
+			if (exception instanceof IllegalArgumentException) {
+				LOGGER.warn("Command failed: {}: {}", failureContext(args), exception.getMessage());
+			} else {
+				LOGGER.warn("Command failed: {}", failureContext(args), exception);
+			}
 			System.err.println("Error: " + failureContext(args) + ": " + exception.getMessage());
 		}
 	}
@@ -181,6 +185,11 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 
 		if (!args.containsOption("scenario")) {
+			if (args.containsOption("run-mode")) {
+				throw new IllegalArgumentException(
+						"Provide a scenario path with --scenario=scenarios/appointment-reschedule.yaml when using --run-mode"
+				);
+			}
 			printHelp();
 			return;
 		}
@@ -466,6 +475,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			return "capture-artifacts";
 		}
 		if (args.containsOption("scenario")) {
+			return "scenario";
+		}
+		if (args.containsOption("run-mode")) {
 			return "scenario";
 		}
 		return "none";
