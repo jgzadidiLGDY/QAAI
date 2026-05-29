@@ -42,6 +42,10 @@ public class ArtifactCompletenessChecker {
 				metadata.artifactPaths().evaluationJson());
 		addStatus(artifactStatuses, missingRequiredArtifacts, required, "evaluation_markdown",
 				metadata.artifactPaths().evaluationMarkdown());
+		addStatus(artifactStatuses, missingRequiredArtifacts, required, "multi_lens_review_json",
+				metadata.artifactPaths().multiLensReviewJson());
+		addStatus(artifactStatuses, missingRequiredArtifacts, required, "multi_lens_review_markdown",
+				metadata.artifactPaths().multiLensReviewMarkdown());
 		addStatus(artifactStatuses, missingRequiredArtifacts, required, "observations_markdown",
 				metadata.artifactPaths().observationsMarkdown());
 
@@ -78,6 +82,13 @@ public class ArtifactCompletenessChecker {
 			required.add("manifest");
 			required.add("evaluation_json");
 			required.add("evaluation_markdown");
+		}
+		if ("multi_lens_review_completed".equals(metadata.status())) {
+			required.add("transcript_text");
+			required.add("transcript_json");
+			required.add("manifest");
+			required.add("multi_lens_review_json");
+			required.add("multi_lens_review_markdown");
 		}
 		return required;
 	}
@@ -123,7 +134,8 @@ public class ArtifactCompletenessChecker {
 	private boolean expectsCapturedArtifacts(RunMetadata metadata) {
 		return isCaptureStatus(metadata.status())
 				|| "analysis_completed".equals(metadata.status())
-				|| "evaluation_completed".equals(metadata.status());
+				|| "evaluation_completed".equals(metadata.status())
+				|| "multi_lens_review_completed".equals(metadata.status());
 	}
 
 	private boolean exists(String path) {

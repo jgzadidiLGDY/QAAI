@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qaai.analysis.AnalysisReport;
 import com.qaai.config.QaaiProperties;
 import com.qaai.evaluation.EvaluationReport;
+import com.qaai.review.MultiLensReviewReport;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -192,6 +193,30 @@ public class ArtifactWriter {
 		}
 	}
 
+	public void writeMultiLensReviewArtifacts(
+			String callId,
+			RunMetadata metadata,
+			MultiLensReviewReport reviewReport,
+			String reviewMarkdown
+	) {
+		Path runDirectory = runDirectory(callId);
+		Path metadataPath = runDirectory.resolve("metadata.json");
+		Path reviewJsonPath = runDirectory.resolve("multi-lens-review.json");
+		Path reviewMarkdownPath = runDirectory.resolve("multi-lens-review.md");
+
+		try {
+			Files.createDirectories(runDirectory);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(reviewJsonPath.toFile(), reviewReport);
+			Files.writeString(reviewMarkdownPath, reviewMarkdown);
+			updateManifestWithMultiLensReview(runDirectory, metadata);
+			runIndexWriter.append(metadata);
+		} catch (IOException exception) {
+			throw new ArtifactWriteException("Unable to write multi-lens review artifacts for call_id: " + callId,
+					exception);
+		}
+	}
+
 	public Path writeConversationQualityReview(
 			String callId,
 			RunMetadata metadata,
@@ -317,6 +342,40 @@ public class ArtifactWriter {
 				runDirectory.resolve("evaluation.md").toString(),
 				true,
 				"Generated during Phase 15 evidence-linked evaluation."
+		));
+		ArtifactManifest updatedManifest = new ArtifactManifest(
+				existingManifest.callId(),
+				existingManifest.scenarioId(),
+				existingManifest.retellCallId(),
+				existingManifest.capturedAt(),
+				existingManifest.retellStatus(),
+				existingManifest.recordingUrl(),
+				entries
+		);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(manifestPath.toFile(), updatedManifest);
+	}
+
+	private void updateManifestWithMultiLensReview(Path runDirectory, RunMetadata metadata) throws IOException {
+		if (metadata.artifactPaths().manifest() == null || !Files.exists(Path.of(metadata.artifactPaths().manifest()))) {
+			return;
+		}
+
+		Path manifestPath = Path.of(metadata.artifactPaths().manifest());
+		ArtifactManifest existingManifest = objectMapper.readValue(manifestPath.toFile(), ArtifactManifest.class);
+		List<ArtifactManifest.ArtifactEntry> entries = new ArrayList<>(existingManifest.artifacts());
+		entries.removeIf(entry -> "multi_lens_review_json".equals(entry.name())
+				|| "multi_lens_review_markdown".equals(entry.name()));
+		entries.add(new ArtifactManifest.ArtifactEntry(
+				"multi_lens_review_json",
+				runDirectory.resolve("multi-lens-review.json").toString(),
+				true,
+				"Generated during Phase 18 structured multi-lens review."
+		));
+		entries.add(new ArtifactManifest.ArtifactEntry(
+				"multi_lens_review_markdown",
+				runDirectory.resolve("multi-lens-review.md").toString(),
+				true,
+				"Generated during Phase 18 structured multi-lens review."
 		));
 		ArtifactManifest updatedManifest = new ArtifactManifest(
 				existingManifest.callId(),

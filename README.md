@@ -710,6 +710,19 @@ Planned deliverables:
 - docs explaining the boundary between multi-lens review and multi-agent
   orchestration
 
+Current Phase 18 implementation:
+
+- adds `--multi-lens-review --call-id=<local_call_id>`
+- uses `QAAI_REVIEW_PROVIDER=local|disabled`
+- defaults to deterministic local review for offline artifact flow checks
+- writes `multi-lens-review.json` and `multi-lens-review.md`
+- runs safety, consistency, patient realism, adversarial robustness, and
+  workflow risk lenses
+- validates transcript evidence for every concrete finding
+- accepts explicit insufficient-evidence lens results without guessed findings
+- updates metadata, manifest, and run index entries after successful review
+- keeps all lens output advisory and human-reviewed
+
 Expected artifacts:
 
 ```text
@@ -728,6 +741,12 @@ Out of scope:
 
 The review lenses should read existing artifacts only. They should not trigger
 calls, promote scenarios, change run status, or decide whether a call passed.
+
+Local usage after a captured transcript exists:
+
+```powershell
+.\gradlew bootRun --args="--multi-lens-review --call-id=<local_call_id>"
+```
 
 ### Current Phase 13 Implementation
 

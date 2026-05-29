@@ -14,6 +14,8 @@ import com.qaai.quality.ConversationQualityReviewResult;
 import com.qaai.quality.ConversationQualityReviewService;
 import com.qaai.reporting.ReportGenerationService;
 import com.qaai.reporting.ReportResult;
+import com.qaai.review.MultiLensReviewResult;
+import com.qaai.review.MultiLensReviewService;
 import com.qaai.scenariogeneration.ScenarioGenerationResult;
 import com.qaai.scenariogeneration.ScenarioGenerationService;
 import java.nio.file.Path;
@@ -35,6 +37,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final ArtifactCaptureService artifactCaptureService;
 	private final AnalysisService analysisService;
 	private final EvaluationService evaluationService;
+	private final MultiLensReviewService multiLensReviewService;
 	private final ReportGenerationService reportGenerationService;
 	private final ScenarioGenerationService scenarioGenerationService;
 	private final RunIndexWriter runIndexWriter;
@@ -48,6 +51,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			ArtifactCaptureService artifactCaptureService,
 			AnalysisService analysisService,
 			EvaluationService evaluationService,
+			MultiLensReviewService multiLensReviewService,
 			ReportGenerationService reportGenerationService,
 			ScenarioGenerationService scenarioGenerationService,
 			RunIndexWriter runIndexWriter,
@@ -59,6 +63,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		this.artifactCaptureService = artifactCaptureService;
 		this.analysisService = analysisService;
 		this.evaluationService = evaluationService;
+		this.multiLensReviewService = multiLensReviewService;
 		this.reportGenerationService = reportGenerationService;
 		this.scenarioGenerationService = scenarioGenerationService;
 		this.runIndexWriter = runIndexWriter;
@@ -110,6 +115,16 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("status: " + result.metadata().status());
 			System.out.println("evaluation_json: " + result.evaluationJson());
 			System.out.println("evaluation_markdown: " + result.evaluationMarkdown());
+			return;
+		}
+
+		if (args.containsOption("multi-lens-review")) {
+			MultiLensReviewResult result = multiLensReviewService.review(callId(args, "--multi-lens-review"));
+			System.out.println("Multi-lens review completed");
+			System.out.println("call_id: " + result.metadata().callId());
+			System.out.println("status: " + result.metadata().status());
+			System.out.println("multi_lens_review_json: " + result.reviewJson());
+			System.out.println("multi_lens_review_markdown: " + result.reviewMarkdown());
 			return;
 		}
 
@@ -302,6 +317,8 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		printPath("analysis_markdown", paths.analysisMarkdown());
 		printPath("evaluation_json", paths.evaluationJson());
 		printPath("evaluation_markdown", paths.evaluationMarkdown());
+		printPath("multi_lens_review_json", paths.multiLensReviewJson());
+		printPath("multi_lens_review_markdown", paths.multiLensReviewMarkdown());
 		printPath("observations_markdown", paths.observationsMarkdown());
 	}
 
@@ -321,6 +338,10 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 		if (hasArtifact(completeness, "transcript_json") && isBlank(metadata.artifactPaths().evaluationJson())) {
 			return List.of("Evaluate captured transcript with --evaluate-call --call-id=" + metadata.callId());
+		}
+		if (hasArtifact(completeness, "transcript_json")
+				&& isBlank(metadata.artifactPaths().multiLensReviewJson())) {
+			return List.of("Run multi-lens review with --multi-lens-review --call-id=" + metadata.callId());
 		}
 		return List.of("Inspect artifacts under " + metadata.artifactPaths().metadata());
 	}
@@ -342,6 +363,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("- --review-conversation --call-id=<local_call_id>");
 		System.out.println("- --analyze-call --call-id=<local_call_id>");
 		System.out.println("- --evaluate-call --call-id=<local_call_id>");
+		System.out.println("- --multi-lens-review --call-id=<local_call_id>");
 		System.out.println("- --generate-report");
 		System.out.println("- --generate-scenarios --agent-description=<description> [--scenario-count=<count>]");
 		System.out.println("- --show-run --call-id=<local_call_id>");
@@ -418,6 +440,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 		if (args.containsOption("evaluate-call")) {
 			return "evaluate-call";
+		}
+		if (args.containsOption("multi-lens-review")) {
+			return "multi-lens-review";
 		}
 		if (args.containsOption("generate-report")) {
 			return "generate-report";

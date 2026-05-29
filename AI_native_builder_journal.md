@@ -58,6 +58,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 16 Closeout](docs/phase-16-closeout.md)
 - [Phase 17 Closeout](docs/phase-17-closeout.md)
 - [Phase 18 Plan](docs/phase-18-plan.md)
+- [Phase 18 Closeout](docs/phase-18-closeout.md)
 
 ## Latest Phase Closeout Notes
 
@@ -70,6 +71,10 @@ validates drafts deterministically, and keeps generated scenarios out of
 Phase 18 is proposed as structured multi-lens review: a bounded set of
 specialized advisory lenses over existing call artifacts. It is an incremental
 step toward specialized review, not autonomous multi-agent orchestration.
+
+Phase 18 added the approved version of that layer. The local command runs fixed
+review lenses over captured transcript evidence, writes JSON and Markdown review
+artifacts, validates evidence references, and keeps results advisory.
 
 ## MVP+ Direction
 

@@ -24,6 +24,7 @@ OPENAI_API_KEY=
 QAAI_ANALYZER_PROVIDER=openai
 QAAI_EVALUATOR_PROVIDER=local
 QAAI_SCENARIO_GENERATOR_PROVIDER=openai
+QAAI_REVIEW_PROVIDER=local
 OPENAI_ANALYSIS_MODEL=gpt-4.1-mini
 OPENAI_ANALYSIS_TIMEOUT=60s
 OPENAI_SCENARIO_GENERATION_MODEL=gpt-4.1-mini
@@ -39,6 +40,8 @@ Use `QAAI_EVALUATOR_PROVIDER=local` for deterministic evidence-linked
 evaluation artifacts, or `disabled` when evaluation should fail clearly.
 Use `QAAI_SCENARIO_GENERATOR_PROVIDER=openai` for AI-assisted scenario drafting,
 or `disabled` when draft generation should fail clearly.
+Use `QAAI_REVIEW_PROVIDER=local` for deterministic multi-lens review artifacts,
+or `disabled` when multi-lens review should fail clearly.
 
 ## Dry Run
 
@@ -115,6 +118,19 @@ Evaluation writes `evaluation.json` and `evaluation.md`. Scored dimensions must
 cite transcript evidence; weak or missing evidence is recorded explicitly
 instead of guessed. Human review remains required.
 
+## Multi-Lens Review
+
+Review a captured transcript through stable advisory lenses:
+
+```powershell
+.\gradlew bootRun --args="--multi-lens-review --call-id=<local_call_id>"
+```
+
+Multi-lens review writes `multi-lens-review.json` and
+`multi-lens-review.md`. Concrete findings must cite transcript evidence;
+insufficient evidence is recorded explicitly. The lenses do not coordinate
+dynamically, mutate artifacts, or own pass/fail decisions.
+
 ## Inspect Runs
 
 Inspect one run:
@@ -181,7 +197,7 @@ report and each draft before promoting any scenario into actual use.
 Run focused tests while changing one workflow area:
 
 ```powershell
-.\gradlew test --tests "*Evaluation*" --tests "*ScenarioRunnerCommandTest"
+.\gradlew test --tests "*Evaluation*" --tests "*MultiLensReview*" --tests "*ScenarioRunnerCommandTest"
 ```
 
 Run the full suite before closing a shared behavior change:

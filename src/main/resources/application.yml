@@ -12,6 +12,8 @@ qaai:
     provider: ${QAAI_EVALUATOR_PROVIDER:local}
   scenario-generation:
     provider: ${QAAI_SCENARIO_GENERATOR_PROVIDER:openai}
+  review:
+    provider: ${QAAI_REVIEW_PROVIDER:local}
   openai:
     api-key: ${OPENAI_API_KEY:}
     analysis-model: ${OPENAI_ANALYSIS_MODEL:gpt-4.1-mini}

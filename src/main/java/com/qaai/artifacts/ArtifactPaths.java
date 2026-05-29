@@ -21,6 +21,10 @@ public record ArtifactPaths(
 		String evaluationJson,
 		@JsonProperty("evaluation_markdown")
 		String evaluationMarkdown,
+		@JsonProperty("multi_lens_review_json")
+		String multiLensReviewJson,
+		@JsonProperty("multi_lens_review_markdown")
+		String multiLensReviewMarkdown,
 		@JsonProperty("observations_markdown")
 		String observationsMarkdown
 ) {
@@ -37,6 +41,24 @@ public record ArtifactPaths(
 			String observationsMarkdown
 	) {
 		this(scenario, metadata, transcriptText, transcriptJson, patientSimulation, audio, manifest, analysisJson,
-				analysisMarkdown, null, null, observationsMarkdown);
+				analysisMarkdown, null, null, null, null, observationsMarkdown);
+	}
+
+	public ArtifactPaths(
+			String scenario,
+			String metadata,
+			String transcriptText,
+			String transcriptJson,
+			String patientSimulation,
+			String audio,
+			String manifest,
+			String analysisJson,
+			String analysisMarkdown,
+			String evaluationJson,
+			String evaluationMarkdown,
+			String observationsMarkdown
+	) {
+		this(scenario, metadata, transcriptText, transcriptJson, patientSimulation, audio, manifest, analysisJson,
+				analysisMarkdown, evaluationJson, evaluationMarkdown, null, null, observationsMarkdown);
 	}
 }

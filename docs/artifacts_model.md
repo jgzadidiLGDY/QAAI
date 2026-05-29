@@ -28,6 +28,8 @@ outputs/{call_id}/
 |-- analysis.md
 |-- evaluation.json
 |-- evaluation.md
+|-- multi-lens-review.json
+|-- multi-lens-review.md
 |-- manifest.json
 `-- observations.md
 ```
@@ -533,6 +535,16 @@ The JSON artifact should include:
 The Markdown artifact should summarize the same lens results for human review.
 Metadata and manifest entries may link to these artifacts after the review
 command succeeds.
+
+Current implementation uses:
+
+```powershell
+.\gradlew bootRun --args="--multi-lens-review --call-id=<local_call_id>"
+```
+
+Successful review sets `metadata.status` to `multi_lens_review_completed`,
+records the review artifact paths, appends manifest entries when a manifest is
+available, and appends a run-index entry.
 
 Multi-lens review artifacts should read existing evidence only. They should not
 mutate transcripts, scenarios, generated reports, call status, or the canonical

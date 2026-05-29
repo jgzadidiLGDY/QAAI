@@ -9,6 +9,7 @@ public record QaaiProperties(
 		Analysis analysis,
 		Evaluation evaluation,
 		ScenarioGeneration scenarioGeneration,
+		Review review,
 		OpenAi openai,
 		Target target,
 		Outputs outputs
@@ -27,6 +28,9 @@ public record QaaiProperties(
 		}
 		if (scenarioGeneration == null) {
 			scenarioGeneration = new ScenarioGeneration("openai");
+		}
+		if (review == null) {
+			review = new Review("local");
 		}
 		if (openai == null) {
 			openai = new OpenAi(null, "gpt-4.1-mini", Duration.ofSeconds(60),
@@ -63,6 +67,15 @@ public record QaaiProperties(
 		public ScenarioGeneration {
 			if (provider == null || provider.isBlank()) {
 				provider = "openai";
+			}
+		}
+	}
+
+	public record Review(String provider) {
+
+		public Review {
+			if (provider == null || provider.isBlank()) {
+				provider = "local";
 			}
 		}
 	}

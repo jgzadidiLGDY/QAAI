@@ -581,3 +581,9 @@ Validation rules:
 The first implementation should include a deterministic local provider so the
 workflow can be tested without network access. An AI-backed provider can follow
 after the artifact contract and validation boundary are stable.
+
+Current implementation supports `QAAI_REVIEW_PROVIDER=local|disabled`.
+Successful review updates `metadata.artifact_paths.multi_lens_review_json`,
+`metadata.artifact_paths.multi_lens_review_markdown`, `manifest.json`, and the
+run index. The `disabled` provider does not write review artifacts and fails
+clearly when review is requested.

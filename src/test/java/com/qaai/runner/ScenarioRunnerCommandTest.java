@@ -9,6 +9,8 @@ import com.qaai.artifacts.RunMetadata;
 import com.qaai.artifacts.RunIndexWriter;
 import com.qaai.reporting.ReportGenerationService;
 import com.qaai.reporting.ReportResult;
+import com.qaai.review.MultiLensReviewResult;
+import com.qaai.review.MultiLensReviewService;
 import com.qaai.scenariogeneration.ScenarioGenerationResult;
 import com.qaai.scenariogeneration.ScenarioGenerationService;
 import com.qaai.reporting.StaticReportRenderer;
@@ -29,7 +31,7 @@ class ScenarioRunnerCommandTest {
 	@Test
 	void reviewConversationRequiresCallId() {
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
-				null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments("--review-conversation"));
 
@@ -88,6 +90,7 @@ class ScenarioRunnerCommandTest {
 				null,
 				null,
 				null,
+				null,
 				null
 		);
 
@@ -100,7 +103,7 @@ class ScenarioRunnerCommandTest {
 	@Test
 	void printsHelpWhenNoCommandIsProvided(CapturedOutput output) {
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
-				null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments());
 
@@ -108,8 +111,71 @@ class ScenarioRunnerCommandTest {
 		assertThat(output).contains("--show-run --call-id=<local_call_id>");
 		assertThat(output).contains("--list-runs [--scenario=<scenario_id>]");
 		assertThat(output).contains("--evaluate-call --call-id=<local_call_id>");
+		assertThat(output).contains("--multi-lens-review --call-id=<local_call_id>");
 		assertThat(output).contains("--generate-report");
 		assertThat(output).contains("--generate-scenarios --agent-description=<description>");
+	}
+
+	@Test
+	void multiLensReviewPrintsReviewArtifacts(CapturedOutput output) {
+		String callId = "call_20260528_120000_review123";
+		MultiLensReviewService reviewService = new MultiLensReviewService(null, null, null) {
+			@Override
+			public MultiLensReviewResult review(String requestedCallId) {
+				Path runDirectory = Path.of("outputs").resolve(requestedCallId);
+				RunMetadata metadata = new RunMetadata(
+						requestedCallId,
+						"appointment_reschedule_001",
+						"retell",
+						"+18054398008",
+						"retell_call_123",
+						OffsetDateTime.parse("2026-05-28T12:00:00-04:00"),
+						OffsetDateTime.parse("2026-05-28T12:02:00-04:00"),
+						"multi_lens_review_completed",
+						new ArtifactPaths(
+								runDirectory.resolve("scenario.yaml").toString(),
+								runDirectory.resolve("metadata.json").toString(),
+								runDirectory.resolve("transcript.txt").toString(),
+								runDirectory.resolve("transcript.json").toString(),
+								runDirectory.resolve("patient_simulation.md").toString(),
+								null,
+								runDirectory.resolve("manifest.json").toString(),
+								null,
+								null,
+								null,
+								null,
+								runDirectory.resolve("multi-lens-review.json").toString(),
+								runDirectory.resolve("multi-lens-review.md").toString(),
+								runDirectory.resolve("observations.md").toString()
+						)
+				);
+				return new MultiLensReviewResult(
+						metadata,
+						runDirectory,
+						runDirectory.resolve("multi-lens-review.json"),
+						runDirectory.resolve("multi-lens-review.md")
+				);
+			}
+		};
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
+				null,
+				null,
+				null,
+				null,
+				reviewService,
+				null,
+				null,
+				null,
+				null,
+				null
+		);
+
+		command.run(new DefaultApplicationArguments("--multi-lens-review", "--call-id=" + callId));
+
+		assertThat(command.getExitCode()).isZero();
+		assertThat(output).contains("Multi-lens review completed");
+		assertThat(output).contains("multi_lens_review_json: outputs\\" + callId + "\\multi-lens-review.json");
 	}
 
 	@Test
@@ -137,6 +203,7 @@ class ScenarioRunnerCommandTest {
 			}
 		};
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
 				null,
 				null,
 				null,
@@ -188,6 +255,7 @@ class ScenarioRunnerCommandTest {
 				null,
 				null,
 				null,
+				null,
 				scenarioGenerationService,
 				null,
 				null,
@@ -209,7 +277,7 @@ class ScenarioRunnerCommandTest {
 	@Test
 	void generateScenariosRequiresAgentDescription() {
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
-				null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments("--generate-scenarios"));
 
@@ -232,6 +300,7 @@ class ScenarioRunnerCommandTest {
 				Clock.systemDefaultZone()
 		);
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
 				null,
 				null,
 				null,
