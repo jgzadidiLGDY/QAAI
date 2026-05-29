@@ -505,3 +505,35 @@ coverage intent, provider/model metadata, and `human_review_required = true`.
 
 Generated drafts should not be copied into `scenarios/` automatically and
 should not trigger outbound calls without a separate human-reviewed step.
+
+## Phase 18 Multi-Lens Review Artifacts
+
+Phase 18 should add structured multi-lens review artifacts for one captured
+call. These outputs are advisory review artifacts, not pass/fail records.
+
+Expected files:
+
+```text
+outputs/{call_id}/multi-lens-review.json
+outputs/{call_id}/multi-lens-review.md
+```
+
+The JSON artifact should include:
+
+- `call_id`
+- `review_id`
+- `generated_at`
+- `provider`
+- `model`
+- `human_review_required = true`
+- lens results keyed by stable lens id
+- concrete findings with transcript evidence references
+- explicit insufficient-evidence results when needed
+
+The Markdown artifact should summarize the same lens results for human review.
+Metadata and manifest entries may link to these artifacts after the review
+command succeeds.
+
+Multi-lens review artifacts should read existing evidence only. They should not
+mutate transcripts, scenarios, generated reports, call status, or the canonical
+scenario library.

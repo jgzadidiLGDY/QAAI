@@ -24,6 +24,7 @@ scenario YAML
   -> conversation-depth review signals
   -> AI-assisted analysis
   -> evidence-linked evaluation
+  -> structured multi-lens review
   -> human-reviewable report
 ```
 
@@ -154,6 +155,29 @@ The scenario generation layer should create review artifacts under
 coverage plan and scenario YAML files, but deterministic validation should check
 the generated drafts before they are considered usable. Drafts should not be
 promoted into `scenarios/` automatically and should not trigger live calls.
+
+### Multi-Lens Review
+
+Runs several specialized advisory review passes over one completed call artifact
+bundle.
+
+Planned package:
+
+```text
+com.qaai.review
+```
+
+The multi-lens review layer should use fixed inputs: scenario snapshot,
+metadata, normalized transcript, and existing analysis/evaluation artifacts when
+available. Each lens should have a stable identifier, a focused rubric, and
+structured output. Concrete findings must cite transcript evidence or be marked
+as insufficient evidence.
+
+This layer is intentionally not autonomous multi-agent orchestration. Lenses
+should not coordinate dynamically, trigger calls, mutate artifacts, promote
+scenarios, or own pass/fail decisions. Deterministic workflow code should invoke
+the configured lenses in an explicit order and write review artifacts for human
+inspection.
 
 ### Config
 
@@ -296,3 +320,8 @@ agent-under-test description, writes draft scenario artifacts and a coverage
 plan under `outputs/`, validates the drafts deterministically, and preserves
 human review before any generated scenario becomes part of the committed
 scenario library.
+
+Phase 18 should add structured multi-lens review. It should run a bounded set of
+specialized advisory lenses over existing call artifacts, validate transcript
+evidence for concrete findings, write JSON and Markdown review outputs, and keep
+all results human-reviewed.

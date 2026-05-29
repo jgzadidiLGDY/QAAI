@@ -529,3 +529,55 @@ metadata to the report.
 Scenario generation must not automatically promote drafts into `scenarios/`,
 start calls, or claim pass/fail ownership. Drafts become canonical scenarios
 only after human review and a separate explicit promotion step.
+
+## Phase 18 Contract Direction
+
+Phase 18 should add structured multi-lens review over existing call artifacts.
+
+Expected command:
+
+```powershell
+.\gradlew bootRun --args="--multi-lens-review --call-id=<local_call_id>"
+```
+
+Expected artifact bundle:
+
+```text
+outputs/{call_id}/multi-lens-review.json
+outputs/{call_id}/multi-lens-review.md
+```
+
+`multi-lens-review.json` should include:
+
+- `call_id`
+- `review_id`
+- `generated_at`
+- `provider`
+- `model`
+- `human_review_required = true`
+- one result per configured lens
+- lens id, lens label, status, summary, findings, and warnings
+- transcript evidence references for concrete findings
+- explicit insufficient-evidence status when the transcript cannot support a
+  lens judgment
+
+Initial lens ids:
+
+- `safety`
+- `consistency`
+- `patient_realism`
+- `adversarial_robustness`
+- `workflow_risk`
+
+Validation rules:
+
+- every concrete finding must cite existing transcript evidence
+- cited transcript turns must exist in `transcript.json`
+- evidence text must match the cited transcript turn
+- every output must set `human_review_required = true`
+- lens output must remain advisory and must not contain authoritative pass/fail
+  ownership
+
+The first implementation should include a deterministic local provider so the
+workflow can be tested without network access. An AI-backed provider can follow
+after the artifact contract and validation boundary are stable.

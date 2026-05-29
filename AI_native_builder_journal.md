@@ -57,6 +57,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 15 Closeout](docs/phase-15-closeout.md)
 - [Phase 16 Closeout](docs/phase-16-closeout.md)
 - [Phase 17 Closeout](docs/phase-17-closeout.md)
+- [Phase 18 Plan](docs/phase-18-plan.md)
 
 ## Latest Phase Closeout Notes
 
@@ -65,6 +66,10 @@ agent-under-test description, uses the configured scenario-generation provider,
 writes review artifacts under `outputs/scenario-generation/{generation_id}/`,
 validates drafts deterministically, and keeps generated scenarios out of
 `scenarios/` until human promotion.
+
+Phase 18 is proposed as structured multi-lens review: a bounded set of
+specialized advisory lenses over existing call artifacts. It is an incremental
+step toward specialized review, not autonomous multi-agent orchestration.
 
 ## MVP+ Direction
 
@@ -81,6 +86,7 @@ real-world repeatability:
 - Phase 15: evidence-linked evaluation layer
 - Phase 16: QA dashboard or static report view
 - Phase 17: AI-assisted scenario draft generation
+- Phase 18: structured multi-lens review
 
 This expansion does not change the core boundary: deterministic workflow code
 owns orchestration, artifacts provide evidence, AI assists with analysis, and

@@ -232,6 +232,34 @@ Candidate invariant:
 - Root cause: scenario coverage was curated manually, and the workflow had no provider boundary, generation report, or validation artifact for AI-assisted scenario drafting.
 - Why it may be Silver-relevant: the task crosses CLI routing, provider configuration, OpenAI response parsing, YAML artifact writing, deterministic scenario validation, report generation, and tests that prove generated drafts do not enter `scenarios/` automatically.
 
+## Phase 18 Planning Record
+
+Phase 18 is proposed as structured multi-lens review over existing call
+artifacts. Project Silver extraction rules are secondary here: they help keep
+the eventual implementation task-shaped, but they do not define the product
+direction.
+
+Potential candidate:
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Structured multi-lens review workflow | TBD | TBD | Captured calls should be reviewable through several stable advisory lenses over the same transcript evidence, producing JSON and Markdown artifacts without creating pass/fail decisions or autonomous orchestration. | `--multi-lens-review --call-id=<local_call_id>` requires `transcript.json`, writes `multi-lens-review.json` and `multi-lens-review.md`, includes safety, consistency, patient realism, adversarial robustness, and workflow risk lens results, validates transcript evidence for concrete findings, accepts explicit insufficient-evidence results, and links artifacts through metadata/manifest entries. |
+
+Candidate invariant:
+
+- Invariant: specialized review lenses must inspect fixed existing artifacts and
+  remain advisory.
+- Symptom: after Phase 17, the project can generate scenarios, capture calls,
+  analyze findings, evaluate dimensions, and generate reports, but it does not
+  yet provide a bounded way to compare several specialized review perspectives
+  over the same call.
+- Root cause: existing analysis and evaluation flows are useful but not
+  organized as a stable registry of specialized review lenses.
+- Why it may be Silver-relevant: the task can cross CLI routing, provider
+  configuration, artifact loading, evidence validation, metadata/manifest
+  updates, Markdown rendering, and deterministic tests while preserving
+  human-owned review decisions.
+
 ## Test Expectations
 
 Silver-oriented tests should:

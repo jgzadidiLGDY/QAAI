@@ -676,6 +676,59 @@ Out of scope:
 - real patient data
 - unbounded scenario generation
 
+## Structured Multi-Lens Review Direction
+
+After Phase 17, the system can generate draft scenarios, execute or import
+runs, capture artifacts, analyze calls, evaluate dimensions, and produce static
+reports. The next useful step is not a full multi-agent platform. The next step
+is a bounded multi-lens review layer: several specialized advisory review passes
+over the same fixed call artifacts.
+
+### Phase 18: Structured Multi-Lens Review
+
+Goal:
+
+Run a small set of specialized review lenses over one captured call artifact
+bundle and write inspectable findings for human review.
+
+Planned lenses:
+
+- safety
+- consistency
+- patient realism
+- adversarial robustness
+- workflow risk
+
+Planned deliverables:
+
+- explicit lens registry with stable lens identifiers
+- deterministic local provider for tests and offline workflow checks
+- structured JSON and Markdown review artifacts
+- transcript-evidence validation for every concrete finding
+- clear insufficient-evidence handling when a lens cannot judge
+- metadata and manifest links to review outputs
+- docs explaining the boundary between multi-lens review and multi-agent
+  orchestration
+
+Expected artifacts:
+
+```text
+outputs/{call_id}/multi-lens-review.json
+outputs/{call_id}/multi-lens-review.md
+```
+
+Out of scope:
+
+- autonomous agent fleets
+- agents coordinating with each other dynamically
+- AI-owned workflow control
+- AI-owned pass/fail decisions
+- mutation of scenarios, transcripts, reports, or call artifacts
+- fabricated evidence
+
+The review lenses should read existing artifacts only. They should not trigger
+calls, promote scenarios, change run status, or decide whether a call passed.
+
 ### Current Phase 13 Implementation
 
 Phase 13 adds advisory depth signals to conversation review. After captured
@@ -717,7 +770,9 @@ The expected duration band for a typical medical appointment phone call is 1 to
 |   |   |           |-- retell
 |   |   |           |-- analysis
 |   |   |           |-- evaluation
-|   |   |           `-- reporting
+|   |   |           |-- reporting
+|   |   |           |-- scenariogeneration
+|   |   |           `-- review
 |   |   `-- resources
 |   |       `-- application.yml
 |   `-- test
@@ -783,6 +838,7 @@ OPENAI_API_KEY=
 QAAI_ANALYZER_PROVIDER=
 QAAI_EVALUATOR_PROVIDER=
 QAAI_SCENARIO_GENERATOR_PROVIDER=
+QAAI_REVIEW_PROVIDER=
 OPENAI_ANALYSIS_MODEL=
 OPENAI_SCENARIO_GENERATION_MODEL=
 ```
@@ -808,14 +864,14 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 17 should add AI-assisted scenario draft generation:
+Phase 18 should add structured multi-lens review:
 
 ```text
-Given an agent-under-test description, generate a bounded draft scenario library
-and coverage plan as review artifacts under outputs/ without automatically
-promoting drafts into the committed scenario library.
+Given one captured call artifact bundle, run bounded specialized review lenses
+over the same transcript and metadata, then write advisory JSON and Markdown
+review artifacts under outputs/{call_id}/.
 ```
 
 This keeps the system local-first, human-reviewed, and explicit about
-authorized test calls, generated artifacts, unavailable evidence, advisory AI
-output, and human-owned scenario approval.
+authorized test calls, existing artifacts, unavailable evidence, advisory AI
+output, and human-owned review decisions.

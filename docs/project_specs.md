@@ -131,6 +131,31 @@ The goal is diverse, reviewable coverage across declared workflow areas and
 known edge-case categories. The system should not claim full behavioral-space
 coverage.
 
+## Structured Multi-Lens Review Expansion
+
+After scenario generation, the next platform step should evolve toward
+specialized review without adopting autonomous multi-agent orchestration.
+Phase 18 should add a bounded multi-lens review layer over existing call
+artifacts.
+
+Each review lens should inspect the same fixed evidence bundle:
+
+- scenario snapshot
+- run metadata
+- normalized transcript
+- existing analysis output when available
+- existing evaluation output when available
+
+Initial lenses should cover safety, consistency, patient realism, adversarial
+robustness, and workflow risk. Each lens should produce advisory structured
+findings with transcript evidence, or explicitly state that evidence is
+insufficient. A combined Markdown report should make the results easy for a
+human reviewer to inspect.
+
+This is deliberately not a fleet of autonomous agents. The lenses should not
+control workflow, call each other dynamically, change run status, promote
+scenarios, trigger live calls, or decide pass/fail.
+
 ## Non-Goals
 
 This project is not:
@@ -218,6 +243,16 @@ The scenario generation expansion is successful when:
 - generated drafts remain review artifacts until a human promotes them
 - no generated draft contains real patient data
 
+The structured multi-lens review expansion is successful when:
+
+- one captured call can be reviewed through several stable, named lenses
+- concrete findings cite transcript evidence
+- insufficient evidence is represented explicitly instead of guessed
+- JSON and Markdown review artifacts are linked by `call_id`
+- deterministic local tests can exercise the workflow without network access
+- the implementation preserves human-owned review and avoids autonomous
+  orchestration
+
 ## AI Boundary
 
 AI may assist with:
@@ -229,6 +264,7 @@ AI may assist with:
 - rubric-specific advisory evaluation
 - scenario draft generation
 - coverage-plan drafting
+- specialized advisory review lenses
 
 AI must not:
 
