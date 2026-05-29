@@ -298,3 +298,21 @@ Likely stronger candidates should wait until Phase 19 or Phase 20 introduces
 testable runtime behavior, such as channel metadata propagation, a shared
 interaction abstraction, or a text chat runner that reuses the existing artifact
 and review pipeline.
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Channel metadata propagation | `316ce7a` | `fa256db` | Runs should record an explicit interaction channel while preserving existing voice commands, local ids, Retell ids, artifact paths, and older metadata compatibility. | Dry-run and Retell metadata include `channel = voice`; older `dry_run` and `retell` metadata without `channel` deserialize as voice; Retell request metadata includes the channel; run index entries, CLI inspection, and static reports expose the channel. |
+
+Candidate invariant:
+
+- Invariant: execution channel must be explicit metadata while `call_id` remains
+  the local artifact id and Retell fields remain voice-channel details.
+- Symptom: before this phase, shared run artifacts exposed `run_mode` but had no
+  channel field, so future text execution would have to infer channel from
+  voice-specific modes or duplicate the artifact pipeline.
+- Root cause: the project began as voice-first and encoded Retell/dry-run modes
+  before channel-neutral execution became a platform goal.
+- Why it may be Silver-relevant: the task crosses metadata serialization,
+  backward compatibility, Retell request metadata, run indexing, CLI
+  inspection, static reporting, and deterministic tests without adding a second
+  runtime channel.

@@ -60,8 +60,8 @@ Newly written metadata includes:
 Behavior commit:
 
 - Channel metadata propagation:
-  - Base commit: TBD
-  - Fix commit: TBD
+  - Base commit: `316ce7a`
+  - Fix commit: `fa256db`
 
 This is a stronger Silver candidate than the Phase 19 planning docs because it
 has deterministic runtime behavior across metadata serialization, backward
