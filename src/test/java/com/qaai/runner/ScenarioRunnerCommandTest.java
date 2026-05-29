@@ -9,6 +9,7 @@ import com.qaai.artifacts.RunMetadata;
 import com.qaai.artifacts.RunIndexWriter;
 import com.qaai.reporting.ReportGenerationService;
 import com.qaai.reporting.ReportResult;
+import com.qaai.review.MultiLensReviewException;
 import com.qaai.review.MultiLensReviewResult;
 import com.qaai.review.MultiLensReviewService;
 import com.qaai.scenariogeneration.ScenarioGenerationResult;
@@ -176,6 +177,37 @@ class ScenarioRunnerCommandTest {
 		assertThat(command.getExitCode()).isZero();
 		assertThat(output).contains("Multi-lens review completed");
 		assertThat(output).contains("multi_lens_review_json: outputs\\" + callId + "\\multi-lens-review.json");
+	}
+
+	@Test
+	void multiLensReviewReportsDisabledProvider(CapturedOutput output) {
+		String callId = "call_20260528_120000_review123";
+		MultiLensReviewService reviewService = new MultiLensReviewService(null, null, null) {
+			@Override
+			public MultiLensReviewResult review(String requestedCallId) {
+				throw new MultiLensReviewException(
+						"Multi-lens review is disabled by QAAI_REVIEW_PROVIDER=disabled"
+				);
+			}
+		};
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
+				null,
+				null,
+				null,
+				null,
+				reviewService,
+				null,
+				null,
+				null,
+				null,
+				null
+		);
+
+		command.run(new DefaultApplicationArguments("--multi-lens-review", "--call-id=" + callId));
+
+		assertThat(command.getExitCode()).isEqualTo(1);
+		assertThat(output).contains("Multi-lens review is disabled");
 	}
 
 	@Test
