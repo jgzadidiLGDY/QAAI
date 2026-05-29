@@ -64,13 +64,16 @@ public class ArtifactCompletenessChecker {
 		required.add("patient_simulation");
 		required.add("observations_markdown");
 
-		if ("dry_run".equals(metadata.runMode())) {
+		if ("dry_run".equals(metadata.runMode()) || "text_chat".equals(metadata.runMode())) {
 			required.add("transcript_text");
+		}
+		if ("text_chat".equals(metadata.runMode())) {
+			required.add("transcript_json");
 		}
 		if (isCaptureStatus(metadata.status()) || "analysis_completed".equals(metadata.status())) {
 			required.add("transcript_text");
 			required.add("transcript_json");
-			required.add("manifest");
+			addManifestIfVoice(metadata, required);
 		}
 		if ("analysis_completed".equals(metadata.status())) {
 			required.add("analysis_json");
@@ -79,18 +82,24 @@ public class ArtifactCompletenessChecker {
 		if ("evaluation_completed".equals(metadata.status())) {
 			required.add("transcript_text");
 			required.add("transcript_json");
-			required.add("manifest");
+			addManifestIfVoice(metadata, required);
 			required.add("evaluation_json");
 			required.add("evaluation_markdown");
 		}
 		if ("multi_lens_review_completed".equals(metadata.status())) {
 			required.add("transcript_text");
 			required.add("transcript_json");
-			required.add("manifest");
+			addManifestIfVoice(metadata, required);
 			required.add("multi_lens_review_json");
 			required.add("multi_lens_review_markdown");
 		}
 		return required;
+	}
+
+	private void addManifestIfVoice(RunMetadata metadata, Set<String> required) {
+		if (!"text".equals(metadata.channel())) {
+			required.add("manifest");
+		}
 	}
 
 	private boolean isCaptureStatus(String status) {
@@ -132,6 +141,9 @@ public class ArtifactCompletenessChecker {
 	}
 
 	private boolean expectsCapturedArtifacts(RunMetadata metadata) {
+		if ("text".equals(metadata.channel())) {
+			return false;
+		}
 		return isCaptureStatus(metadata.status())
 				|| "analysis_completed".equals(metadata.status())
 				|| "evaluation_completed".equals(metadata.status())

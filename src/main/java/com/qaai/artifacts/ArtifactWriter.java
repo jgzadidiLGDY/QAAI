@@ -82,6 +82,47 @@ public class ArtifactWriter {
 		);
 	}
 
+	public ArtifactBundle writeTextChatArtifacts(
+			String callId,
+			Path scenarioPath,
+			RunMetadata metadata,
+			String patientSimulationPrompt,
+			NormalizedTranscript transcript,
+			String transcriptText,
+			String observationsMarkdown
+	) {
+		Path runDirectory = runDirectory(callId);
+		Path scenarioSnapshot = runDirectory.resolve("scenario.yaml");
+		Path metadataPath = runDirectory.resolve("metadata.json");
+		Path patientSimulationPath = runDirectory.resolve("patient_simulation.md");
+		Path transcriptJsonPath = runDirectory.resolve("transcript.json");
+		Path transcriptTextPath = runDirectory.resolve("transcript.txt");
+		Path observationsPath = runDirectory.resolve("observations.md");
+
+		try {
+			Files.createDirectories(runDirectory);
+			Files.copy(scenarioPath, scenarioSnapshot, StandardCopyOption.REPLACE_EXISTING);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(metadataPath.toFile(), metadata);
+			Files.writeString(patientSimulationPath, patientSimulationPrompt);
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(transcriptJsonPath.toFile(), transcript);
+			Files.writeString(transcriptTextPath, transcriptText);
+			Files.writeString(observationsPath, observationsMarkdown);
+			runIndexWriter.append(metadata);
+		} catch (IOException exception) {
+			throw new ArtifactWriteException("Unable to write text chat artifacts for call_id: " + callId, exception);
+		}
+
+		return new ArtifactBundle(
+				callId,
+				runDirectory,
+				scenarioSnapshot,
+				metadataPath,
+				transcriptTextPath,
+				patientSimulationPath,
+				observationsPath
+		);
+	}
+
 	public ArtifactBundle writeCallStartedArtifacts(
 			String callId,
 			Path scenarioPath,

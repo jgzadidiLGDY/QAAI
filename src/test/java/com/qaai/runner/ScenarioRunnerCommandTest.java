@@ -32,7 +32,7 @@ class ScenarioRunnerCommandTest {
 	@Test
 	void reviewConversationRequiresCallId() {
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
-				null, null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments("--review-conversation"));
 
@@ -84,6 +84,7 @@ class ScenarioRunnerCommandTest {
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
 				null,
 				null,
+				null,
 				artifactCaptureService,
 				null,
 				null,
@@ -104,17 +105,86 @@ class ScenarioRunnerCommandTest {
 	@Test
 	void printsHelpWhenNoCommandIsProvided(CapturedOutput output) {
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
-				null, null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments());
 
 		assertThat(command.getExitCode()).isZero();
+		assertThat(output).contains("--scenario=<path> [--run-mode=dry-run|text-chat|retell]");
 		assertThat(output).contains("--show-run --call-id=<local_call_id>");
 		assertThat(output).contains("--list-runs [--scenario=<scenario_id>]");
 		assertThat(output).contains("--evaluate-call --call-id=<local_call_id>");
 		assertThat(output).contains("--multi-lens-review --call-id=<local_call_id>");
 		assertThat(output).contains("--generate-report");
 		assertThat(output).contains("--generate-scenarios --agent-description=<description>");
+	}
+
+	@Test
+	void routesTextChatRunModeToTextChatRunner(CapturedOutput output) {
+		TextChatRunner textChatRunner = new TextChatRunner(null, null, null, null, null) {
+			@Override
+			public ScenarioRunResult run(Path scenarioPath) {
+				Path runDirectory = Path.of("outputs", "call_20260529_121500_chat1234");
+				RunMetadata metadata = new RunMetadata(
+						"call_20260529_121500_chat1234",
+						"appointment_reschedule_001",
+						"text_chat",
+						"text",
+						null,
+						null,
+						OffsetDateTime.parse("2026-05-29T12:15:00-04:00"),
+						OffsetDateTime.parse("2026-05-29T12:15:00-04:00"),
+						"completed",
+						new ArtifactPaths(
+								runDirectory.resolve("scenario.yaml").toString(),
+								runDirectory.resolve("metadata.json").toString(),
+								runDirectory.resolve("transcript.txt").toString(),
+								runDirectory.resolve("transcript.json").toString(),
+								runDirectory.resolve("patient_simulation.md").toString(),
+								null,
+								null,
+								null,
+								null,
+								runDirectory.resolve("observations.md").toString()
+						)
+				);
+				return new ScenarioRunResult(
+						metadata,
+						new com.qaai.artifacts.ArtifactBundle(
+								metadata.callId(),
+								runDirectory,
+								runDirectory.resolve("scenario.yaml"),
+								runDirectory.resolve("metadata.json"),
+								runDirectory.resolve("transcript.txt"),
+								runDirectory.resolve("patient_simulation.md"),
+								runDirectory.resolve("observations.md")
+						)
+				);
+			}
+		};
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
+				textChatRunner,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null
+		);
+
+		command.run(new DefaultApplicationArguments(
+				"--scenario=scenarios/appointment-reschedule.yaml",
+				"--run-mode=text-chat"
+		));
+
+		assertThat(command.getExitCode()).isZero();
+		assertThat(output).contains("Text chat run completed");
+		assertThat(output).contains("call_id: call_20260529_121500_chat1234");
 	}
 
 	@Test
@@ -164,6 +234,7 @@ class ScenarioRunnerCommandTest {
 				null,
 				null,
 				null,
+				null,
 				reviewService,
 				null,
 				null,
@@ -191,6 +262,7 @@ class ScenarioRunnerCommandTest {
 			}
 		};
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
 				null,
 				null,
 				null,
@@ -235,6 +307,7 @@ class ScenarioRunnerCommandTest {
 			}
 		};
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
 				null,
 				null,
 				null,
@@ -288,6 +361,7 @@ class ScenarioRunnerCommandTest {
 				null,
 				null,
 				null,
+				null,
 				scenarioGenerationService,
 				null,
 				null,
@@ -309,7 +383,7 @@ class ScenarioRunnerCommandTest {
 	@Test
 	void generateScenariosRequiresAgentDescription() {
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
-				null, null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null, null);
 
 		command.run(new DefaultApplicationArguments("--generate-scenarios"));
 
@@ -332,6 +406,7 @@ class ScenarioRunnerCommandTest {
 				Clock.systemDefaultZone()
 		);
 		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
 				null,
 				null,
 				null,

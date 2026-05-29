@@ -33,6 +33,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioRunnerCommand.class);
 
 	private final DryRunRunner dryRunRunner;
+	private final TextChatRunner textChatRunner;
 	private final RetellCallRunner retellCallRunner;
 	private final ArtifactCaptureService artifactCaptureService;
 	private final AnalysisService analysisService;
@@ -47,6 +48,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 
 	public ScenarioRunnerCommand(
 			DryRunRunner dryRunRunner,
+			TextChatRunner textChatRunner,
 			RetellCallRunner retellCallRunner,
 			ArtifactCaptureService artifactCaptureService,
 			AnalysisService analysisService,
@@ -59,6 +61,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			RunInspectionService runInspectionService
 	) {
 		this.dryRunRunner = dryRunRunner;
+		this.textChatRunner = textChatRunner;
 		this.retellCallRunner = retellCallRunner;
 		this.artifactCaptureService = artifactCaptureService;
 		this.analysisService = analysisService;
@@ -203,9 +206,10 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private ScenarioRunResult runScenario(String runMode, Path scenarioPath) {
 		return switch (runMode) {
 			case "dry-run" -> dryRunRunner.run(scenarioPath);
+			case "text-chat" -> textChatRunner.run(scenarioPath);
 			case "retell" -> retellCallRunner.run(scenarioPath);
 			default -> throw new IllegalArgumentException("Unsupported --run-mode=" + runMode
-					+ ". Use dry-run or retell.");
+					+ ". Use dry-run, text-chat, or retell.");
 		};
 	}
 
@@ -216,7 +220,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 
 		List<String> runModeValues = args.getOptionValues("run-mode");
 		if (runModeValues == null || runModeValues.isEmpty() || runModeValues.getFirst().isBlank()) {
-			throw new IllegalArgumentException("Provide --run-mode=dry-run or --run-mode=retell");
+			throw new IllegalArgumentException("Provide --run-mode=dry-run, --run-mode=text-chat, or --run-mode=retell");
 		}
 		return runModeValues.getFirst();
 	}
@@ -224,6 +228,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private String runModeLabel(String runMode) {
 		if ("dry-run".equals(runMode)) {
 			return "Dry run";
+		}
+		if ("text-chat".equals(runMode)) {
+			return "Text chat run";
 		}
 		return "Retell call start";
 	}
@@ -360,7 +367,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private void printHelp() {
 		System.out.println("Voice AI QA Agent");
 		System.out.println("Commands:");
-		System.out.println("- --scenario=<path> [--run-mode=dry-run|retell]");
+		System.out.println("- --scenario=<path> [--run-mode=dry-run|text-chat|retell]");
 		System.out.println("- --capture-artifacts --call-id=<local_call_id>");
 		System.out.println("- --review-conversation --call-id=<local_call_id>");
 		System.out.println("- --analyze-call --call-id=<local_call_id>");
@@ -369,7 +376,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("- --generate-report");
 		System.out.println("- --generate-scenarios --agent-description=<description> [--scenario-count=<count>]");
 		System.out.println("- --show-run --call-id=<local_call_id>");
-		System.out.println("- --list-runs [--scenario=<scenario_id>] [--status=<status>] [--run-mode=dry-run|retell]");
+		System.out.println("- --list-runs [--scenario=<scenario_id>] [--status=<status>] [--run-mode=dry-run|text-chat|retell]");
 	}
 
 	private String agentDescription(ApplicationArguments args) {

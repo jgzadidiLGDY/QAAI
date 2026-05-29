@@ -163,6 +163,9 @@ public record RunMetadata(
 		if ("retell".equals(runMode) || "dry_run".equals(runMode)) {
 			return "voice";
 		}
+		if ("text_chat".equals(runMode)) {
+			return "text";
+		}
 		return "unknown";
 	}
 }

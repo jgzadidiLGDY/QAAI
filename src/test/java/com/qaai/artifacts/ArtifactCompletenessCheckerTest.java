@@ -92,6 +92,46 @@ class ArtifactCompletenessCheckerTest {
 		);
 	}
 
+	@Test
+	void textChatRunsRequireNormalizedTranscriptButNotManifestOrAudio() throws Exception {
+		Path runDirectory = tempDir.resolve("outputs").resolve("call_20260529_121500_chat1234");
+		Files.createDirectories(runDirectory);
+		Files.writeString(runDirectory.resolve("scenario.yaml"), "id: appointment_reschedule_001%n".formatted());
+		Files.writeString(runDirectory.resolve("metadata.json"), "{}");
+		Files.writeString(runDirectory.resolve("transcript.txt"), "transcript");
+		Files.writeString(runDirectory.resolve("transcript.json"), "{}");
+		Files.writeString(runDirectory.resolve("patient_simulation.md"), "patient");
+		Files.writeString(runDirectory.resolve("observations.md"), "observations");
+
+		ArtifactCompleteness completeness = new ArtifactCompletenessChecker().check(new RunMetadata(
+				"call_20260529_121500_chat1234",
+				"appointment_reschedule_001",
+				"text_chat",
+				"text",
+				null,
+				null,
+				OffsetDateTime.parse("2026-05-29T12:15:00-04:00"),
+				OffsetDateTime.parse("2026-05-29T12:15:00-04:00"),
+				"completed",
+				new ArtifactPaths(
+						runDirectory.resolve("scenario.yaml").toString(),
+						runDirectory.resolve("metadata.json").toString(),
+						runDirectory.resolve("transcript.txt").toString(),
+						runDirectory.resolve("transcript.json").toString(),
+						runDirectory.resolve("patient_simulation.md").toString(),
+						null,
+						null,
+						null,
+						null,
+						runDirectory.resolve("observations.md").toString()
+				)
+		));
+
+		assertThat(completeness.complete()).isTrue();
+		assertThat(completeness.missingRequiredArtifacts()).isEmpty();
+		assertThat(completeness.warnings()).isEmpty();
+	}
+
 	private RunMetadata metadata(
 			String runMode,
 			String status,
