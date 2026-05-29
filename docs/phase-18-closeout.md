@@ -62,8 +62,8 @@ Use `QAAI_REVIEW_PROVIDER=disabled` when multi-lens review should fail clearly.
 Behavior commit:
 
 - Structured multi-lens review workflow:
-  - Base commit: TBD
-  - Fix commit: TBD
+  - Base commit: `5a2447d`
+  - Fix commit: `85d0b37`
 
 The strongest Phase 18 candidate is the structured multi-lens review workflow
 because it crosses CLI routing, provider configuration, artifact loading,
