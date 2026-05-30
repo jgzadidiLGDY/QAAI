@@ -347,6 +347,7 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Additive lifecycle metadata preservation | `1b1d432` | `190306e` | Lifecycle commands that update an existing run should preserve previously linked artifact paths and advisory provider metadata while only replacing the artifacts produced by the current command. | Running analysis after evaluation preserves evaluation and multi-lens paths; running evaluation after analysis preserves analysis and multi-lens paths; rerunning Retell artifact capture preserves existing analysis, evaluation, and multi-lens links; multi-lens review preserves existing analysis/evaluation metadata and duration. |
+| Phase 20a lifecycle hardening docs | `33a2848` | `e6808de` | Weak/docs-only candidate: lifecycle and operator docs should describe evaluation, multi-lens review, rerun metadata preservation, local provider settings, and Phase 20a closeout boundaries. | Documentation-only change; useful for operators and reviewers, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 
 Candidate invariant:
 
