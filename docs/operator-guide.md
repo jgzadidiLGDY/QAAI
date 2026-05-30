@@ -43,6 +43,17 @@ or `disabled` when draft generation should fail clearly.
 Use `QAAI_REVIEW_PROVIDER=local` for deterministic multi-lens review artifacts,
 or `disabled` when multi-lens review should fail clearly.
 
+For an offline local review pass, set:
+
+```text
+QAAI_ANALYZER_PROVIDER=local
+QAAI_EVALUATOR_PROVIDER=local
+QAAI_REVIEW_PROVIDER=local
+```
+
+Scenario generation still requires OpenAI unless
+`QAAI_SCENARIO_GENERATOR_PROVIDER=disabled` is selected.
+
 ## Dry Run
 
 Dry runs do not place phone calls. They validate the scenario path and write a

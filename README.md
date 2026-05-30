@@ -413,6 +413,15 @@ $env:QAAI_ANALYZER_PROVIDER="local"
 .\gradlew bootRun --args="--analyze-call --call-id=<local_call_id>"
 ```
 
+For an offline local review pass, use the local analysis, evaluation, and
+multi-lens providers together:
+
+```powershell
+$env:QAAI_ANALYZER_PROVIDER="local"
+$env:QAAI_EVALUATOR_PROVIDER="local"
+$env:QAAI_REVIEW_PROVIDER="local"
+```
+
 ### Phase 11: Run Inspection and Workflow UX
 
 Goal:
@@ -950,13 +959,17 @@ Likely environment variables:
 
 ```text
 OPENAI_API_KEY=
-QAAI_ANALYZER_PROVIDER=
-QAAI_EVALUATOR_PROVIDER=
-QAAI_SCENARIO_GENERATOR_PROVIDER=
-QAAI_REVIEW_PROVIDER=
+QAAI_ANALYZER_PROVIDER=openai|local|disabled
+QAAI_EVALUATOR_PROVIDER=local|disabled
+QAAI_SCENARIO_GENERATOR_PROVIDER=openai|disabled
+QAAI_REVIEW_PROVIDER=local|disabled
 OPENAI_ANALYSIS_MODEL=
 OPENAI_SCENARIO_GENERATION_MODEL=
 ```
+
+Use `QAAI_ANALYZER_PROVIDER=local`, `QAAI_EVALUATOR_PROVIDER=local`, and
+`QAAI_REVIEW_PROVIDER=local` for deterministic offline artifact review.
+OpenAI is required for OpenAI-backed analysis and scenario draft generation.
 
 ### Local Development
 

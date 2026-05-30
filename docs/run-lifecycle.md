@@ -17,9 +17,18 @@ real call:
   --capture-artifacts --call-id=<local_call_id>
   --review-conversation --call-id=<local_call_id>
   --analyze-call --call-id=<local_call_id>
+  --evaluate-call --call-id=<local_call_id>
+  --multi-lens-review --call-id=<local_call_id>
 ```
 
-`--show-run` and `--list-runs` can be used at any point after artifacts exist.
+`--evaluate-call` and `--multi-lens-review` can also run against a completed
+text chat run because they use the normalized `transcript.json` artifact. Run
+analysis, evaluation, and multi-lens review in whatever order is useful for the
+review, but rerun downstream review artifacts after recapturing a Retell
+transcript if the evidence changed.
+
+`--show-run`, `--list-runs`, and `--generate-report` can be used at any point
+after artifacts exist.
 
 ## Statuses
 
@@ -32,7 +41,9 @@ real call:
 | `artifacts_captured` | Transcript artifacts and audio were captured. | Review conversation or analyze transcript. |
 | `artifacts_partially_captured` | Capture wrote available artifacts, but transcript or audio was unavailable. | Inspect `manifest.json`; retry capture later if Retell is still processing. |
 | `artifacts_capture_failed` | Capture could not retrieve usable Retell call details. | Inspect command error and provider status before retrying. |
-| `analysis_completed` | Evidence-linked advisory analysis artifacts were written. | Human review of analysis and raw artifacts. |
+| `analysis_completed` | Evidence-linked advisory analysis artifacts were written. | Evaluate, run multi-lens review, generate a report, or inspect raw artifacts. |
+| `evaluation_completed` | Rubric-specific advisory evaluation artifacts were written. | Analyze, run multi-lens review, generate a report, or inspect raw artifacts. |
+| `multi_lens_review_completed` | Structured advisory multi-lens review artifacts were written. | Generate a report or inspect raw artifacts. |
 
 ## Required Artifacts
 
@@ -45,6 +56,8 @@ Completeness is status-aware:
 | Retell call start | `scenario.yaml`, `metadata.json`, `patient_simulation.md`, `observations.md` |
 | Captured Retell run | call-start artifacts plus `transcript.json`, `transcript.txt`, `manifest.json` |
 | Analyzed run | captured-run artifacts plus `analysis.json`, `analysis.md` |
+| Evaluated run | transcript artifacts plus `evaluation.json`, `evaluation.md`; voice runs also require `manifest.json` |
+| Multi-lens reviewed run | transcript artifacts plus `multi-lens-review.json`, `multi-lens-review.md`; voice runs also require `manifest.json` |
 
 `audio.wav` is optional because Retell may not provide a recording URL or the
 download may fail. The manifest and run inspection warning explain the reason.
@@ -91,6 +104,16 @@ the human-readable `transcript.txt`.
 
 If analysis fails, confirm `transcript.json` exists and contains at least one
 turn. The analyzer will reject unsupported evidence instead of writing a report.
+
+If evaluation or multi-lens review fails, confirm `transcript.json` exists and
+that any cited evidence quotes are present in the normalized transcript. Missing
+or weak evidence should be represented as insufficient evidence rather than
+guessed.
+
+If capture is rerun after analysis, evaluation, or multi-lens review already
+exists, metadata preserves those artifact links for auditability. Treat them as
+review history tied to the earlier transcript and rerun downstream commands when
+the recaptured transcript materially changes.
 
 If the run index looks noisy, filter it by scenario, status, or run mode. The
 index is append-only, so a single `call_id` can appear multiple times as the run
