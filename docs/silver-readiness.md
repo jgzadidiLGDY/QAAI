@@ -341,3 +341,23 @@ Candidate invariant:
   validation, deterministic transcript generation, metadata serialization,
   artifact writing, channel-aware completeness checks, and focused tests while
   preserving human-owned review decisions.
+
+## Phase 20a Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Additive lifecycle metadata preservation | `1b1d432` | `190306e` | Lifecycle commands that update an existing run should preserve previously linked artifact paths and advisory provider metadata while only replacing the artifacts produced by the current command. | Running analysis after evaluation preserves evaluation and multi-lens paths; running evaluation after analysis preserves analysis and multi-lens paths; rerunning Retell artifact capture preserves existing analysis, evaluation, and multi-lens links; multi-lens review preserves existing analysis/evaluation metadata and duration. |
+
+Candidate invariant:
+
+- Invariant: artifact-producing lifecycle commands must update metadata
+  additively so existing review evidence remains linked unless the command
+  intentionally replaces it.
+- Symptom: rerunning commands out of the original happy-path order could drop
+  artifact links or provider metadata for evaluation, analysis, or multi-lens
+  review outputs.
+- Root cause: several services rebuilt `ArtifactPaths` and `RunMetadata` with
+  older constructor shapes that did not carry every later-phase metadata field.
+- Why it may be Silver-relevant: the task crosses capture, analysis,
+  evaluation, multi-lens review, metadata serialization, and deterministic
+  rerun-order tests without adding new workflow control or pass/fail ownership.
