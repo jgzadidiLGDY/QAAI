@@ -389,3 +389,9 @@ Candidate invariant:
   validation, CLI routing, text-chat execution, metadata propagation, run index
   entries, suite artifact generation, and focused tests without network access
   or AI-owned pass/fail decisions.
+
+## Phase 22 Planning Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| v1 release polish planning docs | `5b53206` | `b8a2b75` | Weak/docs-only candidate: project docs should define v1 release polish as a packaging and reviewability phase, while keeping database, dashboard, new AI behavior, and Project Silver task authoring out of scope. | Documentation-only change; useful for reviewer alignment and commit slicing, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
