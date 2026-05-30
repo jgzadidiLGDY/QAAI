@@ -435,7 +435,7 @@ Newly written metadata may include:
 {
   "reproducibility": {
     "command": "analyze-call",
-    "app_version": "0.0.1-SNAPSHOT",
+    "app_version": "1.0.0",
     "git_commit": "optional"
   }
 }

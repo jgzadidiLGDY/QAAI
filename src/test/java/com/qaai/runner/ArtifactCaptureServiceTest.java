@@ -81,7 +81,7 @@ class ArtifactCaptureServiceTest {
 				"\"audio\"",
 				"\"manifest\"",
 				"\"command\" : \"capture-artifacts\"",
-				"\"app_version\" : \"0.0.1-SNAPSHOT\""
+				"\"app_version\" : \"1.0.0\""
 		);
 	}
 

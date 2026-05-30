@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public final class RuntimeReproducibilityMetadata {
 
-	private static final String DEFAULT_APP_VERSION = "0.0.1-SNAPSHOT";
+	private static final String DEFAULT_APP_VERSION = "1.0.0";
 
 	private RuntimeReproducibilityMetadata() {
 	}

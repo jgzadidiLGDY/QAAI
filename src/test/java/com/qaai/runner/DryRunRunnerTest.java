@@ -96,7 +96,7 @@ class DryRunRunnerTest {
 				"\"observations_markdown\"",
 				"\"reproducibility\" : {",
 				"\"command\" : \"dry-run\"",
-				"\"app_version\" : \"0.0.1-SNAPSHOT\""
+				"\"app_version\" : \"1.0.0\""
 		);
 	}
 }

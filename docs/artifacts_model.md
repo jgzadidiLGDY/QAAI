@@ -433,7 +433,7 @@ Phase 12 adds an optional `reproducibility` object to newly written
 {
   "reproducibility": {
     "command": "analyze-call",
-    "app_version": "0.0.1-SNAPSHOT",
+    "app_version": "1.0.0",
     "git_commit": "optional"
   }
 }

@@ -97,7 +97,7 @@ class RetellCallRunnerTest {
 				"\"observations_markdown\"",
 				"\"reproducibility\" : {",
 				"\"command\" : \"retell-call-start\"",
-				"\"app_version\" : \"0.0.1-SNAPSHOT\""
+				"\"app_version\" : \"1.0.0\""
 		);
 
 		String observations = Files.readString(result.artifacts().observationsMarkdown());
