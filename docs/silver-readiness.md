@@ -368,3 +368,24 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | Agent profiles and suite runs planning docs | `8c09da6` | `077ba34` | Weak/docs-only candidate: project docs should describe agent-under-test profiles, deterministic suite runs, suite artifacts, metadata contracts, risks, and the Project Silver boundary for Phase 21. | Documentation-only change; useful for phase planning and reviewer alignment, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+
+## Phase 21 Commit Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Agent profiles and deterministic suite runs | `8264e9e` | `95bc042` | Scenario suites should run a reviewed set of scenarios against a named agent profile through the local text channel, preserving ordinary per-scenario artifacts while writing a suite-level summary for human review. | `--suite=suites/receptionist-smoke.yaml` validates the agent profile and suite YAML, runs each listed scenario through `text-chat`, writes `agent_profile_id`, `suite_id`, and `suite_run_id` into run metadata and index entries, and writes `suite-report.json` and `suite-report.md` under `outputs/suites/{suite_run_id}` without automatically running analysis, evaluation, multi-lens review, or pass/fail decisions. |
+
+Candidate invariant:
+
+- Invariant: suite execution must add agent and suite context while preserving
+  ordinary run artifacts and explicit downstream review steps.
+- Symptom: before this phase, runs could exercise voice or text scenarios, but
+  the agent under test and scenario suite were implicit rather than durable
+  review inputs.
+- Root cause: the runner accepted individual scenario paths and environment
+  target settings, but had no profile or suite model to connect multiple
+  scenario runs to one tested agent.
+- Why it may be Silver-relevant: the task crosses YAML loading, deterministic
+  validation, CLI routing, text-chat execution, metadata propagation, run index
+  entries, suite artifact generation, and focused tests without network access
+  or AI-owned pass/fail decisions.

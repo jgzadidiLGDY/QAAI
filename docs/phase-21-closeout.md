@@ -58,8 +58,8 @@ Each suite scenario also writes a normal text chat run bundle under
 Behavior commit:
 
 - Agent profiles and deterministic suite runs:
-  - Base commit: pending until commit is created
-  - Fix commit: pending until commit is created
+  - Base commit: `8264e9e`
+  - Fix commit: `95bc042`
 
 This should be a stronger Silver candidate than the Phase 21 planning commit
 because it has deterministic fail-to-pass behavior across YAML validation, CLI
