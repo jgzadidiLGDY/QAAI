@@ -194,16 +194,20 @@ public class EvaluationService {
 				existingPaths.analysisMarkdown(),
 				runDirectory.resolve("evaluation.json").toString(),
 				runDirectory.resolve("evaluation.md").toString(),
+				existingPaths.multiLensReviewJson(),
+				existingPaths.multiLensReviewMarkdown(),
 				existingPaths.observationsMarkdown()
 		);
 		return new RunMetadata(
 				metadata.callId(),
 				metadata.scenarioId(),
 				metadata.runMode(),
+				metadata.channel(),
 				metadata.targetPhoneNumber(),
 				metadata.retellCallId(),
 				metadata.startedAt(),
 				metadata.endedAt(),
+				metadata.callDurationSeconds(),
 				"evaluation_completed",
 				artifactPaths,
 				metadata.analysis(),

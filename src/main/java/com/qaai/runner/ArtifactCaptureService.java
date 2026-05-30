@@ -182,6 +182,10 @@ public class ArtifactCaptureService {
 				runDirectory.resolve("manifest.json").toString(),
 				existingMetadata.artifactPaths().analysisJson(),
 				existingMetadata.artifactPaths().analysisMarkdown(),
+				existingMetadata.artifactPaths().evaluationJson(),
+				existingMetadata.artifactPaths().evaluationMarkdown(),
+				existingMetadata.artifactPaths().multiLensReviewJson(),
+				existingMetadata.artifactPaths().multiLensReviewMarkdown(),
 				pathIfExists(existingMetadata.artifactPaths().observationsMarkdown(), runDirectory.resolve("observations.md"))
 		);
 
@@ -189,6 +193,7 @@ public class ArtifactCaptureService {
 				existingMetadata.callId(),
 				existingMetadata.scenarioId(),
 				existingMetadata.runMode(),
+				existingMetadata.channel(),
 				existingMetadata.targetPhoneNumber(),
 				existingMetadata.retellCallId(),
 				existingMetadata.startedAt(),
@@ -197,6 +202,7 @@ public class ArtifactCaptureService {
 				captureStatus(callDetails, transcript, audioCapture),
 				artifactPaths,
 				existingMetadata.analysis(),
+				existingMetadata.evaluation(),
 				RuntimeReproducibilityMetadata.forCommand("capture-artifacts")
 		);
 	}

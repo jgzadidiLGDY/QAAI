@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qaai.artifacts.AnalysisMetadata;
 import com.qaai.artifacts.ArtifactManifest;
 import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
+import com.qaai.artifacts.EvaluationMetadata;
 import com.qaai.artifacts.NormalizedTranscript;
 import com.qaai.artifacts.RunMetadata;
 import com.qaai.artifacts.TranscriptTurn;
@@ -66,6 +68,73 @@ class MultiLensReviewServiceTest {
 				"\"name\" : \"multi_lens_review_json\"",
 				"Generated during Phase 18 structured multi-lens review."
 		);
+	}
+
+	@Test
+	void preservesExistingAnalysisAndEvaluationMetadata() throws Exception {
+		Path outputs = tempDir.resolve("outputs");
+		String callId = "call_20260529_101500_review123";
+		Path runDirectory = outputs.resolve(callId);
+		writeCapturedRun(outputs, callId);
+		ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+		RunMetadata existingMetadata = objectMapper.readValue(
+				runDirectory.resolve("metadata.json").toFile(),
+				RunMetadata.class
+		);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				runDirectory.resolve("metadata.json").toFile(),
+				new RunMetadata(
+						existingMetadata.callId(),
+						existingMetadata.scenarioId(),
+						existingMetadata.runMode(),
+						existingMetadata.channel(),
+						existingMetadata.targetPhoneNumber(),
+						existingMetadata.retellCallId(),
+						existingMetadata.startedAt(),
+						existingMetadata.endedAt(),
+						91L,
+						existingMetadata.status(),
+						new ArtifactPaths(
+								existingMetadata.artifactPaths().scenario(),
+								existingMetadata.artifactPaths().metadata(),
+								existingMetadata.artifactPaths().transcriptText(),
+								existingMetadata.artifactPaths().transcriptJson(),
+								existingMetadata.artifactPaths().patientSimulation(),
+								existingMetadata.artifactPaths().audio(),
+								existingMetadata.artifactPaths().manifest(),
+								runDirectory.resolve("analysis.json").toString(),
+								runDirectory.resolve("analysis.md").toString(),
+								runDirectory.resolve("evaluation.json").toString(),
+								runDirectory.resolve("evaluation.md").toString(),
+								null,
+								null,
+								existingMetadata.artifactPaths().observationsMarkdown()
+						),
+						new AnalysisMetadata("local", "deterministic-v1"),
+						new EvaluationMetadata("local", "deterministic-v1"),
+						existingMetadata.reproducibility()
+				)
+		);
+		MultiLensReviewService service = new MultiLensReviewService(
+				new ArtifactWriter(new ObjectMapper(), outputs),
+				new ScenarioLoader(),
+				recordingClient(callId),
+				fixedClock()
+		);
+
+		service.review(callId);
+
+		RunMetadata updatedMetadata = objectMapper.readValue(
+				runDirectory.resolve("metadata.json").toFile(),
+				RunMetadata.class
+		);
+		assertThat(updatedMetadata.callDurationSeconds()).isEqualTo(91L);
+		assertThat(updatedMetadata.analysis()).isEqualTo(new AnalysisMetadata("local", "deterministic-v1"));
+		assertThat(updatedMetadata.evaluation()).isEqualTo(new EvaluationMetadata("local", "deterministic-v1"));
+		assertThat(updatedMetadata.artifactPaths().analysisJson())
+				.isEqualTo(runDirectory.resolve("analysis.json").toString());
+		assertThat(updatedMetadata.artifactPaths().evaluationJson())
+				.isEqualTo(runDirectory.resolve("evaluation.json").toString());
 	}
 
 	@Test

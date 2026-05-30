@@ -160,19 +160,26 @@ public class AnalysisService {
 				existingPaths.manifest(),
 				runDirectory.resolve("analysis.json").toString(),
 				runDirectory.resolve("analysis.md").toString(),
+				existingPaths.evaluationJson(),
+				existingPaths.evaluationMarkdown(),
+				existingPaths.multiLensReviewJson(),
+				existingPaths.multiLensReviewMarkdown(),
 				existingPaths.observationsMarkdown()
 		);
 		return new RunMetadata(
 				metadata.callId(),
 				metadata.scenarioId(),
 				metadata.runMode(),
+				metadata.channel(),
 				metadata.targetPhoneNumber(),
 				metadata.retellCallId(),
 				metadata.startedAt(),
 				metadata.endedAt(),
+				metadata.callDurationSeconds(),
 				"analysis_completed",
 				artifactPaths,
 				new AnalysisMetadata(analysisClient.provider(), analysisClient.model()),
+				metadata.evaluation(),
 				RuntimeReproducibilityMetadata.forCommand("analyze-call")
 		);
 	}

@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qaai.artifacts.AnalysisMetadata;
 import com.qaai.artifacts.ArtifactPaths;
 import com.qaai.artifacts.ArtifactWriter;
+import com.qaai.artifacts.EvaluationMetadata;
 import com.qaai.artifacts.RunMetadata;
 import com.qaai.retell.RetellApiException;
 import com.qaai.retell.RetellCallDetailsResponse;
@@ -81,6 +83,86 @@ class ArtifactCaptureServiceTest {
 				"\"command\" : \"capture-artifacts\"",
 				"\"app_version\" : \"0.0.1-SNAPSHOT\""
 		);
+	}
+
+	@Test
+	void preservesExistingReviewArtifactsWhenRetellCaptureRunsAgain() throws Exception {
+		Path outputs = tempDir.resolve("outputs");
+		String callId = "call_20260523_130000_test1234";
+		Path runDirectory = outputs.resolve(callId);
+		Files.createDirectories(runDirectory);
+		Path scenarioPath = runDirectory.resolve("scenario.yaml");
+		Files.writeString(scenarioPath, "id: appointment_reschedule_001%n".formatted());
+
+		ArtifactWriter writer = new ArtifactWriter(new ObjectMapper(), outputs);
+		writer.writeCallStartedArtifacts(
+				callId,
+				scenarioPath,
+				retellMetadata(callId, runDirectory),
+				"# Patient Simulation Scenario%n".formatted(),
+				"# Retell Call Start Observations%n".formatted()
+		);
+		ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+		RunMetadata existingMetadata = objectMapper.readValue(
+				runDirectory.resolve("metadata.json").toFile(),
+				RunMetadata.class
+		);
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+				runDirectory.resolve("metadata.json").toFile(),
+				new RunMetadata(
+						existingMetadata.callId(),
+						existingMetadata.scenarioId(),
+						existingMetadata.runMode(),
+						existingMetadata.channel(),
+						existingMetadata.targetPhoneNumber(),
+						existingMetadata.retellCallId(),
+						existingMetadata.startedAt(),
+						existingMetadata.endedAt(),
+						existingMetadata.callDurationSeconds(),
+						"multi_lens_review_completed",
+						new ArtifactPaths(
+								existingMetadata.artifactPaths().scenario(),
+								existingMetadata.artifactPaths().metadata(),
+								runDirectory.resolve("transcript.txt").toString(),
+								runDirectory.resolve("transcript.json").toString(),
+								existingMetadata.artifactPaths().patientSimulation(),
+								null,
+								runDirectory.resolve("manifest.json").toString(),
+								runDirectory.resolve("analysis.json").toString(),
+								runDirectory.resolve("analysis.md").toString(),
+								runDirectory.resolve("evaluation.json").toString(),
+								runDirectory.resolve("evaluation.md").toString(),
+								runDirectory.resolve("multi-lens-review.json").toString(),
+								runDirectory.resolve("multi-lens-review.md").toString(),
+								existingMetadata.artifactPaths().observationsMarkdown()
+						),
+						new AnalysisMetadata("local", "deterministic-v1"),
+						new EvaluationMetadata("local", "deterministic-v1"),
+						existingMetadata.reproducibility()
+				)
+		);
+		ArtifactCaptureService service = new ArtifactCaptureService(
+				writer,
+				retellClient(callDetailsWithRecording(), "audio-bytes".getBytes()),
+				Clock.fixed(Instant.parse("2026-05-23T18:30:00Z"), ZoneOffset.ofHours(-4))
+		);
+
+		service.capture(callId);
+
+		RunMetadata updatedMetadata = objectMapper.readValue(
+				runDirectory.resolve("metadata.json").toFile(),
+				RunMetadata.class
+		);
+		assertThat(updatedMetadata.analysis()).isEqualTo(new AnalysisMetadata("local", "deterministic-v1"));
+		assertThat(updatedMetadata.evaluation()).isEqualTo(new EvaluationMetadata("local", "deterministic-v1"));
+		assertThat(updatedMetadata.artifactPaths().analysisJson())
+				.isEqualTo(runDirectory.resolve("analysis.json").toString());
+		assertThat(updatedMetadata.artifactPaths().evaluationJson())
+				.isEqualTo(runDirectory.resolve("evaluation.json").toString());
+		assertThat(updatedMetadata.artifactPaths().multiLensReviewJson())
+				.isEqualTo(runDirectory.resolve("multi-lens-review.json").toString());
+		assertThat(updatedMetadata.artifactPaths().multiLensReviewMarkdown())
+				.isEqualTo(runDirectory.resolve("multi-lens-review.md").toString());
 	}
 
 	@Test
