@@ -235,6 +235,31 @@ Phase 21 should remain deliberately small. It should not add a database, web UI,
 automatic pass/fail decisions, live batch Retell calls by default, or automatic
 promotion of generated scenarios into suites.
 
+## v1 Release Polish
+
+After Phase 21, the implemented feature set is broad enough to become v1.0.0:
+a local-first QA workflow with deterministic scenarios and suites, Retell call
+start and artifact capture, normalized transcripts, advisory analysis,
+evaluation, multi-lens review, run inspection, scenario generation drafts, and
+static reports.
+
+The v1 release should focus on GitHub reviewability rather than new product
+surface area. Reviewers should be able to understand the project quickly, run a
+deterministic local suite, inspect generated artifacts, and see where deeper
+phase history lives.
+
+Phase 22 should therefore polish:
+
+- README quickstart and repository positioning
+- v1 review guide
+- version metadata
+- release notes
+- CI test workflow
+- links from README to phase closeouts through `AI_native_builder_journal.md`
+
+Phase 22 should not add a database or new app UI. The filesystem artifact model
+and static HTML report are the v1 review surface.
+
 ## Non-Goals
 
 This project is not:
@@ -352,6 +377,16 @@ The agent profile and suite expansion is successful when:
 - suite execution remains local-first and human-reviewed
 - the implementation preserves small, behavior-verifiable commits suitable for
   later Project Silver extraction without letting Silver drive product scope
+
+The v1 release-polish phase is successful when:
+
+- a new reviewer can understand the current product from the README quickly
+- detailed phase history is still available through linked closeout docs
+- version metadata consistently identifies the release as v1.0.0
+- the deterministic suite and report workflow is documented as the review path
+- CI runs the Gradle test suite
+- no database, dashboard, hidden orchestration, or AI-owned pass/fail behavior
+  is introduced
 
 ## AI Boundary
 

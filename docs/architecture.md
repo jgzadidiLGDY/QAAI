@@ -295,6 +295,26 @@ outputs/{call_id}/
 
 This keeps the early system simple, inspectable, and easy to reset. A database can be added later if run history, indexing, or search require it.
 
+For v1.0.0, the filesystem remains the intended persistence layer. The
+append-only run index, per-run artifact bundles, suite artifacts, and generated
+static reports are enough for local review. A database should wait until a
+future milestone has concrete requirements such as hosted search, multi-user
+review, retention policy, or cross-workspace querying.
+
+## v1 Review Surface
+
+The v1 review surface is intentionally local and artifact-based:
+
+- CLI commands execute scenarios, suites, captures, reviews, and reports.
+- `outputs/{call_id}/` stores per-run evidence and advisory review artifacts.
+- `outputs/suites/{suite_run_id}/` stores suite summaries.
+- `outputs/reports/{report_id}/index.html` provides a static human-reviewable
+  report over existing artifacts.
+- README and the v1 review guide provide the GitHub reviewer path.
+
+Phase closeout history should stay linked from `AI_native_builder_journal.md`
+and detailed docs rather than living directly in the README.
+
 ## External Systems
 
 ### Retell AI
@@ -421,3 +441,8 @@ should make the target agent explicit, allow a reviewed set of scenarios to run
 against that profile through a local channel first, persist `agent_profile_id`
 and `suite_id` on individual run metadata, and write suite-level artifacts that
 link to the underlying run bundles.
+
+Phase 22 should polish the current implementation into v1.0.0. It should
+shorten the README, add a v1 review guide, update version metadata, add release
+notes, and add CI. It should not add a database, dashboard, new runtime channel,
+new AI behavior, or pass/fail automation.
