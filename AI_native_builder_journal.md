@@ -65,6 +65,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 20 Closeout](docs/phase-20-closeout.md)
 - [Phase 21 Plan](docs/phase-21-plan.md)
 - [Phase 21 Closeout](docs/phase-21-closeout.md)
+- [Phase 22 Plan](docs/phase-22-plan.md)
 
 ## Latest Phase Closeout Notes
 
@@ -113,6 +114,11 @@ Phase 21 implemented that proposal. The CLI can now run
 the local text channel, persist agent and suite identifiers on run metadata, and
 write suite summary artifacts without adding hidden pass/fail logic.
 
+Phase 22 is v1 release polish. It should make the current implementation easy to
+review on GitHub by shortening the README, adding a v1 reviewer path, updating
+version metadata, adding release notes, and adding CI. It should not add a
+database, dashboard, new AI behavior, or pass/fail automation.
+
 ## MVP+ Direction
 
 After the interim review, the project scope expands into an MVP+ stage. MVP+
@@ -132,6 +138,7 @@ real-world repeatability:
 - Phase 19: channel-neutral scenario model
 - Phase 20: text chat runner prototype
 - Phase 21: agent profiles and suite runs
+- Phase 22: v1 release polish
 
 This expansion does not change the core boundary: deterministic workflow code
 owns orchestration, artifacts provide evidence, AI assists with analysis, and
