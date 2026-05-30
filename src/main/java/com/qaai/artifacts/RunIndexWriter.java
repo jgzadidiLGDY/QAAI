@@ -39,6 +39,9 @@ public class RunIndexWriter {
 		RunIndexEntry entry = new RunIndexEntry(
 				metadata.callId(),
 				metadata.scenarioId(),
+				metadata.agentProfileId(),
+				metadata.suiteId(),
+				metadata.suiteRunId(),
 				metadata.runMode(),
 				metadata.channel(),
 				metadata.status(),

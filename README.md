@@ -860,18 +860,33 @@ Goal:
 Make the agent under test a first-class platform concept and run a small,
 deterministic scenario suite against a named agent profile.
 
-Planned deliverables:
+Current implementation:
 
-- agent-under-test profile YAML for domain, description, supported workflows,
+- adds `agent-profiles/medical-receptionist-demo.yaml` for domain, description, supported workflows,
   and channel-specific target settings
-- scenario suite YAML that binds one agent profile to an ordered set of
+- adds `suites/receptionist-smoke.yaml` to bind one agent profile to an ordered set of
   reviewed scenarios
-- deterministic suite command that runs the selected scenarios through a local
-  channel first, preferably `text-chat`
-- metadata extensions so each run records `agent_profile_id` and `suite_id`
-- suite-level JSON and Markdown artifacts that link to individual run bundles
-- focused tests for profile validation, suite validation, metadata persistence,
-  and deterministic suite execution
+- adds `--suite=<path>` for deterministic local `text-chat` suite execution
+- records `agent_profile_id`, `suite_id`, and `suite_run_id` on generated run
+  metadata and run index entries
+- writes suite-level JSON and Markdown artifacts that link to individual run
+  bundles
+- keeps downstream analysis, evaluation, and multi-lens review explicit per run
+
+Local usage:
+
+```powershell
+.\gradlew bootRun --args="--suite=suites/receptionist-smoke.yaml"
+```
+
+Expected suite artifacts:
+
+```text
+outputs/suites/{suite_run_id}/suite.yaml
+outputs/suites/{suite_run_id}/agent-profile.yaml
+outputs/suites/{suite_run_id}/suite-report.json
+outputs/suites/{suite_run_id}/suite-report.md
+```
 
 Out of scope:
 
@@ -882,7 +897,8 @@ Out of scope:
 - automatic promotion of generated scenarios into suites
 - broad artifact migration or renaming `call_id`
 
-Phase 21 is proposed in [Phase 21 Plan](docs/phase-21-plan.md).
+See [Phase 21 Plan](docs/phase-21-plan.md) and
+[Phase 21 Closeout](docs/phase-21-closeout.md).
 
 ### Current Phase 13 Implementation
 
@@ -1029,8 +1045,7 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 21 should introduce agent-under-test profiles and deterministic suite
-runs:
+Phase 21 introduced agent-under-test profiles and deterministic suite runs:
 
 ```text
 Run a reviewed set of scenarios against a named agent profile, preserve each

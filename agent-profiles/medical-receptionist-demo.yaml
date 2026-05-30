@@ -1,0 +1,16 @@
+id: medical_receptionist_demo
+name: Medical Receptionist Demo
+domain: healthcare
+description: Handles scheduling, rescheduling, billing routing, insurance questions, and refill requests for synthetic QA scenarios.
+supported_workflows:
+  - appointment_scheduling
+  - appointment_rescheduling
+  - billing_question
+  - insurance_verification
+  - prescription_refill
+channels:
+  voice:
+    provider: retell
+    target_phone_number: "+18054398008"
+  text:
+    provider: local

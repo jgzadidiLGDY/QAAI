@@ -12,6 +12,9 @@ dry run:
 text chat:
   --scenario=<path> --run-mode=text-chat
 
+suite:
+  --suite=<path>
+
 real call:
   --scenario=<path> --run-mode=retell
   --capture-artifacts --call-id=<local_call_id>
@@ -26,6 +29,10 @@ text chat run because they use the normalized `transcript.json` artifact. Run
 analysis, evaluation, and multi-lens review in whatever order is useful for the
 review, but rerun downstream review artifacts after recapturing a Retell
 transcript if the evidence changed.
+
+Suite runs create ordinary text chat run bundles for each scenario and a
+suite-level summary under `outputs/suites/{suite_run_id}/`. Downstream review
+commands are still run explicitly per `call_id`.
 
 `--show-run`, `--list-runs`, and `--generate-report` can be used at any point
 after artifacts exist.
@@ -53,6 +60,7 @@ Completeness is status-aware:
 | --- | --- |
 | Dry run | `scenario.yaml`, `metadata.json`, `patient_simulation.md`, `transcript.txt`, `observations.md` |
 | Text chat run | `scenario.yaml`, `metadata.json`, `patient_simulation.md`, `transcript.txt`, `transcript.json`, `observations.md` |
+| Suite run summary | `suite.yaml`, `agent-profile.yaml`, `suite-report.json`, `suite-report.md` under `outputs/suites/{suite_run_id}/` |
 | Retell call start | `scenario.yaml`, `metadata.json`, `patient_simulation.md`, `observations.md` |
 | Captured Retell run | call-start artifacts plus `transcript.json`, `transcript.txt`, `manifest.json` |
 | Analyzed run | captured-run artifacts plus `analysis.json`, `analysis.md` |

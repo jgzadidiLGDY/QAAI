@@ -9,6 +9,12 @@ public record RunIndexEntry(
 		String callId,
 		@JsonProperty("scenario_id")
 		String scenarioId,
+		@JsonProperty("agent_profile_id")
+		String agentProfileId,
+		@JsonProperty("suite_id")
+		String suiteId,
+		@JsonProperty("suite_run_id")
+		String suiteRunId,
 		@JsonProperty("run_mode")
 		String runMode,
 		String channel,

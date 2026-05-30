@@ -1,0 +1,7 @@
+id: receptionist_smoke_suite
+agent_profile: medical_receptionist_demo
+default_run_mode: text-chat
+scenarios:
+  - scenarios/appointment-scheduling.yaml
+  - scenarios/appointment-reschedule.yaml
+  - scenarios/billing-question.yaml

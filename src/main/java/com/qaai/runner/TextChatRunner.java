@@ -72,6 +72,10 @@ public class TextChatRunner {
 	}
 
 	public ScenarioRunResult run(Path scenarioPath) {
+		return run(scenarioPath, RunContext.none());
+	}
+
+	public ScenarioRunResult run(Path scenarioPath, RunContext runContext) {
 		LOGGER.info("Starting text chat run for scenario_path={}", scenarioPath);
 		Scenario scenario = scenarioLoader.load(scenarioPath);
 		scenarioValidator.validate(scenario);
@@ -97,6 +101,9 @@ public class TextChatRunner {
 		RunMetadata metadata = new RunMetadata(
 				callId,
 				scenario.id(),
+				runContext.agentProfileId(),
+				runContext.suiteId(),
+				runContext.suiteRunId(),
 				"text_chat",
 				"text",
 				null,

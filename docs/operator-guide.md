@@ -97,6 +97,33 @@ Text chat metadata records `run_mode = text_chat` and `channel = text`.
 Retell ids, phone-number targets, audio, and manifest artifacts are absent in
 this local prototype.
 
+## Suite Run
+
+Suite runs execute a reviewed scenario set against a named agent profile. The
+first supported suite execution path is local `text-chat`, so it does not place
+phone calls:
+
+```powershell
+.\gradlew bootRun --args="--suite=suites/receptionist-smoke.yaml"
+```
+
+Inspect the suite summary:
+
+```text
+outputs/suites/{suite_run_id}/suite.yaml
+outputs/suites/{suite_run_id}/agent-profile.yaml
+outputs/suites/{suite_run_id}/suite-report.json
+outputs/suites/{suite_run_id}/suite-report.md
+```
+
+Each scenario in the suite also writes a normal run bundle under
+`outputs/{call_id}/`. Run metadata records `agent_profile_id`, `suite_id`, and
+`suite_run_id` so individual artifacts remain linked to the suite context.
+
+Suite reports summarize run artifacts for human review. They do not run
+analysis, evaluation, or multi-lens review automatically, and they do not decide
+pass/fail.
+
 ## Real Call Start
 
 Retell mode starts an outbound call and records the local-to-Retell id mapping:

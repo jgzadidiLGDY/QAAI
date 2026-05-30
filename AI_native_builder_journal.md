@@ -64,6 +64,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 20 Plan](docs/phase-20-plan.md)
 - [Phase 20 Closeout](docs/phase-20-closeout.md)
 - [Phase 21 Plan](docs/phase-21-plan.md)
+- [Phase 21 Closeout](docs/phase-21-closeout.md)
 
 ## Latest Phase Closeout Notes
 
@@ -106,6 +107,11 @@ Project Silver remains secondary context for implementation shaping. Phase 21
 should favor deterministic, behavior-verifiable slices and coherent commits that
 could later become extraction candidates, but Silver rules do not define QAAI
 product direction.
+
+Phase 21 implemented that proposal. The CLI can now run
+`--suite=suites/receptionist-smoke.yaml`, execute each reviewed scenario through
+the local text channel, persist agent and suite identifiers on run metadata, and
+write suite summary artifacts without adding hidden pass/fail logic.
 
 ## MVP+ Direction
 

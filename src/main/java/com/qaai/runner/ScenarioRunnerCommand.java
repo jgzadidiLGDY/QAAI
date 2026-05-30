@@ -18,6 +18,8 @@ import com.qaai.review.MultiLensReviewResult;
 import com.qaai.review.MultiLensReviewService;
 import com.qaai.scenariogeneration.ScenarioGenerationResult;
 import com.qaai.scenariogeneration.ScenarioGenerationService;
+import com.qaai.suite.SuiteRunResult;
+import com.qaai.suite.SuiteRunService;
 import java.nio.file.Path;
 import java.util.List;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.ExitCodeGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,6 +44,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 	private final MultiLensReviewService multiLensReviewService;
 	private final ReportGenerationService reportGenerationService;
 	private final ScenarioGenerationService scenarioGenerationService;
+	private final SuiteRunService suiteRunService;
 	private final RunIndexWriter runIndexWriter;
 	private final ConversationQualityReviewService conversationQualityReviewService;
 	private final RunInspectionService runInspectionService;
@@ -60,6 +64,27 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			ConversationQualityReviewService conversationQualityReviewService,
 			RunInspectionService runInspectionService
 	) {
+		this(dryRunRunner, textChatRunner, retellCallRunner, artifactCaptureService, analysisService,
+				evaluationService, multiLensReviewService, reportGenerationService, scenarioGenerationService,
+				null, runIndexWriter, conversationQualityReviewService, runInspectionService);
+	}
+
+	@Autowired
+	public ScenarioRunnerCommand(
+			DryRunRunner dryRunRunner,
+			TextChatRunner textChatRunner,
+			RetellCallRunner retellCallRunner,
+			ArtifactCaptureService artifactCaptureService,
+			AnalysisService analysisService,
+			EvaluationService evaluationService,
+			MultiLensReviewService multiLensReviewService,
+			ReportGenerationService reportGenerationService,
+			ScenarioGenerationService scenarioGenerationService,
+			SuiteRunService suiteRunService,
+			RunIndexWriter runIndexWriter,
+			ConversationQualityReviewService conversationQualityReviewService,
+			RunInspectionService runInspectionService
+	) {
 		this.dryRunRunner = dryRunRunner;
 		this.textChatRunner = textChatRunner;
 		this.retellCallRunner = retellCallRunner;
@@ -69,6 +94,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		this.multiLensReviewService = multiLensReviewService;
 		this.reportGenerationService = reportGenerationService;
 		this.scenarioGenerationService = scenarioGenerationService;
+		this.suiteRunService = suiteRunService;
 		this.runIndexWriter = runIndexWriter;
 		this.conversationQualityReviewService = conversationQualityReviewService;
 		this.runInspectionService = runInspectionService;
@@ -159,6 +185,16 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			System.out.println("generation_report_json: " + result.generationReportJson());
 			System.out.println("generation_report_markdown: " + result.generationReportMarkdown());
 			System.out.println("review_required: true");
+			return;
+		}
+
+		if (args.containsOption("suite")) {
+			SuiteRunResult result = suiteRunService.run(Path.of(requiredOption(args, "suite", "--suite")));
+			System.out.println("Suite run completed");
+			System.out.println("suite_run_id: " + result.suiteRunId());
+			System.out.println("suite_directory: " + result.suiteDirectory());
+			System.out.println("suite_report_json: " + result.suiteReportJson());
+			System.out.println("suite_report_markdown: " + result.suiteReportMarkdown());
 			return;
 		}
 
@@ -270,11 +306,13 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			return;
 		}
 
-		System.out.println("call_id | scenario_id | run_mode | channel | status | complete | warnings");
+		System.out.println("call_id | scenario_id | agent_profile_id | suite_id | run_mode | channel | status | complete | warnings");
 		for (RunIndexEntry entry : entries) {
 			System.out.println(String.join(" | ",
 					entry.callId(),
 					entry.scenarioId(),
+					valueOrNone(entry.agentProfileId()),
+					valueOrNone(entry.suiteId()),
 					entry.runMode(),
 					valueOrNone(entry.channel()),
 					entry.status(),
@@ -291,6 +329,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("Run inspection");
 		System.out.println("call_id: " + metadata.callId());
 		System.out.println("scenario_id: " + metadata.scenarioId());
+		System.out.println("agent_profile_id: " + valueOrNone(metadata.agentProfileId()));
+		System.out.println("suite_id: " + valueOrNone(metadata.suiteId()));
+		System.out.println("suite_run_id: " + valueOrNone(metadata.suiteRunId()));
 		System.out.println("run_mode: " + metadata.runMode());
 		System.out.println("channel: " + valueOrNone(metadata.channel()));
 		System.out.println("status: " + metadata.status());
@@ -377,6 +418,7 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		System.out.println("Voice AI QA Agent");
 		System.out.println("Commands:");
 		System.out.println("- --scenario=<path> [--run-mode=dry-run|text-chat|retell]");
+		System.out.println("- --suite=<path>");
 		System.out.println("- --capture-artifacts --call-id=<local_call_id>");
 		System.out.println("- --review-conversation --call-id=<local_call_id>");
 		System.out.println("- --analyze-call --call-id=<local_call_id>");
@@ -421,6 +463,14 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		return values.getFirst();
 	}
 
+	private String requiredOption(ApplicationArguments args, String optionName, String commandName) {
+		String value = optionValue(args, optionName);
+		if (value == null || value.isBlank()) {
+			throw new IllegalArgumentException("Provide " + commandName + "=<path>");
+		}
+		return value;
+	}
+
 	private String valueOrNone(String value) {
 		return isBlank(value) ? "(none)" : value;
 	}
@@ -441,6 +491,12 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 			List<String> scenarioValues = args.getOptionValues("scenario");
 			if (scenarioValues != null && !scenarioValues.isEmpty() && !scenarioValues.getFirst().isBlank()) {
 				context.append(" scenario=").append(scenarioValues.getFirst());
+			}
+		}
+		if (args.containsOption("suite")) {
+			List<String> suiteValues = args.getOptionValues("suite");
+			if (suiteValues != null && !suiteValues.isEmpty() && !suiteValues.getFirst().isBlank()) {
+				context.append(" suite=").append(suiteValues.getFirst());
 			}
 		}
 		return context.toString();
@@ -467,6 +523,9 @@ public class ScenarioRunnerCommand implements ApplicationRunner, ExitCodeGenerat
 		}
 		if (args.containsOption("generate-scenarios")) {
 			return "generate-scenarios";
+		}
+		if (args.containsOption("suite")) {
+			return "suite";
 		}
 		if (args.containsOption("review-conversation")) {
 			return "review-conversation";

@@ -192,6 +192,9 @@ public class ArtifactCaptureService {
 		return new RunMetadata(
 				existingMetadata.callId(),
 				existingMetadata.scenarioId(),
+				existingMetadata.agentProfileId(),
+				existingMetadata.suiteId(),
+				existingMetadata.suiteRunId(),
 				existingMetadata.runMode(),
 				existingMetadata.channel(),
 				existingMetadata.targetPhoneNumber(),

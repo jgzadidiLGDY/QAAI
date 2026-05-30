@@ -17,6 +17,8 @@ import com.qaai.scenariogeneration.ScenarioGenerationService;
 import com.qaai.reporting.StaticReportRenderer;
 import com.qaai.scenario.ScenarioLoader;
 import com.qaai.scenario.ScenarioValidator;
+import com.qaai.suite.SuiteRunResult;
+import com.qaai.suite.SuiteRunService;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.time.OffsetDateTime;
@@ -111,12 +113,56 @@ class ScenarioRunnerCommandTest {
 
 		assertThat(command.getExitCode()).isZero();
 		assertThat(output).contains("--scenario=<path> [--run-mode=dry-run|text-chat|retell]");
+		assertThat(output).contains("--suite=<path>");
 		assertThat(output).contains("--show-run --call-id=<local_call_id>");
 		assertThat(output).contains("--list-runs [--scenario=<scenario_id>]");
 		assertThat(output).contains("--evaluate-call --call-id=<local_call_id>");
 		assertThat(output).contains("--multi-lens-review --call-id=<local_call_id>");
 		assertThat(output).contains("--generate-report");
 		assertThat(output).contains("--generate-scenarios --agent-description=<description>");
+	}
+
+	@Test
+	void routesSuiteCommandToSuiteRunService(CapturedOutput output) {
+		SuiteRunService suiteRunService = new SuiteRunService(
+				null, null, null, null, null, null, new ObjectMapper(),
+				Path.of("outputs"), Path.of("agent-profiles"), Clock.systemDefaultZone(), () -> "ignored"
+		) {
+			@Override
+			public SuiteRunResult run(Path suitePath) {
+				Path suiteDirectory = Path.of("outputs", "suites", "suite_20260530_120000_suite123");
+				return new SuiteRunResult(
+						"suite_20260530_120000_suite123",
+						suiteDirectory,
+						suiteDirectory.resolve("suite.yaml"),
+						suiteDirectory.resolve("agent-profile.yaml"),
+						suiteDirectory.resolve("suite-report.json"),
+						suiteDirectory.resolve("suite-report.md")
+				);
+			}
+		};
+		ScenarioRunnerCommand command = new ScenarioRunnerCommand(
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				suiteRunService,
+				null,
+				null,
+				null
+		);
+
+		command.run(new DefaultApplicationArguments("--suite=suites/receptionist-smoke.yaml"));
+
+		assertThat(command.getExitCode()).isZero();
+		assertThat(output).contains("Suite run completed");
+		assertThat(output).contains("suite_run_id: suite_20260530_120000_suite123");
+		assertThat(output).contains("suite_report_json: outputs\\suites\\suite_20260530_120000_suite123\\suite-report.json");
 	}
 
 	@Test

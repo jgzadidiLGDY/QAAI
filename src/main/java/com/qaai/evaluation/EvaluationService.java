@@ -201,6 +201,9 @@ public class EvaluationService {
 		return new RunMetadata(
 				metadata.callId(),
 				metadata.scenarioId(),
+				metadata.agentProfileId(),
+				metadata.suiteId(),
+				metadata.suiteRunId(),
 				metadata.runMode(),
 				metadata.channel(),
 				metadata.targetPhoneNumber(),

@@ -229,7 +229,11 @@ public class MultiLensReviewService {
 		return new RunMetadata(
 				metadata.callId(),
 				metadata.scenarioId(),
+				metadata.agentProfileId(),
+				metadata.suiteId(),
+				metadata.suiteRunId(),
 				metadata.runMode(),
+				metadata.channel(),
 				metadata.targetPhoneNumber(),
 				metadata.retellCallId(),
 				metadata.startedAt(),

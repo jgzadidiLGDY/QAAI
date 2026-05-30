@@ -8,6 +8,12 @@ public record RunMetadata(
 		String callId,
 		@JsonProperty("scenario_id")
 		String scenarioId,
+		@JsonProperty("agent_profile_id")
+		String agentProfileId,
+		@JsonProperty("suite_id")
+		String suiteId,
+		@JsonProperty("suite_run_id")
+		String suiteRunId,
 		@JsonProperty("run_mode")
 		String runMode,
 		String channel,
@@ -43,8 +49,8 @@ public record RunMetadata(
 			String status,
 			ArtifactPaths artifactPaths
 	) {
-		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
-				null, status, artifactPaths, null, null, null);
+		this(callId, scenarioId, null, null, null, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId,
+				startedAt, endedAt, null, status, artifactPaths, null, null, null);
 	}
 
 	public RunMetadata(
@@ -59,8 +65,47 @@ public record RunMetadata(
 			String status,
 			ArtifactPaths artifactPaths
 	) {
-		this(callId, scenarioId, runMode, channel, targetPhoneNumber, retellCallId, startedAt, endedAt, null,
-				status, artifactPaths, null, null, null);
+		this(callId, scenarioId, null, null, null, runMode, channel, targetPhoneNumber, retellCallId, startedAt,
+				endedAt, null, status, artifactPaths, null, null, null);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String agentProfileId,
+			String suiteId,
+			String suiteRunId,
+			String runMode,
+			String channel,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			String status,
+			ArtifactPaths artifactPaths
+	) {
+		this(callId, scenarioId, agentProfileId, suiteId, suiteRunId, runMode, channel, targetPhoneNumber,
+				retellCallId, startedAt, endedAt, null, status, artifactPaths, null, null, null);
+	}
+
+	public RunMetadata(
+			String callId,
+			String scenarioId,
+			String runMode,
+			String channel,
+			String targetPhoneNumber,
+			String retellCallId,
+			OffsetDateTime startedAt,
+			OffsetDateTime endedAt,
+			Long callDurationSeconds,
+			String status,
+			ArtifactPaths artifactPaths,
+			AnalysisMetadata analysis,
+			EvaluationMetadata evaluation,
+			ReproducibilityMetadata reproducibility
+	) {
+		this(callId, scenarioId, null, null, null, runMode, channel, targetPhoneNumber, retellCallId, startedAt,
+				endedAt, callDurationSeconds, status, artifactPaths, analysis, evaluation, reproducibility);
 	}
 
 	public RunMetadata(
@@ -75,8 +120,8 @@ public record RunMetadata(
 			ArtifactPaths artifactPaths,
 			AnalysisMetadata analysis
 	) {
-		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
-				null, status, artifactPaths, analysis, null, null);
+		this(callId, scenarioId, null, null, null, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId,
+				startedAt, endedAt, null, status, artifactPaths, analysis, null, null);
 	}
 
 	public RunMetadata(
@@ -92,8 +137,8 @@ public record RunMetadata(
 			AnalysisMetadata analysis,
 			ReproducibilityMetadata reproducibility
 	) {
-		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
-				null, status, artifactPaths, analysis, null, reproducibility);
+		this(callId, scenarioId, null, null, null, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId,
+				startedAt, endedAt, null, status, artifactPaths, analysis, null, reproducibility);
 	}
 
 	public RunMetadata(
@@ -110,8 +155,8 @@ public record RunMetadata(
 			AnalysisMetadata analysis,
 			ReproducibilityMetadata reproducibility
 	) {
-		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
-				callDurationSeconds, status, artifactPaths, analysis, null, reproducibility);
+		this(callId, scenarioId, null, null, null, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId,
+				startedAt, endedAt, callDurationSeconds, status, artifactPaths, analysis, null, reproducibility);
 	}
 
 	public RunMetadata(
@@ -129,8 +174,8 @@ public record RunMetadata(
 			EvaluationMetadata evaluation,
 			ReproducibilityMetadata reproducibility
 	) {
-		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
-				callDurationSeconds, status, artifactPaths, analysis, evaluation, reproducibility);
+		this(callId, scenarioId, null, null, null, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId,
+				startedAt, endedAt, callDurationSeconds, status, artifactPaths, analysis, evaluation, reproducibility);
 	}
 
 	public RunMetadata(
@@ -147,8 +192,8 @@ public record RunMetadata(
 			EvaluationMetadata evaluation,
 			ReproducibilityMetadata reproducibility
 	) {
-		this(callId, scenarioId, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId, startedAt, endedAt,
-				null, status,
+		this(callId, scenarioId, null, null, null, runMode, defaultChannel(runMode), targetPhoneNumber, retellCallId,
+				startedAt, endedAt, null, status,
 				artifactPaths, analysis, evaluation, reproducibility);
 	}
 
