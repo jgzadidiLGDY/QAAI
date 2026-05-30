@@ -398,6 +398,7 @@ Candidate invariant:
 | v1 reviewer workflow docs | `8f13ec7` | `d213790` | Weak/docs-only candidate: the README should present a concise v1 reviewer entry point and link detailed phase history through the build journal and dedicated v1 docs. | Documentation-only change; useful for GitHub reviewability, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 | v1.0.0 version metadata | `03604ba` | `51a33d2` | Runtime reproducibility metadata and release configuration should identify the current major review milestone as version 1.0.0 instead of the previous snapshot version. | Dry-run, Retell call-start, artifact capture, and analysis metadata tests expect `reproducibility.app_version = 1.0.0`, while explicit `QAAI_APP_VERSION` overrides still work. |
 | GitHub Actions test workflow | `8e8defd` | `c0de4bf` | Weak packaging candidate: the repository should run the Gradle test suite in GitHub Actions for pushes to main and pull requests. | CI configuration change; locally verified with `.\gradlew test`, but weak as a Silver task because the main verification is repository packaging rather than application runtime behavior. |
+| Phase 22 closeout docs | `10db9f6` | `8dd933d` | Weak/docs-only candidate: Phase 22 should have a closeout note that summarizes completed v1 release polish, verification, scope boundaries, and Silver relevance. | Documentation-only change; useful for phase handoff, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 
 Candidate invariant:
 
