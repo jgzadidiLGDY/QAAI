@@ -66,6 +66,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 21 Plan](docs/phase-21-plan.md)
 - [Phase 21 Closeout](docs/phase-21-closeout.md)
 - [Phase 22 Plan](docs/phase-22-plan.md)
+- [Phase 22 Closeout](docs/phase-22-closeout.md)
 
 ## Latest Phase Closeout Notes
 
@@ -118,6 +119,11 @@ Phase 22 is v1 release polish. It should make the current implementation easy to
 review on GitHub by shortening the README, adding a v1 reviewer path, updating
 version metadata, adding release notes, and adding CI. It should not add a
 database, dashboard, new AI behavior, or pass/fail automation.
+
+Phase 22 completed that release-polish pass. The repository now presents v1.0.0
+from the README, links detailed build history through this journal, includes a
+review guide and release notes, records v1 runtime metadata, and runs the Gradle
+test suite through GitHub Actions.
 
 ## MVP+ Direction
 
