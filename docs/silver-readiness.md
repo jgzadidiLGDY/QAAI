@@ -396,3 +396,17 @@ Candidate invariant:
 | --- | --- | --- | --- | --- |
 | v1 release polish planning docs | `5b53206` | `b8a2b75` | Weak/docs-only candidate: project docs should define v1 release polish as a packaging and reviewability phase, while keeping database, dashboard, new AI behavior, and Project Silver task authoring out of scope. | Documentation-only change; useful for reviewer alignment and commit slicing, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
 | v1 reviewer workflow docs | `8f13ec7` | `d213790` | Weak/docs-only candidate: the README should present a concise v1 reviewer entry point and link detailed phase history through the build journal and dedicated v1 docs. | Documentation-only change; useful for GitHub reviewability, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+| v1.0.0 version metadata | `03604ba` | `51a33d2` | Runtime reproducibility metadata and release configuration should identify the current major review milestone as version 1.0.0 instead of the previous snapshot version. | Dry-run, Retell call-start, artifact capture, and analysis metadata tests expect `reproducibility.app_version = 1.0.0`, while explicit `QAAI_APP_VERSION` overrides still work. |
+
+Candidate invariant:
+
+- Invariant: newly written reproducibility metadata should identify the current
+  released application version unless an operator explicitly overrides it.
+- Symptom: after declaring v1, generated metadata and configuration examples
+  could still report the previous snapshot version.
+- Root cause: the Gradle version, default reproducibility metadata version,
+  docs, environment example, and metadata assertions were still tied to the
+  pre-v1 snapshot value.
+- Why it may be Silver-relevant: the task is small but behavioral; it connects
+  release configuration, runtime metadata defaults, docs/examples, and
+  deterministic artifact-writing tests without external services.
