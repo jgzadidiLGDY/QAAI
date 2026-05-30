@@ -395,3 +395,4 @@ Candidate invariant:
 | Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
 | --- | --- | --- | --- | --- |
 | v1 release polish planning docs | `5b53206` | `b8a2b75` | Weak/docs-only candidate: project docs should define v1 release polish as a packaging and reviewability phase, while keeping database, dashboard, new AI behavior, and Project Silver task authoring out of scope. | Documentation-only change; useful for reviewer alignment and commit slicing, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
+| v1 reviewer workflow docs | `8f13ec7` | `d213790` | Weak/docs-only candidate: the README should present a concise v1 reviewer entry point and link detailed phase history through the build journal and dedicated v1 docs. | Documentation-only change; useful for GitHub reviewability, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
