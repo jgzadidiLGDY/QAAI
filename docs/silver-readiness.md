@@ -362,3 +362,9 @@ Candidate invariant:
 - Why it may be Silver-relevant: the task crosses capture, analysis,
   evaluation, multi-lens review, metadata serialization, and deterministic
   rerun-order tests without adding new workflow control or pass/fail ownership.
+
+## Phase 21 Planning Record
+
+| Candidate | Base commit | Fix commit | Possible instruction | Suggested fail-to-pass behavior |
+| --- | --- | --- | --- | --- |
+| Agent profiles and suite runs planning docs | `8c09da6` | `077ba34` | Weak/docs-only candidate: project docs should describe agent-under-test profiles, deterministic suite runs, suite artifacts, metadata contracts, risks, and the Project Silver boundary for Phase 21. | Documentation-only change; useful for phase planning and reviewer alignment, but not a strong Silver task because it has no runtime fail-to-pass behavior. |
