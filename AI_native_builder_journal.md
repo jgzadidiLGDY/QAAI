@@ -63,6 +63,7 @@ The phase closeout files will become the primary evidence of the build process:
 - [Phase 19 Closeout](docs/phase-19-closeout.md)
 - [Phase 20 Plan](docs/phase-20-plan.md)
 - [Phase 20 Closeout](docs/phase-20-closeout.md)
+- [Phase 21 Plan](docs/phase-21-plan.md)
 
 ## Latest Phase Closeout Notes
 
@@ -96,6 +97,16 @@ uses the same scenario inputs and artifact pipeline, writes normalized text
 transcripts, records `channel = text`, and keeps Retell/audio details out of the
 text-channel artifact contract.
 
+Phase 21 is proposed as agent-under-test profiles plus deterministic suite
+runs. This is the next platform step: make the tested agent explicit, bind it to
+reviewed scenario sets, run those scenarios through a local channel first, and
+write suite-level artifacts that point back to ordinary run bundles.
+
+Project Silver remains secondary context for implementation shaping. Phase 21
+should favor deterministic, behavior-verifiable slices and coherent commits that
+could later become extraction candidates, but Silver rules do not define QAAI
+product direction.
+
 ## MVP+ Direction
 
 After the interim review, the project scope expands into an MVP+ stage. MVP+
@@ -114,6 +125,7 @@ real-world repeatability:
 - Phase 18: structured multi-lens review
 - Phase 19: channel-neutral scenario model
 - Phase 20: text chat runner prototype
+- Phase 21: agent profiles and suite runs
 
 This expansion does not change the core boundary: deterministic workflow code
 owns orchestration, artifacts provide evidence, AI assists with analysis, and

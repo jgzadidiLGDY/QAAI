@@ -192,6 +192,49 @@ prototype. It should reuse the scenario, transcript, artifact, review, and
 reporting model where practical, rather than creating a separate parallel
 system.
 
+## Agent Profile and Suite Expansion
+
+After Phase 20, the platform has more than one execution channel, but the agent
+under test is still mostly implicit in environment variables, Retell settings,
+and scenario text. Phase 21 should make the tested agent explicit without adding
+heavy orchestration.
+
+An agent profile should describe the target system under test:
+
+- stable `id` and reviewer-facing `name`
+- domain and short description
+- supported workflow areas
+- channel-specific target settings, such as voice provider, target phone
+  number, or local text provider
+- notes that help reviewers understand what the agent claims to handle
+
+A suite should bind a reviewed set of scenario files to one agent profile and a
+default run mode. The first suite execution should be deterministic and
+local-first, using `text-chat` by default so the suite contract can stabilize
+before any batch real-call behavior exists.
+
+Phase 21 should write suite-level artifacts under:
+
+```text
+outputs/suites/{suite_run_id}/
+```
+
+The suite summary should link to individual `outputs/{call_id}/` bundles rather
+than replacing them. Individual run metadata should record the
+`agent_profile_id` and `suite_id` that produced the run.
+
+This expansion is the practical next step toward a QAAI platform because it
+separates these concepts:
+
+- the agent being evaluated
+- the scenarios selected for that evaluation
+- the channel used for execution
+- the evidence and advisory review artifacts produced afterward
+
+Phase 21 should remain deliberately small. It should not add a database, web UI,
+automatic pass/fail decisions, live batch Retell calls by default, or automatic
+promotion of generated scenarios into suites.
+
 ## Non-Goals
 
 This project is not:
@@ -299,6 +342,17 @@ The channel-neutral expansion is successful when:
   review pipeline
 - no pass/fail ownership, hidden orchestration, or fabricated evidence is added
 
+The agent profile and suite expansion is successful when:
+
+- a named agent profile can be validated from YAML
+- a reviewed scenario suite can be validated from YAML
+- a deterministic suite run creates one ordinary run bundle per scenario
+- each run records the associated agent profile and suite identifiers
+- suite-level JSON and Markdown artifacts link back to the run bundles
+- suite execution remains local-first and human-reviewed
+- the implementation preserves small, behavior-verifiable commits suitable for
+  later Project Silver extraction without letting Silver drive product scope
+
 ## AI Boundary
 
 AI may assist with:
@@ -312,6 +366,7 @@ AI may assist with:
 - coverage-plan drafting
 - specialized advisory review lenses
 - channel-neutral report generation over existing artifacts
+- draft suite or coverage summaries over existing artifacts
 
 AI must not:
 

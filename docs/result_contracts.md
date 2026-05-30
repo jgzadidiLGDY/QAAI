@@ -22,6 +22,9 @@ Planned shape:
 {
   "call_id": "call_20260523_001",
   "scenario_id": "appointment_reschedule_001",
+  "agent_profile_id": "medical_receptionist_demo",
+  "suite_id": "receptionist_smoke_suite",
+  "suite_run_id": "suite_20260530_120000_abcd1234",
   "run_mode": "dry_run",
   "target_phone_number": "+18054398008",
   "retell_call_id": null,
@@ -660,3 +663,72 @@ Text chat transcript JSON uses the existing normalized transcript shape with
 `source = text_chat`. Downstream analysis, evaluation, multi-lens review,
 inspection, and reports should read the normalized transcript rather than
 special-casing Retell transcript details.
+
+## Phase 21 Contract Direction
+
+Phase 21 adds agent-under-test profiles and deterministic suite execution.
+
+Agent profile YAML should include:
+
+```yaml
+id: medical_receptionist_demo
+name: Medical Receptionist Demo
+domain: healthcare
+description: Handles scheduling, billing routing, insurance questions, and refill requests.
+supported_workflows:
+  - appointment_scheduling
+  - appointment_rescheduling
+channels:
+  voice:
+    provider: retell
+    target_phone_number: "+18054398008"
+  text:
+    provider: local
+```
+
+Suite YAML should include:
+
+```yaml
+id: receptionist_smoke_suite
+agent_profile: medical_receptionist_demo
+default_run_mode: text-chat
+scenarios:
+  - scenarios/appointment-scheduling.yaml
+  - scenarios/appointment-reschedule.yaml
+  - scenarios/billing-question.yaml
+```
+
+Individual run metadata should preserve the existing run contract and add:
+
+```json
+{
+  "agent_profile_id": "medical_receptionist_demo",
+  "suite_id": "receptionist_smoke_suite",
+  "suite_run_id": "suite_20260530_120000_abcd1234"
+}
+```
+
+Suite reports should be written under:
+
+```text
+outputs/suites/{suite_run_id}/suite-report.json
+outputs/suites/{suite_run_id}/suite-report.md
+```
+
+`suite-report.json` should include:
+
+- `suite_run_id`
+- `suite_id`
+- `agent_profile_id`
+- `generated_at`
+- `run_mode`
+- `human_review_required = true`
+- ordered scenario run summaries
+- each generated `call_id`
+- run status and completeness
+- links to run metadata and transcript artifacts
+- warnings for failed validation, missing artifacts, or unsupported run modes
+
+Suite reports are derived review artifacts. They should not own pass/fail
+decisions, replace per-run metadata, trigger downstream AI review automatically,
+or mutate scenario files.

@@ -19,6 +19,11 @@ it as the local run or interaction artifact id. Channel-specific external ids,
 such as Retell call ids, future chat session ids, email thread ids, or browser
 task ids, should remain metadata fields rather than replacing the local id.
 
+Phase 21 should keep individual run bundles under `outputs/{call_id}/` and add
+suite-level artifacts under `outputs/suites/{suite_run_id}/`. Suite artifacts
+should link to per-scenario run bundles rather than replacing the existing run
+artifact model.
+
 ## Planned Artifact Bundle
 
 ```text
@@ -611,3 +616,42 @@ The metadata records `run_mode = text_chat` and `channel = text`. Voice-specific
 fields such as `target_phone_number`, `retell_call_id`, `audio`, and `manifest`
 are absent for this local prototype. Completeness requires the normalized
 transcript artifacts and does not warn about missing audio.
+
+## Phase 21 Suite Artifacts
+
+Phase 21 should add deterministic suite-level artifacts:
+
+```text
+outputs/suites/{suite_run_id}/
+|-- suite.yaml
+|-- agent-profile.yaml
+|-- suite-report.json
+`-- suite-report.md
+```
+
+Each scenario in the suite should still produce a normal run bundle:
+
+```text
+outputs/{call_id}/
+|-- scenario.yaml
+|-- metadata.json
+|-- patient_simulation.md
+|-- transcript.txt
+|-- transcript.json
+`-- observations.md
+```
+
+The run metadata should record:
+
+```json
+{
+  "agent_profile_id": "medical_receptionist_demo",
+  "suite_id": "receptionist_smoke_suite",
+  "suite_run_id": "suite_20260530_120000_abcd1234"
+}
+```
+
+The suite report should summarize scenario execution order, generated
+`call_id`s, run statuses, artifact completeness, and artifact paths. It should
+not create pass/fail decisions, mutate run metadata after the individual runs
+complete, or hide missing evidence.

@@ -853,6 +853,37 @@ outputs/{call_id}/transcript.json
 outputs/{call_id}/observations.md
 ```
 
+### Phase 21: Agent Profiles and Suite Runs
+
+Goal:
+
+Make the agent under test a first-class platform concept and run a small,
+deterministic scenario suite against a named agent profile.
+
+Planned deliverables:
+
+- agent-under-test profile YAML for domain, description, supported workflows,
+  and channel-specific target settings
+- scenario suite YAML that binds one agent profile to an ordered set of
+  reviewed scenarios
+- deterministic suite command that runs the selected scenarios through a local
+  channel first, preferably `text-chat`
+- metadata extensions so each run records `agent_profile_id` and `suite_id`
+- suite-level JSON and Markdown artifacts that link to individual run bundles
+- focused tests for profile validation, suite validation, metadata persistence,
+  and deterministic suite execution
+
+Out of scope:
+
+- database-backed run storage
+- web dashboard work
+- automatic pass/fail decisions
+- live batch Retell execution by default
+- automatic promotion of generated scenarios into suites
+- broad artifact migration or renaming `call_id`
+
+Phase 21 is proposed in [Phase 21 Plan](docs/phase-21-plan.md).
+
 ### Current Phase 13 Implementation
 
 Phase 13 adds advisory depth signals to conversation review. After captured
@@ -891,12 +922,14 @@ The expected duration band for a typical medical appointment phone call is 1 to
 |   |   |           |-- scenario
 |   |   |           |-- runner
 |   |   |           |-- artifacts
+|   |   |           |-- agent
 |   |   |           |-- retell
 |   |   |           |-- analysis
 |   |   |           |-- evaluation
 |   |   |           |-- reporting
 |   |   |           |-- scenariogeneration
-|   |   |           `-- review
+|   |   |           |-- review
+|   |   |           `-- suite
 |   |   `-- resources
 |   |       `-- application.yml
 |   `-- test
@@ -909,6 +942,10 @@ The expected duration band for a typical medical appointment phone call is 1 to
 |   |-- prescription-refill.yaml
 |   |-- billing-question.yaml
 |   `-- insurance-verification.yaml
+|-- agent-profiles
+|   `-- medical-receptionist-demo.yaml
+|-- suites
+|   `-- receptionist-smoke.yaml
 |-- docs
 |   |-- project_specs.md
 |   |-- architecture.md
@@ -992,11 +1029,12 @@ Before running real calls, confirm:
 
 ## Near-Term Next Step
 
-Phase 19 should introduce a channel-neutral scenario and interaction model:
+Phase 21 should introduce agent-under-test profiles and deterministic suite
+runs:
 
 ```text
-Keep voice working as the first channel, but clarify which concepts belong to
-the reusable QA platform and which belong to the Retell voice adapter.
+Run a reviewed set of scenarios against a named agent profile, preserve each
+individual run artifact bundle, and write a suite-level summary artifact.
 ```
 
 This keeps the system local-first, human-reviewed, and explicit about scenario

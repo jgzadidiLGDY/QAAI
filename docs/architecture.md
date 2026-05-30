@@ -18,6 +18,7 @@ This document describes the planned system shape. It will evolve as each phase a
 
 ```text
 scenario YAML
+  -> optional suite and agent profile context
   -> scenario loader and validator
   -> patient simulation prompt builder
   -> run coordinator
@@ -47,6 +48,43 @@ com.qaai.scenario
 Phase 5 adds `PatientSimulationPromptBuilder`, which converts a scenario into a
 deterministic `patient_simulation_prompt` for Retell and the local
 `patient_simulation.md` artifact.
+
+### Agent Profiles
+
+Owns reviewer-facing descriptions of the agent under test.
+
+Planned package:
+
+```text
+com.qaai.agent
+```
+
+An agent profile should declare a stable id, name, domain, supported workflows,
+and channel-specific target configuration. Profiles make the target system
+explicit in metadata and reports without moving provider credentials into
+committed files.
+
+Profiles should not own workflow control, pass/fail decisions, scenario
+promotion, or artifact analysis.
+
+### Suites
+
+Owns deterministic collections of reviewed scenarios for one agent profile.
+
+Planned package:
+
+```text
+com.qaai.suite
+```
+
+A suite should bind an agent profile to an ordered set of scenario files and a
+default local run mode. Suite execution should produce ordinary per-scenario run
+bundles under `outputs/{call_id}/` plus a suite summary under
+`outputs/suites/{suite_run_id}/`.
+
+Suites are deterministic workflow conveniences. They should not become hidden
+orchestration, automatic pass/fail owners, generated-scenario promotion, or live
+batch calling machinery by default.
 
 ### Runner
 
@@ -377,3 +415,9 @@ It reuses the same scenario inputs, normalized transcript model, artifact
 persistence, advisory reviews, and reporting surfaces where practical. The
 prototype is local and deterministic; it does not add an external chat provider
 or live text UI.
+
+Phase 21 should add agent-under-test profiles and deterministic suite runs. It
+should make the target agent explicit, allow a reviewed set of scenarios to run
+against that profile through a local channel first, persist `agent_profile_id`
+and `suite_id` on individual run metadata, and write suite-level artifacts that
+link to the underlying run bundles.
